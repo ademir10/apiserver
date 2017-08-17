@@ -1,0 +1,5 @@
+{
+  "name": "apiserver",
+  "private": true,
+  "dependencies": {}
+}

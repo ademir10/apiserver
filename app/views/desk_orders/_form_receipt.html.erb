@@ -1,0 +1,41 @@
+<script>
+//ao clicar no campo para digitar o desconto, o campo é limpo
+$(document).ready(function(){
+	$( "#r1" ).focus(function() {
+  $("#r1").val('');
+  });
+});
+</script>
+
+
+<%= form_for(@desk_order, url: baixar_desk_order_path, method: :post) do |f| %>
+
+<%= f.hidden_field :id, id: 'id_desk_order' %>
+
+<h5><b>Observações:</b></h5>
+  <div class="form-group">
+   <div class="col-lg-14">
+
+  <div class="form-group">
+   <div class="col-lg-14">
+
+   <font-color="red">
+    <div class="col-lg-2">
+    <h4><b><font color="red">Total geral R$</b></h4>
+       <b><%= f.text_field :total, :value=> @desk_order.items.sum(:val_total).round(2), placeholder: 'Total R$', :class => 'form-control', id: 'r1' %></b>
+    </div>
+    <%= f.error_span(:total) %>
+    </font>
+
+   <div class="col-lg-3">
+    <h4>Forma de pagto</h4>
+    	<%= f.select(:form_payment, options_for_select([["BOLETO"],["CHEQUE"],["CRÉDITO"],["DEPÓSITO EM CONTA"],["DÉBITO"],["DINHEIRO"]], @desk_order.form_payment), {include_blank: 'Forma de pagamento'}, :class => 'form-control') %>
+    </div>
+    <%= f.error_span(:form_payment) %>
+
+ <div class="col-lg-2">
+ <h4><font color="white">.</font></h4>
+ <%= f.submit 'Finalizar ', :class => 'btn btn-success', data: {disable_with: "Processando...".html_safe} %>
+ </div>
+<% end %>
+</div>

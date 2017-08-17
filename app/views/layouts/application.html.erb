@@ -1,0 +1,209 @@
+<!-- PARA REMOVER AS SCROLLBARS SOMENTE NA PAGINA INICIA -->
+<% if !logged_in? %>
+<style>
+html, body {
+    max-width: 100%;
+    overflow-x: hidden;
+    overflow-y: hidden;
+}
+</style>
+<% end %>
+
+
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="D&D Support Service - Consultoria em T.I and God ever!!!">
+    <link rel="icon" href="../../images/favicon.png">
+
+  <title>API Server</title>
+
+
+
+    <%= csrf_meta_tags %>
+    <!-- TURBOLINKS DESATIVADO PARA PERMITIR O USO DE JAVASCRIPT NA VIEW -->
+    <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'false' %>
+    <%= javascript_include_tag 'application', 'data-turbolinks-track': 'false' %>
+
+    <!-- ESSE LINK ABAIXO É PARA ESCONDER A MENSAGEM DO AUTOCOMPLETAR NA ADIÇÃO DO PRODUTO E DEIXAR MAIS BONITO -->
+   <link rel="stylesheet" href="http://code.jquery.com/ui/1.9.0/themes/smoothness/jquery-ui.css" />
+</head>
+
+<!-- ESSE SCRIPT É PARA VERIFICAR ERROS DE JAVASCRIPT - É MUITO IMPORTANTE
+<script>
+	window.onerror = function (errorMsg, url, lineNumber, column, errorObj) {
+    alert('Error: ' + errorMsg + ' Script: ' + url + ' Line: ' + lineNumber
+    + ' Column: ' + column + ' StackTrace: ' +  errorObj);
+}
+</script>
+-->
+<body>
+    <!-- Dash Navbar Top
+    Available versions: dnl-visible, dnl-hidden -->
+
+      <nav class="navbar navbar-inverse navbar-fixed-top dash-navbar-top dnl-hidden">
+      <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#dnt-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="fa fa-ellipsis-v"></span>
+          </button>
+          <button class="dnl-btn-toggle">
+            <span class="fa fa-bars"></span>
+          </button>
+          <div class="navbar-brand" >Dsoft <span>APIserver</span></div>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="dnt-collapse">
+          <!-- This dropdown is for avatar -->
+          <ul class="nav navbar-nav navbar-right navbar-avatar">
+
+            <li class="dropdown">
+           <% if !logged_in? %>
+         <!-- SE QUISER INSERIR O LOGIN NA NAVBAR
+        	      <%= form_tag('/login', class: "navbar-form navbar-right") do %>
+        				<div class="form-group">
+        				<%= text_field_tag :email, nil, placeholder: 'Email', class: 'form-control' %>
+        			        </div>
+        				<div class="form-group">
+        				<%= password_field_tag :password, nil, placeholder: 'Senha', class: 'form-control' %>
+
+        				</div>
+        				<%= submit_tag "Login", class: 'btn btn-success' %>&nbsp;
+        			<% end %>
+
+            </li>
+          </ul>
+
+			<ul class="nav navbar-nav navbar-right">
+              <li><%= link_to "Home", root_path, class: 'form_control' %></li>
+              <li><%= link_to "Contato", '#', class: 'form_control' %></li>
+-->
+
+                        </div><!-- /.navbar-collapse -->
+      </div><!-- /.container-fluid -->
+    </nav> <!-- /.navbar -->
+     <% else %>
+
+     <%= link_to logout_path, method: :delete do %>
+   <%= image_tag "logo.png", title: 'LogOut' , class: "dnt-avatar" %>
+<% end %>
+
+          </div><!-- /.navbar-collapse -->
+      </div><!-- /.container-fluid -->
+    </nav> <!-- /.navbar -->
+
+    <!-- Dash Navbar Left
+    Available versions: dnl-visible, dnl-hidden -->
+    <div class="dash-navbar-left dnl-hidden">
+      <p class="dnl-nav-title">Cadastros</p>
+      <ul class="dnl-nav">
+        <li>
+          <a class="collapsed" data-toggle="collapse" href="#collapseStatistics" aria-expanded="false" aria-controls="collapseStatistics">
+            <span class="glyphicon glyphicon-user"></span>
+            <span class="dnl-link-text">Cadastros gerais</span>
+            <span class="fa fa-angle-up dnl-btn-sub-collapse"></span>
+          </a>
+          <!-- Dropdown level one -->
+          <ul class="dnl-sub-one collapse" id="collapseStatistics">
+            <%= link_to '<span class="glyphicon glyphicon-tags dnl-link-icon"></span> Categorias'.html_safe, categories_path, class: 'dnl-link-text' %>
+            <%= link_to '<span class="glyphicon glyphicon-tags dnl-link-icon"></span> Produtos'.html_safe, products_path, class: 'dnl-link-text' %>
+            <%= link_to '<span class="glyphicon glyphicon-tags dnl-link-icon"></span> QRpoints'.html_safe, qrpoints_path, class: 'dnl-link-text' %>
+            <%= link_to '<span class="glyphicon glyphicon-tags dnl-link-icon"></span> Usuários'.html_safe, users_path, class: 'dnl-link-text' %>
+          </ul>
+        </li>
+
+        <p class="dnl-nav-title">Movimentações</p>
+        <ul class="dnl-nav">
+
+          <li>
+            <a class="collapsed" data-toggle="collapse" href="#collapseCategoryAll2" aria-expanded="false" aria-controls="collapseCategoryAll">
+              <span class="fa fa-refresh"></span>
+              <span class="dnl-link-text">Movimentações Gerais</span>
+              <span class="fa fa-angle-up dnl-btn-sub-collapse"></span>
+            </a>
+            <!-- Dropdown level one -->
+            <ul class="dnl-sub-one collapse" id="collapseCategoryAll2">
+              <li>
+               <%= link_to '<span class="fa fa-check-circle dnl-link-icon"></span> Verificar Mesas'.html_safe, desk_orders_path, class: 'dnl-link-text' %>
+              </li>
+              <li>
+                <%= link_to '<span class="fa fa-tachometer dnl-link-icon"></span> Dashboard'.html_safe, dashboard_path, class: 'dnl-link-text' %>
+              </li>
+            </ul>
+
+            <p class="dnl-nav-title">Financeiro</p>
+            <ul class="dnl-nav">
+
+              <li>
+                <a class="collapsed" data-toggle="collapse" href="#collapseCategoryAll3" aria-expanded="false" aria-controls="collapseCategoryAll">
+                  <span class="glyphicon glyphicon-list-alt"></span>
+                  <span class="dnl-link-text">Financeiro Geral</span>
+                  <span class="fa fa-angle-up dnl-btn-sub-collapse"></span>
+                </a>
+                <!-- Dropdown level one -->
+                <ul class="dnl-sub-one collapse" id="collapseCategoryAll3">
+
+                </ul>
+
+
+      </ul>
+
+      <p class="dnl-nav-title">Relatórios</p>
+      <ul class="dnl-nav">
+
+        <li>
+          <a class="collapsed" data-toggle="collapse" href="#collapseCategoryAll" aria-expanded="false" aria-controls="collapseCategoryAll">
+            <span class="glyphicon glyphicon-list-alt"></span>
+            <span class="dnl-link-text">Relatórios Gerais</span>
+            <span class="fa fa-angle-up dnl-btn-sub-collapse"></span>
+          </a>
+          <!-- Dropdown level one -->
+          <ul class="dnl-sub-one collapse" id="collapseCategoryAll">
+
+      </ul>
+    </div> <!-- /.dash-navbar-left -->
+
+    <% end %>
+
+    <!-- Enter your page content below here
+    Available navbar effects: dnl-push, dnl-overlay
+    Available navbar versions: dnl-visible, dnl-hidden
+    Available content effects: content-opacity -->
+
+    <!-- SE NÃO ESTIVER LOGADO -->
+    <% if !logged_in? %>
+     <div class="content-wrap dnl-hidden" data-effect="dnl-push">
+
+      <%= yield %>
+     </div>
+    <% else %>
+    <!-- SE JÁ ESTIVER LOGADO -->
+    <div class="content-wrap dnl-hidden" data-effect="dnl-push">
+
+
+    <br><br>
+	<%= yield %>
+     </div> <!-- /.content-wrap -->
+    <% end %>
+
+    <!-- Le javaScript
+    ================================================== -->
+
+    <%= javascript_include_tag 'demo', 'data-turbolinks-track' => true %>
+    <%= javascript_include_tag 'dash', 'data-turbolinks-track' => true %>
+
+    <%= render 'sweetify/alert' %>
+
+    <!-- Placed at the end of the document so the pages load faster -->
+
+
+  </body>
+</html>

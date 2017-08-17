@@ -1,0 +1,37 @@
+<%- model_class = DeskOrder -%>
+<div class="page-header">
+  <h1>Mesas em uso <%= image_tag('menu.png') %></h1>
+
+</div>
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th><%= model_class.human_attribute_name('numero') %></th>
+      <th><%= model_class.human_attribute_name('total R$') %></th>
+      <th><%= model_class.human_attribute_name('status') %></th>
+      <th><%= model_class.human_attribute_name('criado em') %></th>
+      <th><%=t '.actions', :default => t("helpers.actions") %></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @desk_orders.each do |desk_order| %>
+      <tr>
+        <td><%= link_to desk_order.number, desk_order_path(desk_order) %></td>
+        <td><%= desk_order.total %></td>
+        <td><%= desk_order.status %></td>
+        <td><%=l desk_order.created_at %></td>
+        <td>
+          <%= link_to t('.show', :default => t("helpers.links.show")),
+                      desk_order_path(desk_order), :class => 'btn btn-default btn-xs' %>
+          <%= link_to t('.edit', :default => t("helpers.links.edit")),
+                      edit_desk_order_path(desk_order), :class => 'btn btn-default btn-xs' %>
+          <%= link_to t('.destroy', :default => t("helpers.links.destroy")),
+                      desk_order_path(desk_order),
+                      :method => :delete,
+                      :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) },
+                      :class => 'btn btn-xs btn-danger' %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

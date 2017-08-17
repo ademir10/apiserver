@@ -1,0 +1,82 @@
+<script>
+$(document).ready(function(){
+$('#val_unit').on('keyup',function(){
+     var total = $('#qnt').val() * $('#val_unit').val();
+     $('#total_geral').val(total.toFixed(2));
+});
+// AQUI É FEITA A CONSULTA COM BASE NO PRODUTO SELECIONADO NO TEXTFIELD E EXIBIDO NOS TEXTFIELDS O RESULTADO
+    $("#id_do_produto").focusout(function() {
+  	// limpa os campos primeiro
+    $("#qnt").val('');
+  	$("#total_geral").val('');
+    	var produto = $('#id_prod').val()
+
+    	$.ajax({
+    		url: '/consulta_prod.json',
+    		data: {
+    			name: produto,
+    		},
+    		datatype: "script",
+
+    		success: function(obj){
+
+    		$('#id_prod').val(obj.id);
+    		$('#descricao_produto').val(obj.descricao);
+        	$('#quantidade').val(obj.qnt);
+			//AQUI É ONDE MOSTRA O VALOR COM .00 AO TRAZER O VALOR DE VENDA DO PRODUTO
+			$('#val_unit').val(parseFloat(obj.value).toFixed(2));
+
+
+        },
+        error: function(){
+            console.log(arguments);
+        }
+
+    	});
+   	});
+    });
+</script>
+
+<h5><b>Adicionar produtos:</b></h5>
+<%= form_for ([@desk_order, @desk_order.items.build]) do |f| %>
+
+<% if @desk_order.errors.any? %>
+    <div id="error_expl" class="panel panel-danger">
+      <div class="panel-heading">
+        <h3 class="panel-title"><%= pluralize(@desk_order.errors.count, "error") %> prohibited this heritage from being saved:</h3>
+      </div>
+      <div class="panel-body">
+        <ul>
+        <% @desk_order.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+        </ul>
+      </div>
+    </div>
+  <% end %>
+
+
+	<div class="col-lg-2">
+	<%= f.autocomplete_field :product_id, autocomplete_product_name_products_path, :id_element => '#id_prod', :class => 'form-control',placeholder: 'Digite o nome:', id: 'id_do_produto' %>
+	<%= f.hidden_field :product_id, id: 'id_prod' %>
+	</div>
+
+
+    <div class="col-lg-1">
+	<%= f.text_field :qnt, class: "form-control", placeholder: "qnt", id: 'qnt' -%>
+	</div>
+
+	<!-- SE FOR PRECISO ALTERAR O VALOR DE VENDA UNITÁRIO DO PRODUTO NA HORA DA VENDA -->
+	<div class="col-lg-1">
+	<%= f.text_field :val_unit, class: "form-control", id: 'val_unit', placeholder: 'Valor unit R$' -%>
+	</div>
+
+	<div class="col-lg-1">
+	<%= f.text_field :val_total, class: "form-control", placeholder: "Total R$", id: 'total_geral', readonly: true -%>
+	</div>
+
+
+    <%= f.submit 'Adicionar', class: 'btn btn-primary', id: 'add' %>
+
+
+<% end %>

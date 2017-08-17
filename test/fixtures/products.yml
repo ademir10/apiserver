@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyString
+  qnt: 1
+  value: 9.99
+  category: one
+
+two:
+  name: MyString
+  qnt: 1
+  value: 9.99
+  category: two

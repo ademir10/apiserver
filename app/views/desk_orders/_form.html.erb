@@ -1,0 +1,42 @@
+<%= form_for @desk_order, :html => { :class => "form-horizontal desk_order" } do |f| %>
+
+  <% if @desk_order.errors.any? %>
+    <div id="error_expl" class="panel panel-danger">
+      <div class="panel-heading">
+        <h3 class="panel-title"><%= pluralize(@desk_order.errors.count, "error") %> prohibited this desk_order from being saved:</h3>
+      </div>
+      <div class="panel-body">
+        <ul>
+        <% @desk_order.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+        </ul>
+      </div>
+    </div>
+  <% end %>
+
+  <div class="form-group">
+    <%= f.label 'numero', :class => 'control-label col-lg-2' %>
+    <div class="col-lg-1">
+      <%= f.text_field :number, :class => 'form-control', id: 'numero' %>
+    </div>
+    <%=f.error_span(:number) %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label 'status', :class => 'control-label col-lg-2' %>
+    <div class="col-lg-2">
+      <%= f.select(:status, options_for_select([["Aberta"], ["Em uso"], ["Fechada"]], @desk_order.status), {include_blank: 'Selecione'}, :class => 'form-control') %>
+    </div>
+    <%=f.error_span(:status) %>
+  </div>
+
+  <div class="form-group">
+    <div class="col-lg-offset-2 col-lg-10">
+      <%= f.submit 'Salvar', :class => 'btn btn-primary' %>
+      <%= link_to t('.cancel', :default => t("helpers.links.cancel")),
+                desk_orders_path, :class => 'btn btn-default' %>
+    </div>
+  </div>
+
+<% end %>

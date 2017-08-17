@@ -1,0 +1,33 @@
+<hr />
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th> <%= 'produto' %></th>
+      <th><%= 'qnt' %></th>
+      <th><%= 'val unit' %></th>
+      <th><%= 'total' %></th>
+
+      <th><%= 'imagem' %></th>
+
+      <th><%=t '.actions', :default => t("helpers.actions") %></th>
+
+    </tr>
+  </thead>
+  <tbody>
+
+ 	<% @desk_order.items.order(:created_at).each do |item| %>
+        <tr>
+        <td><%= item.product.name %></td>
+        <td><%= item.qnt %></td>
+        <td><%= number_with_precision(item.val_unit, precision: 6) %></td>
+        <td><%= number_with_precision(item.val_total, precision: 2) %></td>
+        <% if item.product.image.present? %>
+	      <td><%= image_tag(item.product.image.url, :size => "25x25", class: "css-style") %></td>
+	      <% else %>
+	      <td>Sem imagem</td>
+	      <% end %>
+        <td><%= link_to t('.destroy', :default => t("helpers.links.destroy")), [item.desk_order, item], :method => :delete, :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) }, :class => 'btn btn-xs btn-danger' %></td>
+       </tr>
+      <% end %>
+       </tbody>
+   </table>

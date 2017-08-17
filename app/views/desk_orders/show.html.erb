@@ -1,0 +1,23 @@
+<%- model_class = DeskOrder -%>
+<div class="page-header">
+  <h1>Mesa Nº <%= @desk_order.number %></h1>
+  <h3>Status: <%= @desk_order.status %></h3>
+</div>
+
+<%= link_to t('.back', :default => t("helpers.links.back")),
+              desk_orders_path, :class => 'btn btn-default'  %>
+<%= link_to t('.edit', :default => t("helpers.links.edit")),
+              edit_desk_order_path(@desk_order), :class => 'btn btn-default' %>
+<%= link_to t('.destroy', :default => t("helpers.links.destroy")),
+              desk_order_path(@desk_order),
+              :method => 'delete',
+              :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) },
+              :class => 'btn btn-danger' %>
+
+<h4><%= @desk_order.items.count %> Itens / <b>Total R$ <%= number_with_precision(@total_items, precision: 2) %></b> </h4>
+
+<!-- EXIBE OS ITENS NA O.S -->
+<%= render "items/form" %>
+<%= render "items/item" %>
+
+<%= render "desk_orders/form_receipt" %>

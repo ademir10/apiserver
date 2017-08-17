@@ -1,0 +1,2 @@
+module QrpointsHelper
+end
