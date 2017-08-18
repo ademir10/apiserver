@@ -31,7 +31,7 @@ class QrpointsController < ApplicationController
   # POST /qrpoints.json
   def create
     @qrpoint = Qrpoint.new(qrpoint_params)
-
+    @qrpoint.status = 'Aberta'
     respond_to do |format|
       if @qrpoint.save
         format.html { redirect_to @qrpoint, notice: 'Qrpoint was successfully created.' }

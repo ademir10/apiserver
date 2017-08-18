@@ -2,7 +2,6 @@ class ApplicationController < ActionController::Base
 
   #alterei aqui para aceitar requisições do aplicativo
   protect_from_forgery unless: -> { request.format.json? }
-
   helper_method :current_user, :logged_in?
 
   def current_user
