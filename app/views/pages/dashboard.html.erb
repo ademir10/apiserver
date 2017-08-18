@@ -28,7 +28,7 @@
               <td><%= desk_order.status %></td>
               <td><%=l desk_order.created_at %></td>
               <td>
-                <%= link_to 'Fechar mesa', '#', :class => 'btn btn-success btn-xs' %>
+                <%= link_to 'Fechar mesa', desk_order_path(desk_order), :class => 'btn btn-success btn-xs' %>
 
               </td>
             </tr>

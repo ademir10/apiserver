@@ -6,8 +6,7 @@ class DeskOrdersController < ApplicationController
 
   # RECEBE O QRCODE DO APLICATIVO E VERIFICA SE A MESA ESTÁ DISPONÍVEL
   def check_mesa
-    puts 'É AQUI QUE VEM O NUMERO DA MESA >>>>>>>> ' + params["numero_da_mesa"].to_s
-
+    #puts 'É AQUI QUE VEM O NUMERO DA MESA >>>>>>>> ' + params["numero_da_mesa"].to_s
       #verifica se o token é valido primeiro
       if params["cardToken"].to_s == 'G0d1$@Bl3T0d0W4Th3V3Rth1Ng'
          @verifica_mesa = Qrpoint.where(qrcode: params["numero_da_mesa"]).where(status: 'Aberta').first
@@ -15,14 +14,12 @@ class DeskOrdersController < ApplicationController
            render json: { retorno_rails: "A MESA ESTÁ LIVRE" }
             #altera o status da mesa para EM USO e inicia uma venda guardando o id da venda
             desk_order = DeskOrder.new(params[:desk_order])
-            desk_order.status = 'Aberta'
+            desk_order.status = 'Em uso'
             desk_order.qrpoint_id = @verifica_mesa.id
             desk_order.save!
 
             #após a mesa aberta o status do QRpoint é mudado para Em USO
             Qrpoint.update(@verifica_mesa.id, status: 'Em uso')
-
-            puts 'esse é o novo id da venda >>>>> ' + desk_order.id.to_s
 
          else
            render json: { retorno_rails: "A MESA ESTÁ EM USO!" }
