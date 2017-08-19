@@ -9,26 +9,27 @@ class DeskOrdersController < ApplicationController
     #puts 'É AQUI QUE VEM O NUMERO DA MESA >>>>>>>> ' + params["numero_da_mesa"].to_s
       #verifica se o token é valido primeiro
       if params["cardToken"].to_s == 'G0d1$@Bl3T0d0W4Th3V3Rth1Ng'
-         @verifica_mesa = Qrpoint.where(qrcode: params["numero_da_mesa"]).where(status: 'Aberta').first
+         @verifica_mesa = Qrpoint.where(qrcode: params["numero_da_mesa"]).first
           if @verifica_mesa.present?
-           render json: { retorno_rails: "A MESA ESTÁ LIVRE" }
-            #altera o status da mesa para EM USO e inicia uma venda guardando o id da venda
-            desk_order = DeskOrder.new(params[:desk_order])
-            desk_order.status = 'Em uso'
-            desk_order.qrpoint_id = @verifica_mesa.id
-            desk_order.save!
-
-            #após a mesa aberta o status do QRpoint é mudado para Em USO
-            Qrpoint.update(@verifica_mesa.id, status: 'Em uso')
-
+                  if @verifica_mesa.status == 'Aberta'
+                     render json: { retorno_rails: "A MESA ESTÁ LIVRE" }
+                      #altera o status da mesa para EM USO e inicia uma venda guardando o id da venda
+                      desk_order = DeskOrder.new(params[:desk_order])
+                      desk_order.status = 'Em uso'
+                      desk_order.qrpoint_id = @verifica_mesa.id
+                      desk_order.save!
+                      #após a mesa aberta o status do QRpoint é mudado para Em USO
+                      Qrpoint.update(@verifica_mesa.id, status: 'Em uso')
+                   elsif @verifica_mesa.status == 'Em uso'
+                      render json: { retorno_rails: "A MESA ESTÁ EM USO" }
+                   end
          else
-           render json: { retorno_rails: "A MESA ESTÁ EM USO!" }
-           puts 'CHEGOU AQUI PQ ESTA EM USO'
+           render json: { retorno_rails: "CÓDIGO INVALIDO" }
          end
 
       #se não confirmar a presença do token a conexão é rejeitada
       else
-        render json: { retorno_rails: "API Access Denied!" }
+        render json: { retorno_rails: "ACESSO NEGADO" }
       end
   end
 
