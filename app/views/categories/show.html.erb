@@ -3,6 +3,8 @@
   <h1>Categoria de produto</h1>
 </div>
 
+<%= image_tag(@category.image_url.to_s) %>
+
 <dl class="dl-horizontal">
   <dt><strong><%= model_class.human_attribute_name('nome') %>:</strong></dt>
   <dd><%= @category.name %></dd>

@@ -16,14 +16,6 @@
   <% end %>
 
   <div class="form-group">
-    <%= f.label 'numero', :class => 'control-label col-lg-2' %>
-    <div class="col-lg-1">
-      <%= f.text_field :number, :class => 'form-control', id: 'numero' %>
-    </div>
-    <%=f.error_span(:number) %>
-  </div>
-
-  <div class="form-group">
     <%= f.label 'status', :class => 'control-label col-lg-2' %>
     <div class="col-lg-2">
       <%= f.select(:status, options_for_select([["Aberta"], ["Em uso"], ["Fechada"]], @desk_order.status), {include_blank: 'Selecione'}, :class => 'form-control') %>

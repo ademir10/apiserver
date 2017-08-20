@@ -28,6 +28,7 @@ gem 'paperclip'
 gem 'dropzonejs-rails'
 #para  upload de imagens
 gem 'carrierwave', '~> 0.10.0'
+gem 'carrierwave-base64'
 gem 'mini_magick', '~> 4.3'
 gem 'file_validators'
 

@@ -33,6 +33,17 @@ class DeskOrdersController < ApplicationController
       end
   end
 
+  #ENVIA AS CATEGORIAS DOS PRODUTOS PARA O APLICATIVO
+  def list_categories
+
+    @categories = Category.all.limit(20).reverse
+
+      #aqui é onde eu dou o nome da variavel Json que levará os dados para o aplicativo
+      #nesse caso usei uma variavel chamada "categories_product"
+      render json: { categories_product: @categories}
+
+  end
+
   # GET /desk_orders
   # GET /desk_orders.json
   def index

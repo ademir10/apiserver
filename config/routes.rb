@@ -3,6 +3,8 @@ Rails.application.routes.draw do
   #ROTAS DO APLICATIVO
   #verifica se a mesa esta liberada
   post 'check_mesa', to: 'desk_orders#check_mesa'
+  #lista as categorias dos produtos no cardápio
+  get 'list_categories', to: 'desk_orders#list_categories'
   #----------------------------------------------------
 
 

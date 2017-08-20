@@ -1,68 +1,19 @@
-
-
 <%- model_class = Item -%>
 <div class="page-header">
   <h1>Dashboard <%= image_tag('dashboard') %></h1>
 </div>
 
-    <div class="col-sm-6">
-    <div class="panel panel-danger">
-    <div class="panel-heading"><h3> Mesas em uso</h3></div>
-    <div class="panel-body">
+<div id="exibe_dados">
+<%= render "desk_orders" %>
+</div>
 
-      <table class="table table-striped">
-        <thead>
-          <tr>
-            <th><%= model_class.human_attribute_name('Mesa') %></th>
-            <th><%= model_class.human_attribute_name('total R$') %></th>
-            <th><%= model_class.human_attribute_name('status') %></th>
-            <th><%= model_class.human_attribute_name('criado em') %></th>
-            <th><%=t '.actions', :default => t("helpers.actions") %></th>
-          </tr>
-        </thead>
-        <tbody>
-          <% @desk_orders.each do |desk_order| %>
-            <tr>
-              <td><%= desk_order.qrpoint.description %></td>
-              <td><%= desk_order.total %></td>
-              <td><%= desk_order.status %></td>
-              <td><%=l desk_order.created_at %></td>
-              <td>
-                <%= link_to 'Fechar mesa', desk_order_path(desk_order), :class => 'btn btn-success btn-xs' %>
 
-              </td>
-            </tr>
-          <% end %>
-        </tbody>
-      </table>
+<script>
+  $(function() {
+    setInterval(function(){
+      $.getScript("/dashboard").fail(function(jqxhr, settings, exception) {
 
-    </div>
-    </div>
-    </div>
-
-    <div class="col-sm-6">
-    <div class="panel panel-success">
-    <div class="panel-heading"><h3>Mesas Livres</h3></div>
-    <div class="panel-body">
-
-      <table class="table table-striped">
-        <thead>
-          <tr>
-            <th><%= model_class.human_attribute_name('Mesa') %></th>
-            <th><%= model_class.human_attribute_name('status') %></th>
-
-          </tr>
-        </thead>
-        <tbody>
-          <% @desk_orders_opened.each do |desk_order| %>
-            <tr>
-              <td><%= desk_order.description %></td>
-              <td><%= desk_order.status %></td>
-            </tr>
-          <% end %>
-        </tbody>
-      </table>
-
-    </div>
-    </div>
-    </div>
+      });
+    }, 10000);
+  });
+</script>

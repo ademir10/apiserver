@@ -18,6 +18,11 @@
     <% @categories.each do |category| %>
       <tr>
         <td><%= link_to category.name, category_path(category) %></td>
+        <% if category.image.present? %>
+        <td><%= image_tag(category.image.url, :size => "25x25", class: "css-style") %></td>
+        <% else %>
+        <td>Sem imagem</td>
+        <% end %>
         <td><%=l category.created_at %></td>
         <td>
           <%= link_to t('.show', :default => t("helpers.links.show")),
