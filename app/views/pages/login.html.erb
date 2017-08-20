@@ -76,7 +76,11 @@
 }
 
 body.background {
+  <% if !logged_in? %>
     background: url('images/background.png');
+    <% else %>
+    background: url('images/background2.png');
+    <% end %>
     -webkit-background-size: cover;
 -moz-background-size: cover;
 -o-background-size: cover;
