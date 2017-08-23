@@ -5,6 +5,8 @@ Rails.application.routes.draw do
   post 'check_mesa', to: 'desk_orders#check_mesa'
   #lista as categorias dos produtos no cardápio
   get 'list_categories', to: 'desk_orders#list_categories'
+  #lista os produtos de acordo com a categoria selecionada
+  post 'list_products', to: 'desk_orders#list_products'
   #----------------------------------------------------
 
 

@@ -12,12 +12,15 @@ class DeskOrdersController < ApplicationController
          @verifica_mesa = Qrpoint.where(qrcode: params["numero_da_mesa"]).first
           if @verifica_mesa.present?
                   if @verifica_mesa.status == 'Aberta'
-                     render json: { retorno_rails: "A MESA ESTÁ LIVRE" }
+
                       #altera o status da mesa para EM USO e inicia uma venda guardando o id da venda
                       desk_order = DeskOrder.new(params[:desk_order])
                       desk_order.status = 'Em uso'
                       desk_order.qrpoint_id = @verifica_mesa.id
                       desk_order.save!
+
+                      render json: { retorno_rails: "A MESA ESTÁ LIVRE", id_da_mesa: desk_order.id }
+
                       #após a mesa aberta o status do QRpoint é mudado para Em USO
                       Qrpoint.update(@verifica_mesa.id, status: 'Em uso')
                    elsif @verifica_mesa.status == 'Em uso'
@@ -35,13 +38,19 @@ class DeskOrdersController < ApplicationController
 
   #ENVIA AS CATEGORIAS DOS PRODUTOS PARA O APLICATIVO
   def list_categories
-
     @categories = Category.all.limit(20).reverse
-
       #aqui é onde eu dou o nome da variavel Json que levará os dados para o aplicativo
       #nesse caso usei uma variavel chamada "categories_product"
       render json: { categories_product: @categories}
+  end
 
+  #ENVIA OS PRODUTOS PARA O APLICATIVO COM BASE NA CATEGORIA SELEICIONADA
+  def list_products
+    #puts 'É AQUI QUE VEM O NUMERO >>>>>>>>' + params["id_da_categoria"].to_s
+      if params["cardToken"].to_s == 'G0d1$@Bl3T0d0W4Th3V3Rth1Ng'
+      @products = Product.where(category_id: params["id_da_categoria"])
+      render json: { all_products: @products}
+      end
   end
 
   # GET /desk_orders
@@ -99,6 +108,7 @@ class DeskOrdersController < ApplicationController
   # DELETE /desk_orders/1.json
   def destroy
     @desk_order.destroy
+    Qrpoint.update(@desk_order.qrpoint_id, status: 'Aberta')
     respond_to do |format|
       format.html { redirect_to desk_orders_url, notice: 'Desk order was successfully destroyed.' }
       format.json { head :no_content }
