@@ -18,9 +18,9 @@
       <tr>
         <td><%= link_to desk_order.qrpoint.description, desk_order_path(desk_order) %></td>
         <% if desk_order.total.present? %>
-        <td><%= desk_order.total %></td>
+        <td>R$ <%= number_with_precision(desk_order.total, precision: 2) %></td>
         <% else %>
-        <td>0.00</td>
+        <td>R$ 0.00</td>
         <% end %>
         <td><%= desk_order.status %></td>
         <td><%=l desk_order.created_at %></td>

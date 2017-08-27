@@ -7,6 +7,8 @@ Rails.application.routes.draw do
   get 'list_categories', to: 'desk_orders#list_categories'
   #lista os produtos de acordo com a categoria selecionada
   post 'list_products', to: 'desk_orders#list_products'
+  #adiciona o produto selecionado na mesa que está aberta
+  post 'add_product', to: 'desk_orders#add_product'
   #----------------------------------------------------
 
 

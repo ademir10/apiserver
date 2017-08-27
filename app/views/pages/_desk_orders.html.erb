@@ -7,9 +7,9 @@
     <thead>
       <tr>
         <th>Mesa</th>
-        <th>total R$</th>
-        <th>status</th>
-        <th>criado em</th>
+        <th>Total R$</th>
+        <th>Status</th>
+        <th>Criado em</th>
         <th><%=t '.actions', :default => t("helpers.actions") %></th>
       </tr>
     </thead>
@@ -17,7 +17,7 @@
       <% @desk_orders.each do |desk_order| %>
         <tr>
           <td><%= desk_order.qrpoint.description %></td>
-          <td><%= desk_order.total %></td>
+          <td>R$ <%= number_with_precision(desk_order.total, precision: 2) %></td>
           <td><%= desk_order.status %></td>
           <td><%=l desk_order.created_at %></td>
           <td>
@@ -42,7 +42,7 @@
     <thead>
       <tr>
         <th>Mesa</th>
-        <th>status</th>
+        <th>Status</th>
 
       </tr>
     </thead>

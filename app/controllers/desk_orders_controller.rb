@@ -38,7 +38,7 @@ class DeskOrdersController < ApplicationController
 
   #ENVIA AS CATEGORIAS DOS PRODUTOS PARA O APLICATIVO
   def list_categories
-    @categories = Category.all.limit(20).reverse
+    @categories = Category.order(:name)
       #aqui é onde eu dou o nome da variavel Json que levará os dados para o aplicativo
       #nesse caso usei uma variavel chamada "categories_product"
       render json: { categories_product: @categories}
@@ -48,8 +48,28 @@ class DeskOrdersController < ApplicationController
   def list_products
     #puts 'É AQUI QUE VEM O NUMERO >>>>>>>>' + params["id_da_categoria"].to_s
       if params["cardToken"].to_s == 'G0d1$@Bl3T0d0W4Th3V3Rth1Ng'
-      @products = Product.where(category_id: params["id_da_categoria"])
+      @products = Product.where(category_id: params["id_da_categoria"]).order(:name)
       render json: { all_products: @products}
+      end
+  end
+
+  #ADICIONA O PRODUTO SELECIONADO NO APP NA MESA aberta
+  def add_product
+      if params["cardToken"].to_s == 'G0d1$@Bl3T0d0W4Th3V3Rth1Ng'
+         product = Product.find(params[:product_id])
+          add_item = Item.new(params[:item])
+          add_item.desk_order_id = params[:desk_order_id]
+          add_item.product_id = params[:product_id]
+          add_item.qnt = 1
+          add_item.val_unit = product.value
+          add_item.val_total = product.value
+          add_item.save!
+
+          sum_items = Item.where(desk_order_id: params[:desk_order_id].to_i).sum(:val_total)
+
+          DeskOrder.update(params[:desk_order_id].to_i, total: sum_items.to_f)
+
+          render json: { produto_adicionado: product}
       end
   end
 

@@ -67,6 +67,9 @@ class ItemsController < ApplicationController
     @desk_order = DeskOrder.find(params[:desk_order_id])
     @item = @desk_order.items.find(params[:id])
     @item.destroy
+
+    sum_items = Item.where(desk_order_id: params[:desk_order_id].to_i).sum(:val_total)
+    DeskOrder.update(params[:desk_order_id].to_i, total: sum_items.to_f)
     redirect_to desk_order_path(@desk_order)
   end
 
@@ -74,6 +77,6 @@ class ItemsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def item_params
-      params.require(:item).permit(:product_id, :desk_order_id, :qnt, :val_unit, :val_total)
+      params.require(:item).permit(:product_id, :desk_order_id, :qnt, :val_unit, :val_total, :status)
     end
 end

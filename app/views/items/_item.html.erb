@@ -2,12 +2,12 @@
 <table class="table table-striped">
   <thead>
     <tr>
-      <th> <%= 'produto' %></th>
-      <th><%= 'qnt' %></th>
-      <th><%= 'val unit' %></th>
-      <th><%= 'total' %></th>
+      <th> <%= 'Produto' %></th>
+      <th><%= 'Qnt' %></th>
+      <th><%= 'Valor unit' %></th>
+      <th><%= 'Total' %></th>
 
-      <th><%= 'imagem' %></th>
+      <th><%= 'Imagem' %></th>
 
       <th><%=t '.actions', :default => t("helpers.actions") %></th>
 
@@ -19,8 +19,8 @@
         <tr>
         <td><%= item.product.name %></td>
         <td><%= item.qnt %></td>
-        <td><%= number_with_precision(item.val_unit, precision: 6) %></td>
-        <td><%= number_with_precision(item.val_total, precision: 2) %></td>
+        <td>R$ <%= number_with_precision(item.val_unit, precision: 2) %></td>
+        <td>R$ <%= number_with_precision(item.val_total, precision: 2) %></td>
         <% if item.product.image.present? %>
 	      <td><%= image_tag(item.product.image.url, :size => "25x25", class: "css-style") %></td>
 	      <% else %>

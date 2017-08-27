@@ -15,7 +15,7 @@ class ProductsController < ApplicationController
   end
 
   def index
-    @products = Product.all
+    @products = Product.order(:name)
   end
 
   # GET /products/1
