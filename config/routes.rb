@@ -9,6 +9,8 @@ Rails.application.routes.draw do
   post 'list_products', to: 'desk_orders#list_products'
   #adiciona o produto selecionado na mesa que está aberta
   post 'add_product', to: 'desk_orders#add_product'
+  #exibe tudo o que já foi consumido
+  post 'check_order', to: 'desk_orders#check_order'
   #----------------------------------------------------
 
 

@@ -60,22 +60,33 @@ class DeskOrdersController < ApplicationController
          product = Product.find(params[:product_id])
          #fazendo o calculo do total multiplicando a quantidade do mesmo item
          val_total_items = params[:qnt_product].to_i * product.value.to_f
-         
+
           add_item = Item.new(params[:item])
           add_item.desk_order_id = params[:desk_order_id]
           add_item.product_id = params[:product_id]
+          add_item.name_prod = product.name
           add_item.qnt = params[:qnt_product]
           add_item.val_unit = product.value
           add_item.val_total = val_total_items
           add_item.save!
-
           sum_items = Item.where(desk_order_id: params[:desk_order_id].to_i).sum(:val_total)
-
           DeskOrder.update(params[:desk_order_id].to_i, total: sum_items.to_f)
-
           render json: { produto_adicionado: product}
       end
   end
+
+  #carrega tudo o que já foi consumido
+  def check_order
+    if params["cardToken"].to_s == 'G0d1$@Bl3T0d0W4Th3V3Rth1Ng'
+      qrpoint_number = DeskOrder.find(params[:desk_order_id])
+      desk_name = Qrpoint.find(qrpoint_number.qrpoint_id)
+      items_desk_order = Item.where(desk_order_id: params[:desk_order_id].to_i)
+      sum_total_items = Item.where(desk_order_id: params[:desk_order_id].to_i).sum(:val_total)
+      render json: { mesa_venda: desk_name.description, items_venda: items_desk_order , total_geral: sum_total_items}
+      puts 'tudo certo até aqui obrigado Deus!'
+    end
+  end
+
 
   # GET /desk_orders
   # GET /desk_orders.json

@@ -1,5 +1,6 @@
 class Product < ApplicationRecord
   belongs_to :category
+  belongs_to :item
 
   #para o upload de imagens
   validates :image, file_size: { less_than_or_equal_to: 500.kilobytes, message: 'deve ter até %{count} de tamanho' },
