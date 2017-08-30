@@ -29,7 +29,6 @@ class DeskOrdersController < ApplicationController
          else
            render json: { retorno_rails: "CÓDIGO INVALIDO" }
          end
-
       #se não confirmar a presença do token a conexão é rejeitada
       else
         render json: { retorno_rails: "ACESSO NEGADO" }
@@ -87,6 +86,23 @@ class DeskOrdersController < ApplicationController
     end
   end
 
+  #solicita o fechamento da mesa alterando somente o status da desk_order para "Solicita fechamento"
+  def close_order
+    if params["cardToken"].to_s == 'G0d1$@Bl3T0d0W4Th3V3Rth1Ng'
+      DeskOrder.update(params[:desk_order_id], status: 'Solicita o fechamento')
+      puts 'Solicitou o fechamento da conta!'
+    end
+  end
+
+ #exclui o tem selecionado se ainda não foi enviado para a produção
+ def delete_item
+    @item = Item.find(params[:item_id_app])
+    @item.destroy
+      sum_items = Item.where(desk_order_id: params[:desk_order_id].to_i).sum(:val_total)
+      DeskOrder.update(params[:desk_order_id].to_i, total: sum_items.to_f)
+        puts 'Item excluido pelo aplicativo'
+        render json: { resultado_API: 'Item excluido com sucesso!' }
+  end
 
   # GET /desk_orders
   # GET /desk_orders.json

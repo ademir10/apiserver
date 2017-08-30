@@ -1,5 +1,5 @@
 <div class="col-sm-6">
-<div class="panel panel-danger">
+<div class="panel panel-primary">
 <div class="panel-heading"><h3> Mesas em uso</h3></div>
 <div class="panel-body">
 
@@ -9,7 +9,7 @@
         <th>Mesa</th>
         <th>Total R$</th>
         <th>Status</th>
-        <th>Criado em</th>
+        <th>Aberto as</th>
         <th><%=t '.actions', :default => t("helpers.actions") %></th>
       </tr>
     </thead>
@@ -17,12 +17,19 @@
       <% @desk_orders.each do |desk_order| %>
         <tr>
           <td><%= desk_order.qrpoint.description %></td>
+          <% if desk_order.total.present? %>
           <td>R$ <%= number_with_precision(desk_order.total, precision: 2) %></td>
+          <% else %>
+          <td>R$ 0,00</td>
+          <% end %>
           <td><%= desk_order.status %></td>
-          <td><%=l desk_order.created_at %></td>
+          <td><%= desk_order.created_at.strftime("%H:%M") %></td>
           <td>
-            <%= link_to 'Fechar mesa', desk_order_path(desk_order), :class => 'btn btn-success btn-xs' %>
-
+            <% if desk_order.status == 'Em uso' %>
+              <%= link_to 'Fechar mesa', desk_order_path(desk_order), :class => 'btn btn-success btn-xs' %>
+            <% else %>
+              <%= link_to 'Fechar mesa', desk_order_path(desk_order), :class => 'btn btn-danger btn-xs' %>
+            <% end %>
           </td>
         </tr>
       <% end %>
@@ -34,7 +41,7 @@
 </div>
 
 <div class="col-sm-6">
-<div class="panel panel-success">
+<div class="panel panel-primary">
 <div class="panel-heading"><h3>Mesas Livres</h3></div>
 <div class="panel-body">
 

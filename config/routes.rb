@@ -11,6 +11,10 @@ Rails.application.routes.draw do
   post 'add_product', to: 'desk_orders#add_product'
   #exibe tudo o que já foi consumido
   post 'check_order', to: 'desk_orders#check_order'
+  #solicita o fechamento da mesa
+  post 'close_order', to: 'desk_orders#close_order'
+  #exclui o item selecionado se ainda não mudou o status
+  post 'delete_item', to: 'desk_orders#delete_item'
   #----------------------------------------------------
 
 
