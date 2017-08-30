@@ -96,12 +96,18 @@ class DeskOrdersController < ApplicationController
 
  #exclui o tem selecionado se ainda não foi enviado para a produção
  def delete_item
-    @item = Item.find(params[:item_id_app])
-    @item.destroy
-      sum_items = Item.where(desk_order_id: params[:desk_order_id].to_i).sum(:val_total)
-      DeskOrder.update(params[:desk_order_id].to_i, total: sum_items.to_f)
-        puts 'Item excluido pelo aplicativo'
-        render json: { resultado_API: 'Item excluido com sucesso!' }
+    item = Item.find(params[:item_id_app])
+      if item.status != 'Em produção'
+      item.destroy
+        sum_items = Item.where(desk_order_id: params[:desk_order_id].to_i).sum(:val_total)
+        DeskOrder.update(params[:desk_order_id].to_i, total: sum_items.to_f)
+          puts 'Item excluido pelo aplicativo'
+          render json: { resultado_API: 'Item excluido com sucesso!' }
+      else
+        puts 'O item já foi enviado para a cozinha'
+        render json: { resultado_API: 'Desculpe não conseguimos excluir este item porque ele já está sendo preparado.' }
+
+      end
   end
 
   # GET /desk_orders
