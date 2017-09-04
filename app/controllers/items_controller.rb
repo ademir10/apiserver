@@ -27,6 +27,10 @@ class ItemsController < ApplicationController
   # POST /items.json
   def create
     @desk_order = DeskOrder.find(params[:desk_order_id])
+    if item_params[:product_id].blank?
+       sweetalert_warning('Selecione o produto que deseja adicionar!', 'Atenção!')
+       redirect_to desk_order_path(@desk_order) and return
+     end
    #verifica se no campo do valor unitário foi digitado incorretamente
     if item_params[:val_unit].to_s == 'NaN'
        sweetalert_warning('O valor unitário do produto foi informado incorretamente, verifique os dados!', 'Atenção!')

@@ -1,3 +1,18 @@
+<script>
+$(document).ready(function() {
+    $('#check_stock').click(function() {
+        if($(this).is(":checked"))
+        {
+          $("#qnt").val('0');
+          $("#qnt").focus();
+        } else {
+            $('#qnt').val('');
+            $('#cfop').focus();
+        }
+    });
+});
+</script>
+
 <%= form_for @product, :html => { :class => "form-horizontal product" } do |f| %>
 
   <% if @product.errors.any? %>
@@ -30,9 +45,16 @@
     <%=f.error_span(:description) %>
   </div>
   <div class="form-group">
-    <%= f.label 'qnt', :class => 'control-label col-lg-2' %>
+    <%= f.label "controlar estoque?", :class => 'control-label col-lg-2' %>
+    <div class="col-lg-10">
+      <%= f.check_box :check_stock, id: 'check_stock' %>
+    </div>
+    <%=f.error_span(:check_stock) %>
+  </div>
+  <div class="form-group">
+    <%= f.label 'Quant', :class => 'control-label col-lg-2' %>
     <div class="col-lg-1">
-      <%= f.text_field :qnt, :class => 'form-control' %>
+      <%= f.text_field :qnt, :class => 'form-control', id: 'qnt', :maxlength=> '6' %>
     </div>
     <%=f.error_span(:qnt) %>
   </div>

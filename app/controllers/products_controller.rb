@@ -38,6 +38,10 @@ class ProductsController < ApplicationController
     @product = Product.new(product_params)
 
     respond_to do |format|
+      if product_params[:check_stock].blank? || product_params[:qnt].blank?
+        @product.qnt = 0
+      end
+
       if @product.save
         format.html { redirect_to @product, notice: 'Product was successfully created.' }
         format.json { render :show, status: :created, location: @product }
@@ -80,7 +84,7 @@ class ProductsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def product_params
-      params.require(:product).permit(:name, :qnt, :value, :category_id, :image, :remove_image, :description)
+      params.require(:product).permit(:name, :qnt, :value, :category_id, :image, :remove_image, :description, :check_stock)
     end
 
     def show_categories

@@ -11,6 +11,7 @@
   <thead>
     <tr>
       <th><%= model_class.human_attribute_name('nome') %></th>
+      <th><%= model_class.human_attribute_name('estoque?') %></th>
       <th><%= model_class.human_attribute_name('qnt') %></th>
       <th><%= model_class.human_attribute_name('valor R$') %></th>
       <th><%= model_class.human_attribute_name('Categoria') %></th>
@@ -22,6 +23,11 @@
     <% @products.each do |product| %>
       <tr>
         <td><%= link_to product.name, product_path(product) %></td>
+        <% if product.check_stock == true %>
+        <td>Sim</td>
+        <% else %>
+        <td>Não</td>
+        <% end %>
         <td><%= product.qnt %></td>
         <td><%= number_with_precision(product.value, precision: 2) %></td>
         <td><%= product.category.name %></td>
