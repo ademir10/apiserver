@@ -1,0 +1,2 @@
+class Loginfo < ApplicationRecord
+end

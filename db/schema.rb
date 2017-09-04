@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170903230014) do
+ActiveRecord::Schema.define(version: 20170904225245) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -48,6 +48,13 @@ ActiveRecord::Schema.define(version: 20170903230014) do
     t.index ["product_id"], name: "index_items_on_product_id"
   end
 
+  create_table "loginfos", force: :cascade do |t|
+    t.string "employee"
+    t.string "task"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "messages", force: :cascade do |t|
     t.text "content"
     t.datetime "created_at", null: false
@@ -73,6 +80,21 @@ ActiveRecord::Schema.define(version: 20170903230014) do
     t.string "status"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "receipts", force: :cascade do |t|
+    t.string "doc_number"
+    t.string "description"
+    t.date "due_date"
+    t.date "receipt_date"
+    t.integer "installments"
+    t.decimal "value_doc"
+    t.string "form_receipt"
+    t.integer "desk_order_id"
+    t.string "status"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "type_doc"
   end
 
   create_table "users", force: :cascade do |t|

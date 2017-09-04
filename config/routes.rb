@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
 
+  resources :loginfos
   #ROTAS DO APLICATIVO
   #verifica se a mesa esta liberada
   post 'check_mesa', to: 'desk_orders#check_mesa'
@@ -17,7 +18,7 @@ Rails.application.routes.draw do
   post 'delete_item', to: 'desk_orders#delete_item'
   #----------------------------------------------------
 
-
+  resources :receipts
   resources :qrpoints
   resources :items
   resources :desk_orders do

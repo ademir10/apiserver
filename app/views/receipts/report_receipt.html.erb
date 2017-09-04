@@ -1,0 +1,96 @@
+<style type="text/css">
+	@media print {
+    #printbtn {
+        display :  none;
+    }
+    
+    @media print {
+  a[href]:after {
+    content: none !important;
+  }
+}
+}
+
+#printOnly {
+   display : none;
+}
+
+@media print {
+    #printOnly {
+       display : block;
+    }
+}
+</style>
+
+<div class="container-fluid">
+
+<%- model_class = Receipt -%>
+<br />
+
+<div class="page-header">
+  <h2><%= image_tag "mini-logo-index.png" %><br />Relatório geral de Contas á receber</h2>
+ <div id="printOnly">
+  Periodo: <%= @datainicial %> até <%=@datafinal %>
+  </div>
+  
+  <%= form_tag(report_receipt_path, method: :get) do %>
+	<div class="form-group">
+		<div class="row">
+			  <div class="col-lg-3">
+			  <%= select_tag(:tipo_consulta, options_for_select([['Á receber', 'Á RECEBER'], ['Recebidas', 'RECEBIDA']], params[:tipo_consulta]), include_blank: 'Selecione:', class: 'form-control', id: 'printbtn')%>
+			</div>
+			</div>
+		<div class="form-group">			  
+		<div class="row">
+			  <div class="col-lg-3">	  
+		<%= date_field_tag(:date1, params[:date1], placeholder: 'data inicial', class: 'form-control', id: 'printbtn') %>
+		<%= date_field_tag(:date2, params[:date2], placeholder: 'data final', class: 'form-control', id: 'printbtn') %>	
+		</div>
+		</div>
+		<br />	
+		<%= submit_tag "Consultar", class: 'btn btn-success', id: 'printbtn' %>
+<% end %>
+  
+    <button type="button" id ="printbtn" class="btn btn-success", onclick ="window.print();return false;">Imprimir</button>
+
+  </div>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      
+      <th><%= model_class.human_attribute_name('Nº doc') %></th>
+      <th><%= model_class.human_attribute_name('tipo') %></th>
+      <th><%= model_class.human_attribute_name('cliente') %></th>
+      <th><%= model_class.human_attribute_name('descrição') %></th>
+      <th><%= model_class.human_attribute_name('vencto') %></th>
+      <th><%= model_class.human_attribute_name('Recebto') %></th>
+      <th><%= model_class.human_attribute_name('parcelas') %></th>
+      <th><%= model_class.human_attribute_name('valor R$') %></th>
+      <th><%= model_class.human_attribute_name('status') %></th>
+      
+      
+    </tr>
+  </thead>
+  <tbody>
+    <% @receipts.each do |receipt| %>
+      <tr>
+        
+        <td><%= receipt.doc_number %></td>
+        <td><%= receipt.type_doc %></td>
+        <td><%= receipt.destinatario.nome_destinatario %></td>
+        <td><%= receipt.discription %></td>
+        <td><%= receipt.due_date %></td>
+        <td><%= receipt.receipt_date %></td>
+        <td><%= receipt.installments %></td>
+        <td><%= number_with_precision(receipt.value_doc, precision: 2) %></td>
+        <td><%= receipt.status %></td>
+        
+        
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+Total R$: <b><%= number_with_precision(@total_receipts, precision: 2) %></b>
+
+</div>

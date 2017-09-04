@@ -110,8 +110,10 @@ class DeskOrdersController < ApplicationController
       end
   end
 
-  # GET /desk_orders
-  # GET /desk_orders.json
+  def baixar
+    
+  end
+
   def index
     @desk_orders = DeskOrder.all
   end

@@ -19,7 +19,7 @@ html, body {
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <meta name="description" content="">
     <meta name="author" content="D&D Support Service - Consultoria em T.I and God ever!!!">
-    <link rel="icon" href="../../images/favicon.png">
+    <link rel="icon" href="../../images/favicon.ico">
 
   <title>API Server</title>
 
@@ -137,6 +137,9 @@ html, body {
               <li>
                 <%= link_to '<span class="fa fa-tachometer dnl-link-icon"></span> Dashboard'.html_safe, dashboard_path, class: 'dnl-link-text' %>
               </li>
+              <li>
+                <%= link_to '<span class="fa fa-user-secret dnl-link-icon"></span> Log de atividades'.html_safe, loginfos_path, class: 'dnl-link-text' %>
+              </li>
             </ul>
 
             <p class="dnl-nav-title">Financeiro</p>
@@ -150,7 +153,9 @@ html, body {
                 </a>
                 <!-- Dropdown level one -->
                 <ul class="dnl-sub-one collapse" id="collapseCategoryAll3">
-
+                  <li>
+                    <%= link_to '<span class="fa fa-tachometer dnl-link-icon"></span> Contas a Receber'.html_safe, receipts_path, class: 'dnl-link-text' %>
+                  </li>
                 </ul>
 
 

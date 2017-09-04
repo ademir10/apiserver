@@ -29,7 +29,7 @@ $(document).ready(function(){
 
    <div class="col-lg-3">
     <h4>Forma de pagto</h4>
-    	<%= f.select(:form_payment, options_for_select([["BOLETO"],["CHEQUE"],["CRÉDITO"],["DEPÓSITO EM CONTA"],["DÉBITO"],["DINHEIRO"]], @desk_order.form_payment), {include_blank: 'Forma de pagamento'}, :class => 'form-control') %>
+    	<%= f.select(:form_payment, options_for_select([["CHEQUE"],["CRÉDITO"],["DÉBITO"],["DINHEIRO"]], @desk_order.form_payment), {include_blank: 'Forma de pagamento'}, :class => 'form-control') %>
     </div>
     <%= f.error_span(:form_payment) %>
 
