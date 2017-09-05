@@ -67,6 +67,7 @@ GEM
       mime-types (~> 3.0)
     case_transform (0.2)
       activesupport
+    chartkick (2.2.4)
     childprocess (0.7.1)
       ffi (~> 1.0, >= 1.0.11)
     climate_control (0.2.0)
@@ -94,6 +95,8 @@ GEM
     globalid (0.4.0)
       activesupport (>= 4.2.0)
     google-qr (0.2.2)
+    groupdate (3.2.0)
+      activesupport (>= 3)
     i18n (0.8.6)
     jbuilder (2.7.0)
       activesupport (>= 4.2.0)
@@ -255,11 +258,13 @@ DEPENDENCIES
   capybara (~> 2.13)
   carrierwave (~> 0.10.0)
   carrierwave-base64
+  chartkick
   coffee-rails (~> 4.2)
   dropzonejs-rails
   file_validators
   font-awesome-rails
   google-qr
+  groupdate
   jbuilder (~> 2.5)
   jquery-rails (~> 4.2, >= 4.2.2)
   jquery-turbolinks
@@ -289,4 +294,4 @@ DEPENDENCIES
   web-console (>= 3.3.0)
 
 BUNDLED WITH
-   1.15.3
+   1.15.4

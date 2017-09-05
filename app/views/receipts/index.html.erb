@@ -76,13 +76,9 @@
 
         <td><%= link_to receipt.doc_number, receipt_path(receipt) %></td>
         <td><%= receipt.description %></td>
-        <td><%= receipt.due_date.strftime("%d/%m/%Y") %></td>
-				<% if receipt.receipt_date.present? %>
-        <td><%= receipt.receipt_date.strftime("%d/%m/%Y") %></td>
-				<% else %>
-				<td></td>
-				<% end %>
-        <td><%= receipt.installments %></td>
+        <td><%= receipt.due_date %></td>
+				<td><%= receipt.receipt_date %></td>
+				<td><%= receipt.installments %></td>
         <td><%= number_with_precision(receipt.value_doc, precision: 2) %></td>
         <td><%= receipt.status %></td>
 

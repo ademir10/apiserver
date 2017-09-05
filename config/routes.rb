@@ -1,7 +1,5 @@
 Rails.application.routes.draw do
 
-  resources :suppliers
-  resources :loginfos
   #ROTAS DO APLICATIVO
   #verifica se a mesa esta liberada
   post 'check_mesa', to: 'desk_orders#check_mesa'
@@ -18,7 +16,12 @@ Rails.application.routes.draw do
   #exclui o item selecionado se ainda não mudou o status
   post 'delete_item', to: 'desk_orders#delete_item'
   #----------------------------------------------------
-
+  resources :payments
+  resources :loginfos
+  resources :suppliers do
+  #para autocompletar o nome do produto
+  get :autocomplete_supplier_name, :on => :collection
+  end
   resources :receipts
   resources :qrpoints
   resources :items

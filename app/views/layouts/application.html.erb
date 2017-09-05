@@ -20,16 +20,12 @@ html, body {
     <meta name="description" content="">
     <meta name="author" content="D&D Support Service - Consultoria em T.I and God ever!!!">
     <link rel="icon" href="../../images/favicon.ico">
-
   <title>API Server</title>
-
-
-
     <%= csrf_meta_tags %>
+    <%= javascript_include_tag "https://www.google.com/jsapi", "chartkick" %>
     <!-- TURBOLINKS DESATIVADO PARA PERMITIR O USO DE JAVASCRIPT NA VIEW -->
     <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'false' %>
     <%= javascript_include_tag 'application', 'data-turbolinks-track': 'false' %>
-
     <!-- ESSE LINK ABAIXO É PARA ESCONDER A MENSAGEM DO AUTOCOMPLETAR NA ADIÇÃO DO PRODUTO E DEIXAR MAIS BONITO -->
    <link rel="stylesheet" href="http://code.jquery.com/ui/1.9.0/themes/smoothness/jquery-ui.css" />
 </head>
@@ -155,7 +151,10 @@ html, body {
                 <!-- Dropdown level one -->
                 <ul class="dnl-sub-one collapse" id="collapseCategoryAll3">
                   <li>
-                    <%= link_to '<span class="fa fa-money dnl-link-icon"></span> Contas a Receber'.html_safe, receipts_path, class: 'dnl-link-text' %>
+                    <%= link_to '<span class="fa fa-money dnl-link-icon"></span> Contas a Pagar'.html_safe, payments_path, class: 'dnl-link-text' %>
+                  </li>
+                  <li>
+                    <%= link_to '<span class="fa fa-credit-card dnl-link-icon"></span> Contas a Receber'.html_safe, receipts_path, class: 'dnl-link-text' %>
                   </li>
                 </ul>
 

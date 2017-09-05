@@ -1,0 +1,116 @@
+<script>
+	//escrever em caixa alta
+	$('#doc_number').ready(function() {
+
+	jQuery('#doc_number').keyup(function() {
+		$(this).val($(this).val().toUpperCase());
+	});
+	});
+</script>
+<%= form_for @payment, :html => { :class => "form-horizontal payment" } do |f| %>
+
+  <% if @payment.errors.any? %>
+    <div id="error_expl" class="panel panel-danger">
+      <div class="panel-heading">
+        <h3 class="panel-title"><%= pluralize(@payment.errors.count, "error") %> prohibited this payment from being saved:</h3>
+      </div>
+      <div class="panel-body">
+        <ul>
+        <% @payment.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+        </ul>
+      </div>
+    </div>
+  <% end %>
+
+  <div class="form-group">
+    <%= f.label 'Nº doc', :class => 'control-label col-lg-2' %>
+    <div class="col-lg-1">
+      <%= f.text_field :doc_number, :class => 'form-control', id: 'doc_number' %>
+    </div>
+    <%=f.error_span(:doc_number) %>
+  </div>
+    <div class="form-group">
+    <%= f.label "tipo doc", :class => 'control-label col-lg-2' %>
+    <div class="col-lg-3">
+      <%= f.select(:type_doc, options_for_select([["Boleto"], ["Carnê"],["Promissória"],["Outros"]], @payment.type_doc), {include_blank: 'Selecione'}, :class => 'form-control') %>
+    </div>
+    <%=f.error_span(:doc_number) %>
+  </div>
+    <div class="form-group">
+    <%= f.label 'fornecedor', :class => 'control-label col-lg-2' %>
+    <div class="col-lg-5">
+   <% if @payment.supplier_id.present? %>
+   <%= f.autocomplete_field :supplier_id, autocomplete_supplier_name_suppliers_path, :id_element => '#pega_id', :value => @payment.supplier.name, :class => 'form-control',placeholder: 'Digite o nome:', id: 'nome' %>
+   <% else %>
+  <%= f.autocomplete_field :supplier_id, autocomplete_supplier_name_suppliers_path, :id_element => '#pega_id', :class => 'form-control',placeholder: 'Digite o nome:', id: 'nome' %>
+  <% end %>
+   <%= f.hidden_field :supplier_id, :id => "pega_id" %>
+    </div>
+    <%=f.error_span(:supplier_id) %>
+  </div>
+  <div class="form-group">
+    <%= f.label 'descrição', :class => 'control-label col-lg-2' %>
+    <div class="col-lg-5">
+      <%= f.text_field :description, :class => 'form-control' %>
+    </div>
+    <%=f.error_span(:description) %>
+  </div>
+  <div class="form-group">
+    <%= f.label 'data vencimento', :class => 'control-label col-lg-2' %>
+    <div class="col-lg-3">
+      <%= f.date_field :due_date, :class => 'form-control' %>
+    </div>
+    <%=f.error_span(:due_date) %>
+  </div>
+  <div class="form-group">
+    <%= f.label 'data pagamento', :class => 'control-label col-lg-2' %>
+    <div class="col-lg-3">
+      <%= f.date_field :payment_date, :class => 'form-control' %>
+    </div>
+    <%=f.error_span(:payment_date) %>
+  </div>
+<div class="form-group">
+    <%= f.label 'parcelas', :class => 'control-label col-lg-2' %>
+    <div class="col-lg-2">
+      <%= f.select(:installments, options_for_select([["1"], ["2"],["3"],["4"], ["5"],["6"],["7"], ["8"],["9"],["10"], ["11"],["12"]], @payment.installments), {include_blank: 'Selecione'},:class => 'form-control') %>
+    </div>
+    <%=f.error_span(:installments) %>
+  </div>
+  <div class="form-group">
+    <%= f.label 'Valor R$', :class => 'control-label col-lg-2' %>
+    <div class="col-lg-2">
+      <% if @payment.value_doc.present? %>
+      <%= f.text_field :value_doc, :class => 'form-control', id: 'real', value: "%.2f" % f.object.value_doc %>
+      <% else %>
+      <%= f.text_field :value_doc, :class => 'form-control', id: 'real' %>
+      <% end %>
+    </div>
+    <%=f.error_span(:value_doc) %>
+  </div>
+
+ <div class="form-group">
+    <%= f.label 'forma pagto', :class => 'control-label col-lg-2' %>
+    <div class="col-lg-2">
+      <%= f.select(:form_payment, options_for_select([["Cheque"], ["Crédito"], ["Débito"], ["Dinheiro"]], @payment.form_payment), {include_blank: 'Selecione'}, :class => 'form-control') %>
+    </div>
+    <%=f.error_span(:form_payment) %>
+  </div>
+<div class="form-group">
+    <%= f.label "status", :class => 'control-label col-lg-2' %>
+    <div class="col-lg-2">
+      <%= f.select(:status, options_for_select([["Á pagar"], ["Paga"]], @payment.status), {include_blank: 'Selecione'}, :class => 'form-control') %>
+    </div>
+    <%=f.error_span(:status) %>
+  </div>
+
+  <div class="form-group">
+    <div class="col-lg-offset-2 col-lg-10">
+      <%= f.submit 'Salvar', data: { disable_with: "Processando..." }, :class => 'btn btn-primary' %>
+      <%= link_to t('.cancel', :default => t("helpers.links.cancel")),
+                payments_path, :class => 'btn btn-default' %>
+    </div>
+  </div>
+
+<% end %>

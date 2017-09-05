@@ -1,6 +1,8 @@
 class SuppliersController < ApplicationController
   before_action :set_supplier, only: [:show, :edit, :update, :destroy]
-
+  before_action :must_login
+  #para autocompletar o nome do fornecedor
+  autocomplete :supplier, :name, :full => true
   # GET /suppliers
   # GET /suppliers.json
   def index

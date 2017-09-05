@@ -135,6 +135,11 @@ class DeskOrdersController < ApplicationController
          if @desk_order.status == "Solicita o fechamento" || @desk_order.status == "Aberta"
            #finalizando a O.S e salvando a forma de pagamento
            DeskOrder.update(@desk_order.id, status: 'Finalizada', form_payment: desk_order_params[:form_payment])
+
+           log = Loginfo.new(params[:loginfo])
+           log.employee = current_user.name
+           log.task = 'Finalizou a mesa de nome: ' + @desk_order.qrpoint.description.to_s
+           log.save!
          end
 
        #FAZENDO A SOMA DE TODOS OS ITENS PARA JOGAR NO CONTAS Á RECEBER

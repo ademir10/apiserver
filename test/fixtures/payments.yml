@@ -1,0 +1,25 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  doc_number: MyString
+  type_doc: MyString
+  supplier: one
+  description: MyString
+  due_date: 2017-09-05
+  payment_date: 2017-09-05
+  installments: 1
+  value_doc: 9.99
+  form_payment: MyString
+  status: MyString
+
+two:
+  doc_number: MyString
+  type_doc: MyString
+  supplier: two
+  description: MyString
+  due_date: 2017-09-05
+  payment_date: 2017-09-05
+  installments: 1
+  value_doc: 9.99
+  form_payment: MyString
+  status: MyString

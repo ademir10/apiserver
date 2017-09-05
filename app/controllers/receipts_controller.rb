@@ -58,23 +58,19 @@ class ReceiptsController < ApplicationController
     #se for somente uma parcela ele só salva uma vez
     if @qnt_parcela == 1
 
-           respond_to do |format|
-
           if @receipt.save
             #inserindo no log de atividades
             log = Loginfo.new(params[:loginfo])
             log.employee = current_user.name
             log.task = 'Cadastrou nova conta á receber - Nº doc ' + receipt_params[:doc_number].to_s
             log.save!
-              format.html { }
-              format.json { render :show, status: :created, location: @receipt }
+
               sweetalert_success('Dados cadastrados com sucesso!', 'Sucesso!')
               redirect_to @receipt
             else
               format.html { render :new }
               format.json { render json: @receipt.errors, status: :unprocessable_entity }
             end
-          end
      else
           #se tiver mais de uma parcela ele lança a quantidade de vezes no sistema
           if @qnt_parcela > 1

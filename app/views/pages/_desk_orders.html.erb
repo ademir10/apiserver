@@ -1,5 +1,29 @@
 <div class="col-sm-6">
 <div class="panel panel-primary">
+<div class="panel-heading"><h4>Analise gráfica de mesas abertas por hora</h4></div>
+<div class="panel-body">
+  <% ActiveRecord::Base.default_timezone = :utc %>
+  <%= line_chart DeskOrder.group_by_hour(:created_at).count %>
+  <% ActiveRecord::Base.default_timezone = :local %>
+</div>
+</div>
+</div>
+
+<div class="col-sm-6">
+<div class="panel panel-primary">
+<div class="panel-heading"><h4>Analise gráfica de consumidores por dia da semana</h4></div>
+<div class="panel-body">
+
+<% ActiveRecord::Base.default_timezone = :utc %>
+<%= column_chart DeskOrder.group_by_day_of_week(:created_at, format: "%a").count %>
+<% ActiveRecord::Base.default_timezone = :local %>
+
+</div>
+</div>
+</div>
+
+<div class="col-sm-6">
+<div class="panel panel-primary">
 <div class="panel-heading"><h3> Mesas em uso</h3></div>
 <div class="panel-body">
 
