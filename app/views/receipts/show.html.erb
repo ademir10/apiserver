@@ -11,10 +11,10 @@
   <dt><strong><%= model_class.human_attribute_name('descrição') %>:</strong></dt>
   <dd><%= @receipt.description %></dd>
   <dt><strong><%= model_class.human_attribute_name('data vencto') %>:</strong></dt>
-  <dd><%= @receipt.due_date %></dd>
+  <dd><%=l @receipt.due_date %></dd>
   <% if @receipt.receipt_date.present? %>
   <dt><strong><%= model_class.human_attribute_name('data recebto') %>:</strong></dt>
-  <dd><%= @receipt.receipt_date %></dd>
+  <dd><%=l @receipt.receipt_date %></dd>
   <dt><strong><%= model_class.human_attribute_name('forma recebto') %>:</strong></dt>
   <dd><%= @receipt.form_receipt %></dd>
   <% end %>

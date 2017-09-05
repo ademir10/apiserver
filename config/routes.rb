@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
 
+  resources :suppliers
   resources :loginfos
   #ROTAS DO APLICATIVO
   #verifica se a mesa esta liberada

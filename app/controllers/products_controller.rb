@@ -15,7 +15,7 @@ class ProductsController < ApplicationController
   end
 
   def index
-    @products = Product.order(:name)
+    @products = Product.order('category_id').order(:name)
   end
 
   # GET /products/1
@@ -36,44 +36,50 @@ class ProductsController < ApplicationController
   # POST /products.json
   def create
     @product = Product.new(product_params)
-
-    respond_to do |format|
       if product_params[:check_stock].blank? || product_params[:qnt].blank?
         @product.qnt = 0
       end
 
       if @product.save
-        format.html { redirect_to @product, notice: 'Product was successfully created.' }
-        format.json { render :show, status: :created, location: @product }
-      else
+        log = Loginfo.new(params[:loginfo])
+        log.employee = current_user.name
+        log.task = 'Cadastrou produto - Nome: ' + @product.name.to_s
+        log.save!
+        sweetalert_success('Dados cadastrados com sucesso!', 'Sucesso!')
+        redirect_to @product
+        else
         format.html { render :new }
         format.json { render json: @product.errors, status: :unprocessable_entity }
       end
-    end
   end
 
   # PATCH/PUT /products/1
   # PATCH/PUT /products/1.json
   def update
-    respond_to do |format|
       if @product.update(product_params)
-        format.html { redirect_to @product, notice: 'Product was successfully updated.' }
-        format.json { render :show, status: :ok, location: @product }
+        log = Loginfo.new(params[:loginfo])
+        log.employee = current_user.name
+        log.task = 'Alterou produto - Nome: ' + @product.name.to_s
+        log.save!
+        redirect_to @product
+        sweetalert_success('Dados atualizados com sucesso!', 'Sucesso!')
       else
         format.html { render :edit }
         format.json { render json: @product.errors, status: :unprocessable_entity }
       end
-    end
   end
 
   # DELETE /products/1
   # DELETE /products/1.json
   def destroy
     @product.destroy
-    respond_to do |format|
-      format.html { redirect_to products_url, notice: 'Product was successfully destroyed.' }
-      format.json { head :no_content }
-    end
+    log = Loginfo.new(params[:loginfo])
+    log.employee = current_user.name
+    log.task = 'Excluiu produto - Nome: ' + @product.name.to_s
+    log.save!
+
+   sweetalert_success('Dados excluidos com sucesso!', 'Sucesso!')
+  redirect_to products_path
   end
 
   private

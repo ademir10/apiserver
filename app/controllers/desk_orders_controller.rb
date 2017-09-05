@@ -111,8 +111,60 @@ class DeskOrdersController < ApplicationController
   end
 
   def baixar
-    
-  end
+    @desk_order = DeskOrder.find(params[:id])
+
+    #verifica se foi adicionado algum item na Invoice
+    @qnt_items = Item.where(desk_order_id: @desk_order.id).count
+    if @qnt_items == 0
+       sweetalert_warning('Insira pelo menos 1 item!', 'Atenção!')
+     redirect_to desk_order_path(@desk_order) and return
+    end
+
+    #verifica se foi informada a forma de pagamento no caso de O.S
+    if desk_order_params[:form_payment] == ""
+       sweetalert_warning('Selecione uma forma de pagamento válida!', 'Atenção!')
+      redirect_to desk_order_path(@desk_order) and return
+    end
+
+     # SE JÁ FOI RECEBIDA A VENDA. não enviará para o contar á Receber
+     if @desk_order.status == "Recebida"  || @desk_order.status == "Finalizada"
+      return
+
+     else
+
+         if @desk_order.status == "Solicita o fechamento" || @desk_order.status == "Aberta"
+           #finalizando a O.S e salvando a forma de pagamento
+           DeskOrder.update(@desk_order.id, status: 'Finalizada', form_payment: desk_order_params[:form_payment])
+         end
+
+       #FAZENDO A SOMA DE TODOS OS ITENS PARA JOGAR NO CONTAS Á RECEBER
+       @total_items = Item.where(desk_order_id: @desk_order.id).sum(:val_total)
+
+           #verifica se já foi enviado para o contas á receber
+           if Receipt.exists?(desk_order_id: @desk_order.id)
+              return
+           else
+
+              #ENVIANDO PARA O CONTAS Á RECEBER
+              cta_receber = Receipt.new(params[:receipt])
+              cta_receber.doc_number = @desk_order.id
+              cta_receber.type_doc = "Venda"
+              cta_receber.description = 'Referente Venda: ' + @desk_order.qrpoint.description.to_s
+              cta_receber.value_doc = @total_items.round(2).to_f
+              cta_receber.due_date = Date.today
+              cta_receber.receipt_date = Date.today
+              cta_receber.installments = 1
+              cta_receber.status = "Recebida"
+              cta_receber.desk_order_id = @desk_order.id
+              cta_receber.form_receipt = desk_order_params[:form_payment]
+              cta_receber.save!
+              Qrpoint.update(@desk_order.qrpoint_id, status: 'Aberta')
+              sweetalert_success('Mesa fechada!', 'Sucesso!')
+              redirect_to dashboard_path
+            end
+
+        end
+      end
 
   def index
     @desk_orders = DeskOrder.all
@@ -168,10 +220,16 @@ class DeskOrdersController < ApplicationController
   def destroy
     @desk_order.destroy
     Qrpoint.update(@desk_order.qrpoint_id, status: 'Aberta')
-    respond_to do |format|
-      format.html { redirect_to desk_orders_url, notice: 'Desk order was successfully destroyed.' }
-      format.json { head :no_content }
-    end
+    puts 'esse é o id da venda ' + @desk_order.id.to_s
+    Receipt.where(desk_order_id: @desk_order).destroy_all
+
+    #inserindo no log de atividades
+        log = Loginfo.new(params[:loginfo])
+        log.employee = current_user.name
+        log.task = 'Excluiu venda da mesa Nº: ' + @desk_order.qrpoint.description.to_s
+        log.save!
+        sweetalert_success('Venda excluida com sucesso!', 'Sucesso!')
+        redirect_to desk_orders_path
   end
 
   private

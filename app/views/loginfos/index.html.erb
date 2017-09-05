@@ -34,7 +34,7 @@
       <tr>
       	<td><%= f.employee %></td>
         <td><%= f.task %></td>
-        <td><%= f.created_at %></td>
+        <td><%= f.created_at.strftime("%d/%m/%Y ás %H:%M") %></td>
       </tr>
     <% end %>
   </tbody>

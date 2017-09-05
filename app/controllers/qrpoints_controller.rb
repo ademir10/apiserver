@@ -32,28 +32,32 @@ class QrpointsController < ApplicationController
   def create
     @qrpoint = Qrpoint.new(qrpoint_params)
     @qrpoint.status = 'Aberta'
-    respond_to do |format|
-      if @qrpoint.save
-        format.html { redirect_to @qrpoint, notice: 'Qrpoint was successfully created.' }
-        format.json { render :show, status: :created, location: @qrpoint }
+    if @qrpoint.save
+      log = Loginfo.new(params[:loginfo])
+      log.employee = current_user.name
+      log.task = 'Cadastrou QRpoint - Nome: ' + @qrpoint.description.to_s
+      log.save!
+      redirect_to @qrpoint
+      sweetalert_success('Dados cadastrados com sucesso!', 'Sucesso!')
       else
         format.html { render :new }
         format.json { render json: @qrpoint.errors, status: :unprocessable_entity }
-      end
     end
   end
 
   # PATCH/PUT /qrpoints/1
   # PATCH/PUT /qrpoints/1.json
   def update
-    respond_to do |format|
-      if @qrpoint.update(qrpoint_params)
-        format.html { redirect_to @qrpoint, notice: 'Qrpoint was successfully updated.' }
-        format.json { render :show, status: :ok, location: @qrpoint }
-      else
+    if @qrpoint.update(qrpoint_params)
+      log = Loginfo.new(params[:loginfo])
+      log.employee = current_user.name
+      log.task = 'Atualizou QRpoint - Nome: ' + @qrpoint.description.to_s
+      log.save!
+      sweetalert_success('Dados atualizados com sucesso!', 'Sucesso!')
+      redirect_to @qrpoint
+    else
         format.html { render :edit }
         format.json { render json: @qrpoint.errors, status: :unprocessable_entity }
-      end
     end
   end
 
@@ -61,10 +65,12 @@ class QrpointsController < ApplicationController
   # DELETE /qrpoints/1.json
   def destroy
     @qrpoint.destroy
-    respond_to do |format|
-      format.html { redirect_to qrpoints_url, notice: 'Qrpoint was successfully destroyed.' }
-      format.json { head :no_content }
-    end
+    log = Loginfo.new(params[:loginfo])
+    log.employee = current_user.name
+    log.task = 'Excluiu QRpoint - Nome: ' + @qrpoint.description.to_s
+    log.save!
+    redirect_to qrpoints_url
+    sweetalert_success('Dados excluidos com sucesso!', 'Sucesso!')
   end
 
   private

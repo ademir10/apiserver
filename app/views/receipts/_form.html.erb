@@ -92,7 +92,7 @@
   <div class="form-group">
     <%= f.label "status", :class => 'control-label col-lg-2' %>
     <div class="col-lg-2">
-      <%= f.select(:status, options_for_select([["Á RECEBER"], ["RECEBIDA"]], @receipt.status), {include_blank: 'Selecione'}, :class => 'form-control') %>
+      <%= f.select(:status, options_for_select([["Á receber"], ["Recebida"]], @receipt.status), {include_blank: 'Selecione'}, :class => 'form-control') %>
     </div>
     <%=f.error_span(:status) %>
   </div>
