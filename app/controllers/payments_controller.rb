@@ -15,8 +15,6 @@ class PaymentsController < ApplicationController
        @payments = Payment.where(supplier_id: params[:fornecedor]).where("due_date BETWEEN ? AND ?", params[:date1], params[:date2]).order(:due_date)
        @total_payments = Payment.where(supplier_id: params[:fornecedor]).where("due_date BETWEEN ? AND ?", params[:date1], params[:date2]).sum(:value_doc)
 
-
-
     elsif params[:date1].present? && params[:date2].present? && params[:tipo_consulta].present? && params[:fornecedor].blank?
        @payments = Payment.where("due_date BETWEEN ? AND ?", params[:date1], params[:date2]).where(status: params[:tipo_consulta]).order(:due_date)
        @total_payments = Payment.where("due_date BETWEEN ? AND ?", params[:date1], params[:date2]).where(status: params[:tipo_consulta]).sum(:value_doc)

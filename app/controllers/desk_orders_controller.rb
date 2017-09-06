@@ -172,7 +172,14 @@ class DeskOrdersController < ApplicationController
       end
 
   def index
-    @desk_orders = DeskOrder.all
+    if params[:date1].blank?
+     params[:date1] = Date.today
+    end
+    if params[:date2].blank?
+     params[:date2] = Date.today
+    end
+    @desk_orders = DeskOrder.where("created_at::date BETWEEN ? AND ?", params[:date1], params[:date2]).order(:created_at)
+    @total_desk_orders = DeskOrder.where("created_at::date BETWEEN ? AND ?", params[:date1], params[:date2]).sum(:total)
   end
 
   # GET /desk_orders/1

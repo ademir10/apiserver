@@ -76,10 +76,10 @@
 
         <td><%= link_to receipt.doc_number, receipt_path(receipt) %></td>
         <td><%= receipt.description %></td>
-        <td><%= receipt.due_date %></td>
-				<td><%= receipt.receipt_date %></td>
+        <td><%= receipt.due_date.strftime('%d/%m/%Y') %></td>
+				<td><%= receipt.receipt_date.strftime('%d/%m/%Y') %></td>
 				<td><%= receipt.installments %></td>
-        <td><%= number_with_precision(receipt.value_doc, precision: 2) %></td>
+        <td>R$ <%= number_with_precision(receipt.value_doc, precision: 2) %></td>
         <td><%= receipt.status %></td>
 
         <td>
@@ -96,8 +96,6 @@
     <% end %>
   </tbody>
 </table>
-<% if @total_receipts == 0 %>
-
-<% else %>
+<% if @total_receipts != 0 %>
 <h3 align="right">Total R$: <b><%= number_with_precision(@total_receipts, precision: 2) %></b></h3>
 <% end %>

@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  #Para o action cable
+  mount ActionCable.server => '/cable'
 
   #ROTAS DO APLICATIVO
   #verifica se a mesa esta liberada

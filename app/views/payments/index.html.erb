@@ -72,10 +72,10 @@
         <td><%= payment.supplier.name %></td>
         <td><%= payment.type_doc %></td>
         <td><%= payment.description %></td>
-        <td><%= payment.due_date %></td>
-        <td><%= payment.payment_date %></td>
+        <td><%= payment.due_date.strftime('%d/%m/%Y') %></td>
+        <td><%= payment.payment_date.strftime('%d/%m/%Y') %></td>
         <td><%= payment.installments %></td>
-        <td><%= number_with_precision(payment.value_doc, precision: 2) %></td>
+        <td>R$ <%= number_with_precision(payment.value_doc, precision: 2) %></td>
         <td><%= payment.status %></td>
         <td>
           <%= link_to 'editar / baixar',
@@ -91,4 +91,6 @@
   </tbody>
 </table>
 
-Total R$: <b><%= @total_payments %></b>
+<% if @total_payments != 0 %>
+<h3 align="right">Total R$: <b><%= number_with_precision(@total_payments, precision: 2) %></b></h3>
+<% end %>
