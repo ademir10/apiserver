@@ -27,9 +27,9 @@
 </div>
 </div>
 
-<div class="col-sm-6">
+<div class="col-sm-9">
 <div class="panel panel-primary">
-<div class="panel-heading"><h3> Mesas em uso</h3></div>
+<div class="panel-heading"><h4> Mesas em uso</h4></div>
 <div class="panel-body">
 
   <table class="table table-striped">
@@ -38,7 +38,8 @@
         <th>Mesa</th>
         <th>Total R$</th>
         <th>Status</th>
-        <th>Aberto as</th>
+        <th>Forma pagto solicitada</th>
+        <th>Aberto em</th>
         <th><%=t '.actions', :default => t("helpers.actions") %></th>
       </tr>
     </thead>
@@ -52,6 +53,11 @@
           <td>R$ 0,00</td>
           <% end %>
           <td><%= desk_order.status %></td>
+          <% if desk_order.status == 'Solicita o fechamento' %>
+          <td><%= desk_order.form_payment.type_payment %></td>
+          <% else %>
+          <td></td>
+          <% end %>
           <td><%= desk_order.created_at.strftime("%H:%M") %></td>
           <td>
             <% if desk_order.status == 'Em uso' %>
@@ -69,9 +75,9 @@
 </div>
 </div>
 
-<div class="col-sm-6">
+<div class="col-sm-3">
 <div class="panel panel-primary">
-<div class="panel-heading"><h3>Mesas Livres</h3></div>
+<div class="panel-heading"><h4>Mesas Livres</h4></div>
 <div class="panel-body">
 
   <table class="table table-striped">

@@ -2,6 +2,9 @@
 <div class="page-header">
   <h1>QRpoint: <%= @desk_order.qrpoint.description %></h1>
   <h3>Status: <%= @desk_order.status %></h3>
+  <h4>Tipo: <%= @desk_order.type_service %></h4>
+
+
 </div>
 
 <%= link_to t('.back', :default => t("helpers.links.back")),

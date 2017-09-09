@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :form_payments
   #Para o action cable
   mount ActionCable.server => '/cable'
 

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170905183435) do
+ActiveRecord::Schema.define(version: 20170908164718) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -29,9 +29,17 @@ ActiveRecord::Schema.define(version: 20170905183435) do
     t.string "status"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "form_payment"
     t.bigint "qrpoint_id"
+    t.string "type_service"
+    t.bigint "form_payment_id"
+    t.index ["form_payment_id"], name: "index_desk_orders_on_form_payment_id"
     t.index ["qrpoint_id"], name: "index_desk_orders_on_qrpoint_id"
+  end
+
+  create_table "form_payments", force: :cascade do |t|
+    t.string "type_payment"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "items", force: :cascade do |t|
@@ -136,6 +144,7 @@ ActiveRecord::Schema.define(version: 20170905183435) do
     t.datetime "updated_at", null: false
   end
 
+  add_foreign_key "desk_orders", "form_payments"
   add_foreign_key "desk_orders", "qrpoints"
   add_foreign_key "items", "desk_orders"
   add_foreign_key "items", "products"

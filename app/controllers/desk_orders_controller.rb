@@ -1,6 +1,7 @@
 class DeskOrdersController < ApplicationController
   before_action :set_desk_order, only: [:show, :edit, :update, :destroy]
   before_action :must_login, only: [:show, :edit, :update, :destroy]
+  before_action :show_form_payment, only: [:show, :edit, :update, :destroy, :create]
   #Para permitir o acesso via aplicativo
   skip_before_action :verify_authenticity_token
 
@@ -17,6 +18,7 @@ class DeskOrdersController < ApplicationController
                       desk_order = DeskOrder.new(params[:desk_order])
                       desk_order.status = 'Em uso'
                       desk_order.qrpoint_id = @verifica_mesa.id
+                      desk_order.type_service = params[:tipo_atendimento]
                       desk_order.save!
 
                       render json: { retorno_rails: "A MESA ESTÁ LIVRE", id_da_mesa: desk_order.id }
@@ -81,7 +83,8 @@ class DeskOrdersController < ApplicationController
       desk_name = Qrpoint.find(qrpoint_number.qrpoint_id)
       items_desk_order = Item.where(desk_order_id: params[:desk_order_id].to_i)
       sum_total_items = Item.where(desk_order_id: params[:desk_order_id].to_i).sum(:val_total)
-      render json: { mesa_venda: desk_name.description, items_venda: items_desk_order , total_geral: sum_total_items}
+      form_payments = FormPayment.order(:type_payment)
+      render json: { mesa_venda: desk_name.description, items_venda: items_desk_order , total_geral: sum_total_items, formas_pagamento: form_payments}
       puts 'tudo certo até aqui obrigado Deus!'
     end
   end
@@ -89,7 +92,7 @@ class DeskOrdersController < ApplicationController
   #solicita o fechamento da mesa alterando somente o status da desk_order para "Solicita fechamento"
   def close_order
     if params["cardToken"].to_s == 'G0d1$@Bl3T0d0W4Th3V3Rth1Ng'
-      DeskOrder.update(params[:desk_order_id], status: 'Solicita o fechamento')
+      DeskOrder.update(params[:desk_order_id], status: 'Solicita o fechamento', form_payment_id: params[:form_payment_selected].to_i)
       puts 'Solicitou o fechamento da conta!'
     end
   end
@@ -128,13 +131,13 @@ class DeskOrdersController < ApplicationController
 
      # SE JÁ FOI RECEBIDA A VENDA. não enviará para o contar á Receber
      if @desk_order.status == "Recebida"  || @desk_order.status == "Finalizada"
-      return
+      redirect_to dashboard_path
 
      else
 
          if @desk_order.status == "Solicita o fechamento" || @desk_order.status == "Aberta"
            #finalizando a O.S e salvando a forma de pagamento
-           DeskOrder.update(@desk_order.id, status: 'Finalizada', form_payment: desk_order_params[:form_payment])
+           DeskOrder.update(@desk_order.id, status: 'Finalizada', form_payment_id: desk_order_params[:form_payment_id])
 
            log = Loginfo.new(params[:loginfo])
            log.employee = current_user.name
@@ -161,7 +164,7 @@ class DeskOrdersController < ApplicationController
               cta_receber.installments = 1
               cta_receber.status = "Recebida"
               cta_receber.desk_order_id = @desk_order.id
-              cta_receber.form_receipt = desk_order_params[:form_payment]
+              cta_receber.form_receipt = @desk_order.form_payment.type_payment.to_s
               cta_receber.save!
               Qrpoint.update(@desk_order.qrpoint_id, status: 'Aberta')
               sweetalert_success('Mesa fechada!', 'Sucesso!')
@@ -178,8 +181,10 @@ class DeskOrdersController < ApplicationController
     if params[:date2].blank?
      params[:date2] = Date.today
     end
-    @desk_orders = DeskOrder.where("created_at::date BETWEEN ? AND ?", params[:date1], params[:date2]).order(:created_at)
+    @desk_orders = DeskOrder.joins(:form_payment).where("desk_orders.created_at::date BETWEEN ? AND ?", params[:date1], params[:date2]).order('desk_orders.created_at')
+    @total_por_forma_pagamento = DeskOrder.select('form_payments.type_payment', 'sum(total) as total').joins(:form_payment).where("desk_orders.created_at::date BETWEEN ? AND ?", params[:date1], params[:date2]).group('form_payments.type_payment').order('form_payments.type_payment')
     @total_desk_orders = DeskOrder.where("created_at::date BETWEEN ? AND ?", params[:date1], params[:date2]).sum(:total)
+
   end
 
   # GET /desk_orders/1
@@ -252,6 +257,10 @@ class DeskOrdersController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def desk_order_params
-      params.require(:desk_order).permit(:number, :total, :form_payment, :status, :qrpoint_id)
+      params.require(:desk_order).permit(:id, :number, :total, :status, :qrpoint_id, :type_service, :form_payment_id)
+    end
+
+    def show_form_payment
+      @form_payments = FormPayment.order(:type_payment)
     end
 end

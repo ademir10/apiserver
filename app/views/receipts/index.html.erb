@@ -22,6 +22,13 @@
 }
 </style>
 
+<style media="screen">
+#div2{
+	float:right;
+	padding-right:1px;
+}
+</style>
+
 <%- model_class = Receipt -%>
 <div class="page-header">
   <h1>Contas á Receber <%= image_tag('receipts.png') %></h1>
@@ -62,6 +69,7 @@
       <th><%= model_class.human_attribute_name('descrição') %></th>
       <th><%= model_class.human_attribute_name('data vencto') %></th>
       <th><%= model_class.human_attribute_name('data recebto') %></th>
+			<th><%= model_class.human_attribute_name('forma recebto') %></th>
       <th><%= model_class.human_attribute_name('parc') %></th>
       <th><%= model_class.human_attribute_name('Valor R$') %></th>
       <th><%= model_class.human_attribute_name('Status') %></th>
@@ -78,6 +86,7 @@
         <td><%= receipt.description %></td>
         <td><%= receipt.due_date.strftime('%d/%m/%Y') %></td>
 				<td><%= receipt.receipt_date.strftime('%d/%m/%Y') %></td>
+				<td><%= receipt.form_receipt %></td>
 				<td><%= receipt.installments %></td>
         <td>R$ <%= number_with_precision(receipt.value_doc, precision: 2) %></td>
         <td><%= receipt.status %></td>
@@ -96,6 +105,22 @@
     <% end %>
   </tbody>
 </table>
+
+<div class="col-md-3 text-right" id="div2">
+ <div class="panel panel-default">
+ <div class="panel-heading"><h4>Resumo geral</h4></div>
+<div class="panel-body">
+
+	<%if @total_por_forma_recebimento.present? %>
+	<% @total_por_forma_recebimento.each do |resultado| %>
+		Total <%= resultado.form_receipt %>: <b>R$ <%= number_with_precision(resultado.total, precision: 2) %></b><br />
+	<% end %>
+	<% end %>
+</div>
+
 <% if @total_receipts != 0 %>
-<h3 align="right">Total R$: <b><%= number_with_precision(@total_receipts, precision: 2) %></b></h3>
+<h3>Total geral R$: <b><%= number_with_precision(@total_receipts, precision: 2) %></b></h3>
 <% end %>
+</div>
+</div>
+</div>

@@ -22,6 +22,13 @@
 }
 </style>
 
+<style media="screen">
+#div2{
+	float:right;
+	padding-right:1px;
+}
+</style>
+
 <%- model_class = DeskOrder -%>
 <div class="page-header">
   <h1>Mesas em uso <%= image_tag('menu.png') %></h1>
@@ -59,7 +66,7 @@
     <% @desk_orders.each do |desk_order| %>
       <tr>
         <td><%= link_to desk_order.qrpoint.description, desk_order_path(desk_order) %></td>
-        <td><%= desk_order.form_payment %></td>
+        <td><%= desk_order.form_payment.type_payment %></td>
         <% if desk_order.total.present? %>
         <td>R$ <%= number_with_precision(desk_order.total, precision: 2) %></td>
         <% else %>
@@ -82,6 +89,22 @@
     <% end %>
   </tbody>
 </table>
+
+<div class="col-md-3 text-right" id="div2">
+ <div class="panel panel-default">
+ <div class="panel-heading"><h4>Resumo geral</h4></div>
+<div class="panel-body">
+
+	<%if @total_por_forma_pagamento.present? %>
+	<% @total_por_forma_pagamento.each do |resultado| %>
+		Total <%= resultado.type_payment %>: <b>R$ <%= number_with_precision(resultado.total, precision: 2) %></b><br />
+	<% end %>
+	<% end %>
+</div>
+
 <% if @total_receipts != 0 %>
-<h3 align="right">Total R$: <b><%= number_with_precision(@total_desk_orders, precision: 2) %></b></h3>
+<h3>Total geral R$: <b><%= number_with_precision(@total_desk_orders, precision: 2) %></b></h3>
 <% end %>
+</div>
+</div>
+</div>

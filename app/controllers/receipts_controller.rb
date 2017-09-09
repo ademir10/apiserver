@@ -1,5 +1,6 @@
 class ReceiptsController < ApplicationController
   before_action :set_receipt, only: [:show, :edit, :update, :destroy]
+  before_action :show_form_payment, only: [:new, :show, :edit, :update, :destroy, :create]
   before_action :must_login
 
  def index
@@ -10,21 +11,15 @@ class ReceiptsController < ApplicationController
       params[:date2] = Date.today
      end
 
-      if params[:date1].blank? && params[:date2].blank? && params[:tipo_consulta].blank?
-      @receipts = Receipt.where(due_date: Date.today).order(:due_date)
-      @total_receipts = Receipt.where(due_date: Date.today).sum(:value_doc)
+      if params[:date1].present? && params[:date2].present? && params[:tipo_consulta].blank?
+        @receipts = Receipt.where("created_at::date BETWEEN ? AND ?", params[:date1], params[:date2]).order(:id)
+        @total_por_forma_recebimento = Receipt.select('form_receipt', 'sum(value_doc) as total').where("created_at::date BETWEEN ? AND ?", params[:date1], params[:date2]).group('form_receipt').order('form_receipt')
+        @total_receipts = Receipt.where("created_at::date BETWEEN ? AND ?", params[:date1], params[:date2]).sum(:value_doc)
 
-      elsif params[:date1].blank? && params[:date2].blank? && params[:tipo_consulta].present?
-       @receipts = Receipt.where(status: params[:tipo_consulta]).order(:due_date)
-       @total_receipts = Receipt.where(status: params[:tipo_consulta]).sum(:value_doc)
-
-        elsif params[:date1].present? && params[:date2].present? && params[:tipo_consulta].blank?
-       @receipts = Receipt.where("due_date BETWEEN ? AND ?", params[:date1], params[:date2]).order(:due_date)
-       @total_receipts = Receipt.where("due_date BETWEEN ? AND ?", params[:date1], params[:date2]).sum(:value_doc)
-
-        elsif params[:date1].present? && params[:date2].present? && params[:tipo_consulta].present?
-       @receipts = Receipt.where("due_date BETWEEN ? AND ?", params[:date1], params[:date2]).where(status: params[:tipo_consulta]).order(:due_date)
-       @total_receipts = Receipt.where("due_date BETWEEN ? AND ?", params[:date1], params[:date2]).where(status: params[:tipo_consulta]).sum(:value_doc)
+      elsif params[:date1].present? && params[:date2].present? && params[:tipo_consulta].present?
+        @receipts = Receipt.where("created_at::date BETWEEN ? AND ?", params[:date1], params[:date2]).where(status: params[:tipo_consulta]).order(:id)
+        @total_por_forma_recebimento = Receipt.select('form_receipt', 'sum(value_doc) as total').where("created_at::date BETWEEN ? AND ?", params[:date1], params[:date2]).where(status: params[:tipo_consulta]).group('form_receipt').order('form_receipt')
+        @total_receipts = Receipt.where("created_at::date BETWEEN ? AND ?", params[:date1], params[:date2]).where(status: params[:tipo_consulta]).sum(:value_doc)
 
        end
   end
@@ -168,6 +163,10 @@ class ReceiptsController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def receipt_params
       params.require(:receipt).permit(:doc_number, :type_doc, :description, :due_date, :receipt_date, :installments, :value_doc, :status, :form_receipt, :desk_order_id)
+    end
+
+    def show_form_payment
+      @form_payments = FormPayment.order(:type_payment)
     end
 
 end
