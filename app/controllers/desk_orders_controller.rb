@@ -7,26 +7,28 @@ class DeskOrdersController < ApplicationController
 
   # RECEBE O QRCODE DO APLICATIVO E VERIFICA SE A MESA ESTÁ DISPONÍVEL
   def check_mesa
-    #puts 'É AQUI QUE VEM O NUMERO DA MESA >>>>>>>> ' + params["numero_da_mesa"].to_s
       #verifica se o token é valido primeiro
       if params["cardToken"].to_s == 'G0d1$@Bl3T0d0W4Th3V3Rth1Ng'
          @verifica_mesa = Qrpoint.where(qrcode: params["numero_da_mesa"]).first
           if @verifica_mesa.present?
+            #se a mesa está aberta, pode ser usada pelo cliente e pelo garçon
                   if @verifica_mesa.status == 'Aberta'
-
                       #altera o status da mesa para EM USO e inicia uma venda guardando o id da venda
                       desk_order = DeskOrder.new(params[:desk_order])
                       desk_order.status = 'Em uso'
                       desk_order.qrpoint_id = @verifica_mesa.id
                       desk_order.type_service = params[:tipo_atendimento]
                       desk_order.save!
-
                       render json: { retorno_rails: "A MESA ESTÁ LIVRE", id_da_mesa: desk_order.id }
-
                       #após a mesa aberta o status do QRpoint é mudado para Em USO
                       Qrpoint.update(@verifica_mesa.id, status: 'Em uso')
+                  #se a mesa está em uso somente o garçon consegue adicionar itens
                    elsif @verifica_mesa.status == 'Em uso'
-                      render json: { retorno_rails: "A MESA ESTÁ EM USO" }
+                     desk_order_opened = DeskOrder.where(status: 'Em uso').where(qrpoint_id: @verifica_mesa.id).first
+                      id_order_aberta = desk_order_opened.id
+                      render json: { retorno_rails: "A MESA ESTÁ EM USO", id_da_mesa: id_order_aberta, nome_qrpoint: @verifica_mesa.description  }
+                    elsif @verifica_mesa.status == 'Solicita o fechamento'
+                      render json: { retorno_rails: "AGUARDANDO O FECHAMENTO" }
                    end
          else
            render json: { retorno_rails: "CÓDIGO INVALIDO" }
@@ -79,6 +81,7 @@ class DeskOrdersController < ApplicationController
   #carrega tudo o que já foi consumido
   def check_order
     if params["cardToken"].to_s == 'G0d1$@Bl3T0d0W4Th3V3Rth1Ng'
+      puts 'AQUI É O QUE TÁ CHEGANDO >>>>>>> ' + params[:desk_order_id].to_s
       qrpoint_number = DeskOrder.find(params[:desk_order_id])
       desk_name = Qrpoint.find(qrpoint_number.qrpoint_id)
       items_desk_order = Item.where(desk_order_id: params[:desk_order_id].to_i)
@@ -93,6 +96,8 @@ class DeskOrdersController < ApplicationController
   def close_order
     if params["cardToken"].to_s == 'G0d1$@Bl3T0d0W4Th3V3Rth1Ng'
       DeskOrder.update(params[:desk_order_id], status: 'Solicita o fechamento', form_payment_id: params[:form_payment_selected].to_i)
+      dados_qrpoint = DeskOrder.find(params[:desk_order_id])
+      Qrpoint.update(dados_qrpoint.qrpoint_id, status: 'Solicita o fechamento' )
       puts 'Solicitou o fechamento da conta!'
     end
   end
@@ -138,6 +143,7 @@ class DeskOrdersController < ApplicationController
          if @desk_order.status == "Solicita o fechamento" || @desk_order.status == "Aberta"
            #finalizando a O.S e salvando a forma de pagamento
            DeskOrder.update(@desk_order.id, status: 'Finalizada', form_payment_id: desk_order_params[:form_payment_id])
+           Qrpoint.update(@desk_order.qrpoint_id, status: 'Aberta')
 
            log = Loginfo.new(params[:loginfo])
            log.employee = current_user.name
@@ -145,8 +151,8 @@ class DeskOrdersController < ApplicationController
            log.save!
          end
 
-       #FAZENDO A SOMA DE TODOS OS ITENS PARA JOGAR NO CONTAS Á RECEBER
-       @total_items = Item.where(desk_order_id: @desk_order.id).sum(:val_total)
+           #FAZENDO A SOMA DE TODOS OS ITENS PARA JOGAR NO CONTAS Á RECEBER
+           @total_items = Item.where(desk_order_id: @desk_order.id).sum(:val_total)
 
            #verifica se já foi enviado para o contas á receber
            if Receipt.exists?(desk_order_id: @desk_order.id)
@@ -166,7 +172,6 @@ class DeskOrdersController < ApplicationController
               cta_receber.desk_order_id = @desk_order.id
               cta_receber.form_receipt = @desk_order.form_payment.type_payment.to_s
               cta_receber.save!
-              Qrpoint.update(@desk_order.qrpoint_id, status: 'Aberta')
               sweetalert_success('Mesa fechada!', 'Sucesso!')
               redirect_to dashboard_path
             end
