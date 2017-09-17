@@ -6,11 +6,12 @@ class Item < ApplicationRecord
   before_create :insert_product_name, :if => lambda { |item| item.name_prod.nil? }
   def insert_product_name
     self.name_prod = self.product.name
+    self.qrpoint_name = self.desk_order.qrpoint.description
   end
   #action criadas para fazer a baixa dos produtos no estoque e voltar os produtos quando for feito uma exclusão
   after_create :remove_from_stock
   after_destroy :return_to_stock
-  
+
   #faz a baixa do produto
   def remove_from_stock
     @product = Product.find_by_id(product_id)
