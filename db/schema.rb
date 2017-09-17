@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170908164718) do
+ActiveRecord::Schema.define(version: 20170917154608) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -21,6 +21,14 @@ ActiveRecord::Schema.define(version: 20170908164718) do
     t.datetime "updated_at", null: false
     t.string "image"
     t.string "description"
+  end
+
+  create_table "configs", force: :cascade do |t|
+    t.string "interval_print"
+    t.string "printer1"
+    t.string "printer2"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "desk_orders", force: :cascade do |t|
@@ -52,6 +60,7 @@ ActiveRecord::Schema.define(version: 20170908164718) do
     t.decimal "val_total"
     t.string "name_prod"
     t.string "status"
+    t.string "qrpoint_name"
     t.index ["desk_order_id"], name: "index_items_on_desk_order_id"
     t.index ["product_id"], name: "index_items_on_product_id"
   end

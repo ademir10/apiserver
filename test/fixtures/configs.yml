@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  interval_print: MyString
+  printer1: MyString
+  printer2: MyString
+
+two:
+  interval_print: MyString
+  printer1: MyString
+  printer2: MyString
