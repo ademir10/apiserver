@@ -1,6 +1,5 @@
 class QrpointsController < ApplicationController
   before_action :set_qrpoint, only: [:show, :edit, :update, :destroy]
-
   # GET /qrpoints
   # GET /qrpoints.json
   def index
