@@ -1,0 +1,58 @@
+
+<!-- Modal -->
+<div data-toggle="modal" data-target="myModal" >
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h3 class="modal-title">Dados gerais <%= image_tag('client.png') %></h3>
+      </div>
+      <div class="modal-body">
+      	
+       
+<%- model_class = Supplier -%>
+
+<dl class="dl-horizontal">
+  <dt><strong><%= model_class.human_attribute_name('Razão social') %>:</strong></dt>
+  <dd><%= @supplier.company %></dd>
+  <dt><strong><%= model_class.human_attribute_name('responsavel') %>:</strong></dt>
+  <dd><%= @supplier.name %></dd>
+  <dt><strong><%= model_class.human_attribute_name('endereço') %>:</strong></dt>
+  <dd><%= @supplier.address %></dd>
+  <dt><strong><%= model_class.human_attribute_name('numero') %>:</strong></dt>
+  <dd><%= @supplier.number %></dd>
+  <dt><strong><%= model_class.human_attribute_name('bairro') %>:</strong></dt>
+  <dd><%= @supplier.neighborhood %></dd>
+  <dt><strong><%= model_class.human_attribute_name('cidade') %>:</strong></dt>
+  <dd><%= @supplier.city %></dd>
+  <dt><strong><%= model_class.human_attribute_name('estado') %>:</strong></dt>
+  <dd><%= @supplier.state %></dd>
+  <dt><strong><%= model_class.human_attribute_name('cep') %>:</strong></dt>
+  <dd><%= @supplier.cep %></dd>
+  <dt><strong><%= model_class.human_attribute_name('fone') %>:</strong></dt>
+  <dd><%= @supplier.phone %></dd>
+  <dt><strong><%= model_class.human_attribute_name('celular') %>:</strong></dt>
+  <dd><%= @supplier.cellphone %></dd>
+  <dt><strong><%= model_class.human_attribute_name('Email') %>:</strong></dt>
+  <dd><%= @supplier.email %></dd>
+  <dt><strong><%= model_class.human_attribute_name('cpf / cnpj') %>:</strong></dt>
+  <dd><%= @supplier.cnpj %></dd>
+  <% if @supplier.inscricao_municipal.present? %>
+  <dt><strong><%= model_class.human_attribute_name('inscr municipal') %>:</strong></dt>
+  <dd><%= @supplier.inscricao_municipal %></dd>
+  <% end %>
+  <% if @supplier.inscricao_estadual.present? %>
+    <dt><strong><%= model_class.human_attribute_name('inscr estadual') %>:</strong></dt>
+  <dd><%= @supplier.inscricao_estadual %></dd>
+  <% end %>
+</dl>
+</div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Fechar</button>
+      </div>
+    </div>
+  </div>
+  </div>
+  

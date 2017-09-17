@@ -61,7 +61,7 @@ class DeskOrdersController < ApplicationController
 
       if params["cardToken"].to_s == 'G0d1$@Bl3T0d0W4Th3V3Rth1Ng'
          product = Product.find(params[:product_id])
-         qrpoint = Qrpoint.find_by(qrcode: params[:desk_order_id])
+         qrpoint = Qrpoint.find_by(qrcode: params[:qrpoint_name])
          #fazendo o calculo do total multiplicando a quantidade do mesmo item
          val_total_items = params[:qnt_product].to_i * product.value.to_f
 
