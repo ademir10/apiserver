@@ -36,6 +36,7 @@ class ProductsController < ApplicationController
   # POST /products.json
   def create
     @product = Product.new(product_params)
+    respond_to do |format|
       if product_params[:check_stock].blank? || product_params[:qnt].blank?
         @product.qnt = 0
       end
@@ -45,27 +46,32 @@ class ProductsController < ApplicationController
         log.employee = current_user.name
         log.task = 'Cadastrou produto - Nome: ' + @product.name.to_s
         log.save!
+        format.html { redirect_to @product, notice: 'Form payment was successfully created.' }
+        format.json { render :show, status: :created, location: @product }
         sweetalert_success('Dados cadastrados com sucesso!', 'Sucesso!')
-        redirect_to @product
         else
         format.html { render :new }
         format.json { render json: @product.errors, status: :unprocessable_entity }
+      end
       end
   end
 
   # PATCH/PUT /products/1
   # PATCH/PUT /products/1.json
   def update
+    respond_to do |format|
       if @product.update(product_params)
         log = Loginfo.new(params[:loginfo])
         log.employee = current_user.name
         log.task = 'Alterou produto - Nome: ' + @product.name.to_s
         log.save!
-        redirect_to @product
+        format.html { redirect_to @product, notice: 'Form payment was successfully updated.' }
+        format.json { render :show, status: :ok, location: @product }
         sweetalert_success('Dados atualizados com sucesso!', 'Sucesso!')
       else
         format.html { render :edit }
         format.json { render json: @product.errors, status: :unprocessable_entity }
+      end
       end
   end
 
@@ -73,13 +79,15 @@ class ProductsController < ApplicationController
   # DELETE /products/1.json
   def destroy
     @product.destroy
+    respond_to do |format|
     log = Loginfo.new(params[:loginfo])
     log.employee = current_user.name
     log.task = 'Excluiu produto - Nome: ' + @product.name.to_s
     log.save!
-
+    format.html { redirect_to products_url, notice: 'Form payment was successfully destroyed.' }
+    format.json { head :no_content }
    sweetalert_success('Dados excluidos com sucesso!', 'Sucesso!')
-  redirect_to products_path
+ end
   end
 
   private
@@ -90,7 +98,7 @@ class ProductsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def product_params
-      params.require(:product).permit(:name, :qnt, :value, :category_id, :image, :remove_image, :description, :check_stock)
+      params.require(:product).permit(:name, :qnt, :value, :category_id, :image, :remove_image, :description, :check_stock, :local_print)
     end
 
     def show_categories

@@ -12,6 +12,8 @@
   <dd><%= @product.value %></dd>
   <dt><strong><%= model_class.human_attribute_name('Categoria') %>:</strong></dt>
   <dd><%= @product.category.name %></dd>
+  <dt><strong><%= model_class.human_attribute_name('Local impressão') %>:</strong></dt>
+  <dd><%= @product.local_print %></dd>
 </dl>
 
 <%= link_to t('.back', :default => t("helpers.links.back")),

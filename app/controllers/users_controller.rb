@@ -25,33 +25,38 @@ class UsersController < ApplicationController
   # POST /users.json
   def create
     @user = User.new(user_params)
-
+    respond_to do |format|
       if @user.save
         log = Loginfo.new(params[:loginfo])
         log.employee = current_user.name
         log.task = 'Cadastrou Usuário - Nome: ' + @user.name.to_s
         log.save!
-        redirect_to @user
+        format.html { redirect_to @user, notice: 'user was successfully created.' }
+        format.json { render :show, status: :created, location: @user }
         sweetalert_success('Dados cadastrados com sucesso!', 'Sucesso!')
       else
         format.html { render :new }
         format.json { render json: @user.errors, status: :unprocessable_entity }
       end
+    end
   end
 
   # PATCH/PUT /users/1
   # PATCH/PUT /users/1.json
   def update
+    respond_to do |format|
     if @user.update(user_params)
         log = Loginfo.new(params[:loginfo])
         log.employee = current_user.name
         log.task = 'Atualizou Usuário - Nome: ' + @user.name.to_s
         log.save!
-        redirect_to @user
+        format.html { redirect_to @user, notice: 'user was successfully updated.' }
+        format.json { render :show, status: :ok, location: @user }
         sweetalert_success('Dados atualizados com sucesso!', 'Sucesso!')
       else
         format.html { render :edit }
         format.json { render json: @user.errors, status: :unprocessable_entity }
+      end
       end
   end
 
@@ -59,12 +64,15 @@ class UsersController < ApplicationController
   # DELETE /users/1.json
   def destroy
     @user.destroy
+    respond_to do |format|
     log = Loginfo.new(params[:loginfo])
     log.employee = current_user.name
     log.task = 'Excluiu Usuário - Nome: ' + @user.name.to_s
     log.save!
-    redirect_to users_path
+    format.html { redirect_to users_url, notice: 'Form payment was successfully destroyed.' }
+    format.json { head :no_content }
     sweetalert_success('Dados excluidos com sucesso!', 'Sucesso!')
+  end
   end
 
   private

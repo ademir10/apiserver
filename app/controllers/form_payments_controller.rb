@@ -30,6 +30,7 @@ class FormPaymentsController < ApplicationController
       if @form_payment.save
         format.html { redirect_to @form_payment, notice: 'Form payment was successfully created.' }
         format.json { render :show, status: :created, location: @form_payment }
+        sweetalert_success('Dados cadastrados com sucesso!', 'Sucesso!')
       else
         format.html { render :new }
         format.json { render json: @form_payment.errors, status: :unprocessable_entity }
@@ -44,6 +45,7 @@ class FormPaymentsController < ApplicationController
       if @form_payment.update(form_payment_params)
         format.html { redirect_to @form_payment, notice: 'Form payment was successfully updated.' }
         format.json { render :show, status: :ok, location: @form_payment }
+        sweetalert_success('Dados atualizados com sucesso!', 'Sucesso!')
       else
         format.html { render :edit }
         format.json { render json: @form_payment.errors, status: :unprocessable_entity }
@@ -58,6 +60,7 @@ class FormPaymentsController < ApplicationController
     respond_to do |format|
       format.html { redirect_to form_payments_url, notice: 'Form payment was successfully destroyed.' }
       format.json { head :no_content }
+      sweetalert_success('Dados excluidos com sucesso!', 'Sucesso!')
     end
   end
 
