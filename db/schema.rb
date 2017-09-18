@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170918122727) do
+ActiveRecord::Schema.define(version: 20170918140356) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -61,6 +61,7 @@ ActiveRecord::Schema.define(version: 20170918122727) do
     t.string "name_prod"
     t.string "status"
     t.string "qrpoint_name"
+    t.string "local_print"
     t.index ["desk_order_id"], name: "index_items_on_desk_order_id"
     t.index ["product_id"], name: "index_items_on_product_id"
   end

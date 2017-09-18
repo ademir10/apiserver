@@ -73,6 +73,7 @@ class DeskOrdersController < ApplicationController
           add_item.val_unit = product.value
           add_item.val_total = val_total_items
           add_item.qrpoint_name = qrpoint.description
+          add_item.local_print = product.local_print
           add_item.save!
           sum_items = Item.where(desk_order_id: params[:desk_order_id].to_i).sum(:val_total)
           DeskOrder.update(params[:desk_order_id].to_i, total: sum_items.to_f)
