@@ -146,7 +146,7 @@ class DeskOrdersController < ApplicationController
 
      else
 
-         if @desk_order.status == "Solicita o fechamento" || @desk_order.status == "Aberta"
+         if @desk_order.status == "Solicita o fechamento" || @desk_order.status == "Aberta" || @desk_order.status == "Em uso"
            #finalizando a O.S e salvando a forma de pagamento
            DeskOrder.update(@desk_order.id, status: 'Finalizada', form_payment_id: desk_order_params[:form_payment_id])
            Qrpoint.update(@desk_order.qrpoint_id, status: 'Aberta')
