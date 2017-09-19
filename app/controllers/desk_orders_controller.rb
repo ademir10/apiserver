@@ -162,7 +162,7 @@ class DeskOrdersController < ApplicationController
 
            #verifica se já foi enviado para o contas á receber
            if Receipt.exists?(desk_order_id: @desk_order.id)
-              return
+              redirect_to print_cupom_path and return
            else
 
               #ENVIANDO PARA O CONTAS Á RECEBER
