@@ -5,9 +5,6 @@ class DeskOrdersController < ApplicationController
   #Para permitir o acesso via aplicativo
   skip_before_action :verify_authenticity_token
 
-  def print_cupom
-  end
-
   # RECEBE O QRCODE DO APLICATIVO E VERIFICA SE A MESA ESTÁ DISPONÍVEL
   def check_mesa
       #verifica se o token é valido primeiro
@@ -162,7 +159,7 @@ class DeskOrdersController < ApplicationController
 
            #verifica se já foi enviado para o contas á receber
            if Receipt.exists?(desk_order_id: @desk_order.id)
-              redirect_to print_cupom_path and return
+
            else
 
               #ENVIANDO PARA O CONTAS Á RECEBER
@@ -179,7 +176,7 @@ class DeskOrdersController < ApplicationController
               cta_receber.form_payment_id = desk_order_params[:form_payment_id]
               cta_receber.save!
               sweetalert_success('Mesa fechada!', 'Sucesso!')
-              redirect_to print_cupom_path
+
             end
 
         end
