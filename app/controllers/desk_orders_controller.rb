@@ -135,7 +135,7 @@ class DeskOrdersController < ApplicationController
     end
 
     #verifica se foi informada a forma de pagamento no caso de O.S
-    if desk_order_params[:form_payment] == ""
+    if desk_order_params[:form_payment_id].blank?
        sweetalert_warning('Selecione uma forma de pagamento válida!', 'Atenção!')
       redirect_to desk_order_path(@desk_order) and return
     end
@@ -176,7 +176,7 @@ class DeskOrdersController < ApplicationController
               cta_receber.installments = 1
               cta_receber.status = "Recebida"
               cta_receber.desk_order_id = @desk_order.id
-              cta_receber.form_receipt = params[:form_payment_id]
+              cta_receber.form_payment_id = desk_order_params[:form_payment_id]
               cta_receber.save!
               sweetalert_success('Mesa fechada!', 'Sucesso!')
               redirect_to print_cupom_path
