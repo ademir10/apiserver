@@ -176,7 +176,7 @@ class DeskOrdersController < ApplicationController
               cta_receber.installments = 1
               cta_receber.status = "Recebida"
               cta_receber.desk_order_id = @desk_order.id
-              cta_receber.form_receipt = desk_order_params[:form_payment_id]
+              cta_receber.form_receipt = params[:form_payment_id]
               cta_receber.save!
               sweetalert_success('Mesa fechada!', 'Sucesso!')
               redirect_to print_cupom_path

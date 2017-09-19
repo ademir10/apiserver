@@ -65,7 +65,7 @@
   <div class="form-group">
     <%= f.label 'forma recebto', :class => 'control-label col-lg-2' %>
     <div class="col-lg-3">
-      <%= f.collection_select(:form_receipt, @form_payments, :type_payment, :type_payment, {include_blank: 'Selecione:'},:class => 'form-control') %>
+      <%= f.collection_select(:form_payment_id, @form_payments, :id, :type_payment, {include_blank: 'Selecione:'},:class => 'form-control') %>
 		</div>
     <%=f.error_span(:form_receipt) %>
   </div>
