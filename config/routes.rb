@@ -19,6 +19,7 @@ Rails.application.routes.draw do
   #exclui o item selecionado se ainda não mudou o status
   post 'delete_item', to: 'desk_orders#delete_item'
   #----------------------------------------------------
+  get 'print_cupom', to: 'desk_orders#print_cupom'
   resources :payments
   resources :loginfos
   resources :suppliers do

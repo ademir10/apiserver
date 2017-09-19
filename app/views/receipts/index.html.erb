@@ -86,7 +86,7 @@
         <td><%= receipt.description %></td>
         <td><%= receipt.due_date.strftime('%d/%m/%Y') %></td>
 				<td><%= receipt.receipt_date.strftime('%d/%m/%Y') %></td>
-				<td><%= receipt.form_receipt %></td>
+				<td><%= receipt.form_payment.type_payment %></td>
 				<td><%= receipt.installments %></td>
         <td>R$ <%= number_with_precision(receipt.value_doc, precision: 2) %></td>
         <td><%= receipt.status %></td>

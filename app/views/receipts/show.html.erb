@@ -16,7 +16,7 @@
   <dt><strong><%= model_class.human_attribute_name('data recebto') %>:</strong></dt>
   <dd><%=l @receipt.receipt_date %></dd>
   <dt><strong><%= model_class.human_attribute_name('forma recebto') %>:</strong></dt>
-  <dd><%= @receipt.form_receipt %></dd>
+  <dd><%= @receipt.form_payment.type_payment %></dd>
   <% end %>
   <dt><strong><%= model_class.human_attribute_name('parcelas') %>:</strong></dt>
   <dd><%= @receipt.installments %></dd>
