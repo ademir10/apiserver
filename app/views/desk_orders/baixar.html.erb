@@ -1,3 +1,9 @@
+<!-- para chamar a impressão automaticamente -->
+<% if action_name == 'baixar' %>
+<script type="text/javascript">
+  window.print();
+</script>
+<% end %>
 
  <!-- CSS PARA REMOVER O BOTÃO IMPRIMIR NA VIEW DE IMPRESSÃO E MOSTRAR A IMPRESSÃO SEM O CSS -->
     <style type="text/css">
@@ -38,17 +44,14 @@ width: 100%;
 
     <div class="panel-heading">
 
-  <h3>G4 Sublimação </h3>
-  <h4>Unidade 1 - SP</h4>
+  <h3>Temakeria Dsoft </h3>
+  <h4>A melhor de São Paulo</h4>
   <h6>Rua Bresser, 409 - Brás</br>
-  Centro – São Paulo / SP
+  Centro – São Paulo / SP </br>
   (11)2738-2115 / (11)94838 9159</h6>
 
       <h1 class="panel-title">
-      	Cupom de Venda
-      	Nº <b><%= @desk_order.qrpoint.description %></b>
-      </div><!-- fim .panel-heading -->
-
+      	Venda <b><%= @desk_order.qrpoint.description %></b>
     <br />
 
    <table class="table table-striped">
@@ -83,7 +86,7 @@ width: 100%;
       Itens
       <%end%>
        / Total R$ <strong>R$ <%= number_with_precision(@desk_order.total, precision: 2) %></strong>
-
+    </div><!-- fim .panel-heading -->
   <button type="button" id ="printbtn" class="btn btn-success", onclick ="window.print();return false;">Imprimir</button>
 
 </div>

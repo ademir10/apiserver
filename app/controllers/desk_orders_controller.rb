@@ -49,7 +49,6 @@ class DeskOrdersController < ApplicationController
 
   #ENVIA OS PRODUTOS PARA O APLICATIVO COM BASE NA CATEGORIA SELEICIONADA
   def list_products
-    #puts 'É AQUI QUE VEM O NUMERO >>>>>>>>' + params["id_da_categoria"].to_s
       if params["cardToken"].to_s == 'G0d1$@Bl3T0d0W4Th3V3Rth1Ng'
       @products = Product.where(category_id: params["id_da_categoria"]).order(:name)
       render json: { all_products: @products}
@@ -84,14 +83,12 @@ class DeskOrdersController < ApplicationController
   #carrega tudo o que já foi consumido
   def check_order
     if params["cardToken"].to_s == 'G0d1$@Bl3T0d0W4Th3V3Rth1Ng'
-      puts 'AQUI É O QUE TÁ CHEGANDO >>>>>>> ' + params[:desk_order_id].to_s
       qrpoint_number = DeskOrder.find(params[:desk_order_id])
       desk_name = Qrpoint.find(qrpoint_number.qrpoint_id)
       items_desk_order = Item.where(desk_order_id: params[:desk_order_id].to_i)
       sum_total_items = Item.where(desk_order_id: params[:desk_order_id].to_i).sum(:val_total)
       form_payments = FormPayment.order(:type_payment)
       render json: { mesa_venda: desk_name.description, items_venda: items_desk_order , total_geral: sum_total_items, formas_pagamento: form_payments}
-      puts 'tudo certo até aqui obrigado Deus!'
     end
   end
 
@@ -101,7 +98,6 @@ class DeskOrdersController < ApplicationController
       DeskOrder.update(params[:desk_order_id], status: 'Solicita o fechamento', form_payment_id: params[:form_payment_selected].to_i)
       dados_qrpoint = DeskOrder.find(params[:desk_order_id])
       Qrpoint.update(dados_qrpoint.qrpoint_id, status: 'Solicita o fechamento' )
-      puts 'Solicitou o fechamento da conta!'
     end
   end
 
@@ -112,10 +108,9 @@ class DeskOrdersController < ApplicationController
       item.destroy
         sum_items = Item.where(desk_order_id: params[:desk_order_id].to_i).sum(:val_total)
         DeskOrder.update(params[:desk_order_id].to_i, total: sum_items.to_f)
-          puts 'Item excluido pelo aplicativo'
           render json: { resultado_API: 'Item excluido com sucesso!' }
       else
-        puts 'O item já foi enviado para a cozinha'
+
         render json: { resultado_API: 'Desculpe não conseguimos excluir este item porque ele já está sendo preparado.' }
 
       end
@@ -179,6 +174,7 @@ class DeskOrdersController < ApplicationController
               Qrpoint.update(@desk_order.qrpoint_id, status: 'Aberta')
             end
         end
+        return
       end
 
   def index
@@ -244,7 +240,6 @@ class DeskOrdersController < ApplicationController
   def destroy
     @desk_order.destroy
     Qrpoint.update(@desk_order.qrpoint_id, status: 'Aberta')
-    puts 'esse é o id da venda ' + @desk_order.id.to_s
     Receipt.where(desk_order_id: @desk_order).destroy_all
 
     #inserindo no log de atividades
