@@ -7,6 +7,6 @@ class PrinterChannel < ApplicationCable::Channel
     # Any cleanup needed when channel is unsubscribed
   end
 
-  def speak(variavel_printer)
+  def speak(variavel_dados)
   end
 end

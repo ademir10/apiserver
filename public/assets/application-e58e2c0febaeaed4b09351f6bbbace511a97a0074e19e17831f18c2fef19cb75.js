@@ -33691,7 +33691,154 @@ return $.ui.tooltip;
 
 
 
-(function(jQuery){var self=null;var options={};jQuery.fn.railsAutocomplete=function(){var handler=function(){if(!this.railsAutoCompleter){this.railsAutoCompleter=new jQuery.railsAutocomplete(this)}};options[this.selector.replace("#","")]=arguments[0];if(jQuery.fn.on!==undefined){return $(document).on("focus",this.selector,handler)}else{return this.live("focus",handler)}};jQuery.railsAutocomplete=function(e){_e=e;this.init(_e)};jQuery.railsAutocomplete.fn=jQuery.railsAutocomplete.prototype={railsAutocomplete:"0.0.1"};jQuery.railsAutocomplete.fn.extend=jQuery.railsAutocomplete.extend=jQuery.extend;jQuery.railsAutocomplete.fn.extend({init:function(e){e.delimiter=jQuery(e).attr("data-delimiter")||null;function split(val){return val.split(e.delimiter)}function extractLast(term){return split(term).pop().replace(/^\s+/,"")}jQuery(e).autocomplete($.extend({source:function(request,response){jQuery.getJSON(jQuery(e).attr("data-autocomplete"),{term:extractLast(request.term)},function(){if(arguments[0].length==0){arguments[0]=[];arguments[0][0]={id:"",label:"no existing match"}}jQuery(arguments[0]).each(function(i,el){var obj={};obj[el.id]=el;jQuery(e).data(obj)});response.apply(null,arguments)})},change:function(event,ui){if(jQuery(jQuery(this).attr("data-id-element")).val()==""){return}jQuery(jQuery(this).attr("data-id-element")).val(ui.item?ui.item.id:"");var update_elements=jQuery.parseJSON(jQuery(this).attr("data-update-elements"));var data=ui.item?jQuery(this).data(ui.item.id.toString()):{};if(update_elements&&jQuery(update_elements.id).val()==""){return}for(var key in update_elements){jQuery(update_elements[key]).val(ui.item?data[key]:"")}},search:function(){var term=extractLast(this.value);if(term.length<2){return false}},focus:function(){return false},select:function(event,ui){var terms=split(this.value);terms.pop();terms.push(ui.item.value);if(e.delimiter!=null){terms.push("");this.value=terms.join(e.delimiter)}else{this.value=terms.join("");if(jQuery(this).attr("data-id-element")){jQuery(jQuery(this).attr("data-id-element")).val(ui.item.id)}if(jQuery(this).attr("data-update-elements")){var data=jQuery(this).data(ui.item.id.toString());var update_elements=jQuery.parseJSON(jQuery(this).attr("data-update-elements"));for(var key in update_elements){jQuery(update_elements[key]).val(data[key])}}}var remember_string=this.value;jQuery(this).bind("keyup.clearId",function(){if(jQuery(this).val().trim()!=remember_string.trim()){jQuery(jQuery(this).attr("data-id-element")).val("");jQuery(this).unbind("keyup.clearId")}});jQuery(e).trigger("railsAutocomplete.select",ui);return false}},options[e.id]))}});jQuery(document).ready(function(){jQuery("input[data-autocomplete]").railsAutocomplete()})})(jQuery);
+/*
+* Unobtrusive autocomplete
+*
+* To use it, you just have to include the HTML attribute autocomplete
+* with the autocomplete URL as the value
+*
+*   Example:
+*       <input type="text" data-autocomplete="/url/to/autocomplete">
+*
+* Optionally, you can use a jQuery selector to specify a field that can
+* be updated with the element id whenever you find a matching value
+*
+*   Example:
+*       <input type="text" data-autocomplete="/url/to/autocomplete" data-id-element="#id_field">
+*/
+
+
+(function(jQuery)
+{
+  var self = null;
+  var options = {};
+  jQuery.fn.railsAutocomplete = function() {
+    var handler = function() {
+      if (!this.railsAutoCompleter) {
+        this.railsAutoCompleter = new jQuery.railsAutocomplete(this);
+      }
+    };
+    options[this.selector.replace('#', '')] = arguments[0];
+    if (jQuery.fn.on !== undefined) {
+      return $(document).on('focus',this.selector,handler);
+    }
+    else {
+      return this.live('focus',handler);
+    }
+  };
+
+  jQuery.railsAutocomplete = function (e) {
+    _e = e;
+    this.init(_e);
+  };
+
+  jQuery.railsAutocomplete.fn = jQuery.railsAutocomplete.prototype = {
+    railsAutocomplete: '0.0.2'
+  };
+
+  jQuery.railsAutocomplete.fn.extend = jQuery.railsAutocomplete.extend = jQuery.extend;
+  jQuery.railsAutocomplete.fn.extend({
+    init: function(e) {
+      e.delimiter = jQuery(e).attr('data-delimiter') || null;
+      function split( val ) {
+        return val.split( e.delimiter );
+      }
+      function extractLast( term ) {
+        return split( term ).pop().replace(/^\s+/,"");
+      }
+
+      jQuery(e).autocomplete($.extend({
+        source: function( request, response ) {
+          jQuery.getJSON( jQuery(e).attr('data-autocomplete'), {
+            term: extractLast( request.term )
+          }, function() {
+            if(arguments[0].length == 0) {
+			 var label = "Nenhum item encontrado...";
+			 if(jQuery(e).attr('data-autocomplete-label') !== undefined) {
+				label = jQuery(e).attr('data-autocomplete-label');
+			  }
+			  arguments[0] = []
+              arguments[0][0] = { id: "", label: label }
+            }
+            jQuery(arguments[0]).each(function(i, el) {
+              var obj = {};
+              obj[el.id] = el;
+              jQuery(e).data(obj);
+            });
+            response.apply(null, arguments);
+          });
+        },
+        change: function( event, ui ) {
+            if(jQuery(jQuery(this).attr('data-id-element')).val() == "") {
+        	  	return;
+        	  }
+            jQuery(jQuery(this).attr('data-id-element')).val(ui.item ? ui.item.id : "");
+			var update_elements = false;
+			if (jQuery(this).attr('data-update-elements')) {
+				update_elements = jQuery.parseJSON(jQuery(this).attr("data-update-elements"));
+			}	
+            var data = ui.item ? jQuery(this).data(ui.item.id.toString()) : {};
+            if(update_elements && jQuery(update_elements['id']).val() == "") { 
+            	return; 
+            }
+            for (var key in update_elements) {
+                jQuery(update_elements[key]).val(ui.item ? data[key] : "");
+            }  
+        },
+        search: function() {
+          // custom minLength
+          var term = extractLast( this.value );
+          if ( term.length < 2 ) {
+            return false;
+          }
+        },
+        focus: function() {
+          // prevent value inserted on focus
+          return false;
+        },
+        select: function( event, ui ) {
+          var terms = split( this.value );
+          // remove the current input
+          terms.pop();
+          // add the selected item only if it has something
+		  if (ui.item.id != ""){
+			  terms.push( ui.item.value );
+		  }
+          // add placeholder to get the comma-and-space at the end
+          if (e.delimiter != null) {
+            terms.push( "" );
+            this.value = terms.join( e.delimiter );
+          } else {
+            this.value = terms.join("");
+            if (jQuery(this).attr('data-id-element')) {
+              jQuery(jQuery(this).attr('data-id-element')).val(ui.item.id);
+            }
+            if (jQuery(this).attr('data-update-elements')) {
+              var data = jQuery(this).data(ui.item.id.toString());
+              var update_elements = jQuery.parseJSON(jQuery(this).attr("data-update-elements"));
+              for (var key in update_elements) {
+                jQuery(update_elements[key]).val(data[key]);
+              }
+            }
+          }
+          var remember_string = this.value;
+          jQuery(this).bind('keyup.clearId', function(){
+            if(jQuery(this).val().trim() != remember_string.trim()){
+              jQuery(jQuery(this).attr('data-id-element')).val("");
+              jQuery(this).unbind('keyup.clearId');
+            }
+          });
+          jQuery(e).trigger('railsAutocomplete.select', ui);
+          return false;
+        }
+      }, options[e.id]));
+    }
+  });
+
+  jQuery(document).ready(function(){
+    jQuery('input[data-autocomplete]').railsAutocomplete();
+  });
+})(jQuery);
 /*
 Turbolinks 5.0.3
 Copyright © 2017 Basecamp, LLC
@@ -36946,6 +37093,168 @@ jQuery(function() {
 
 }).call(this);
 (function() {
+  App.desk_order = App.cable.subscriptions.create("DeskOrderChannel", {
+    connected: function() {},
+    disconnected: function() {},
+    received: function(variavel_dados) {
+      return swal({
+        title: 'Aviso!',
+        text: variavel_dados['message'],
+        timer: 5000,
+        showCancelButton: false,
+        showConfirmButton: false
+      })["catch"](swal.noop);
+    },
+    speak: function(variavel_dados) {
+      return this.perform('speak', {
+        message: variavel_dados
+      });
+    }
+  });
+
+}).call(this);
+(function() {
+  App.printer = App.cable.subscriptions.create("PrinterChannel", {
+    connected: function() {},
+    disconnected: function() {},
+    received: function(variavel_printer) {
+      window.print();
+      return alert('testando pra ver se chega lá!');
+    },
+    speak: function(variavel_printer) {
+      return this.perform('speak', {
+        message: variavel_printer
+      });
+    }
+  });
+
+}).call(this);
+(function() {
+
+
+}).call(this);
+(function(){
+  "use strict";
+
+  // Navbar left
+  // -------------------------------------------------
+  	
+  	// Variables
+		  var dnl                = $(".dash-navbar-left"),
+					dnlBtnToggle       = $(".dnl-btn-toggle"),
+					dnlBtnCollapse     = $(".dnl-btn-collapse"),
+					contentWrap        = $(".content-wrap"),
+					contentWrapEffect  = contentWrap.data("effect"),
+					windowHeight       = $(window).height() - 61,
+					windowWidth        = $(window).width() < 767;
+
+		// Functions
+			function cwShowOverflow() {
+				if ( windowWidth ) {
+						contentWrap.css({
+						height : windowHeight ,
+						overflow : 'hidden'
+					});
+					$( 'html, body' ).css( 'overflow', 'hidden' );
+				}
+			}
+
+			function cwHideOverflow() {
+				if ( windowWidth ) {
+					contentWrap.css({
+						height : 'auto' ,
+						overflow : 'auto'
+					});
+					$( 'html, body' ).css( 'overflow', 'auto' );
+				}
+			}
+
+			function dnlShow() {
+				dnl.addClass("dnl-show").removeClass("dnl-hide");
+				contentWrap.addClass(contentWrapEffect);
+				cwShowOverflow();
+				dnlBtnToggle.find("span").removeClass("fa-bars").addClass("fa-arrow-left");
+			}
+
+			function dnlHide() {
+				dnl.removeClass("dnl-show").addClass("dnl-hide");
+				contentWrap.removeClass(contentWrapEffect);
+				cwHideOverflow();
+				dnlBtnToggle.find("span").removeClass("fa-arrow-left").addClass("fa-bars");
+			}
+
+		// Toggle the edge navbar left
+			dnl.addClass("dnl-hide");
+			dnlBtnToggle.click( function() {
+				if( dnl.hasClass("dnl-hide") ) {
+					dnlShow();
+				} else {
+					dnlHide();
+				}
+			});
+
+		// Collapse the dash navbar left subnav
+			dnlBtnCollapse.click( function(e) {
+				e.preventDefault();
+				if( dnl.hasClass("dnl-collapsed") ) {
+					dnl.removeClass("dnl-collapsed");
+					contentWrap.removeClass("dnl-collapsed");
+					$(this).find(".dnl-link-icon").removeClass("fa-arrow-right").addClass("fa-arrow-left");
+				} else {
+					dnl.addClass("dnl-collapsed");
+					contentWrap.addClass("dnl-collapsed");
+					$(this).find(".dnl-link-icon").removeClass("fa-arrow-left").addClass("fa-arrow-right");
+				}
+			});
+
+		// Close left navbar when top navbar opens
+			$( '.navbar-toggle' ).click( function() {
+				if ( $( this ).hasClass( 'collapsed' ) ) {
+					dnlHide();
+				}
+			});
+
+		// Close top navbar when left navbar opens
+			dnlBtnToggle.click( function() {
+				$( '.navbar-toggle' ).addClass( 'collapsed' );
+				$( '.navbar-collapse' ).removeClass( 'in' );
+			});
+
+		// Code credit: https://tr.im/CZzf4
+			function isMobile() {
+			  try { document.createEvent("TouchEvent"); return true; }
+			  catch(e){ return false; }
+			}
+
+		
+
+		// Collapse navbar on content click
+			$( '.content-wrap' ).click( function() {
+				dnlHide();
+			});	
+
+		// Auto collapse other opens subnavs
+	  	/*$(".dnl-nav > li > a").click( function() {
+	  		$( document ).find( 'ul .in' ).collapse( 'hide' );
+	  	});*/
+
+})();
+(function(){
+  "use strict";
+
+  // These codes are only for demo (changing theme skin or effects dynamically)
+  // They are safe to remove
+  $('.btn-dark').click( function() {
+  	$('link[href="css/dash-light.css"]').attr('href', 'css/dash.css');
+  });
+
+  $('.btn-light').click( function() {
+  	$('link[href="css/dash.css"]').attr('href', 'css/dash-light.css');
+  });
+  
+
+})();
+(function() {
 
 
 }).call(this);
@@ -36967,6 +37276,26 @@ jQuery(function() {
  */
 
 !function($){"use strict";$.browser||($.browser={},$.browser.mozilla=/mozilla/.test(navigator.userAgent.toLowerCase())&&!/webkit/.test(navigator.userAgent.toLowerCase()),$.browser.webkit=/webkit/.test(navigator.userAgent.toLowerCase()),$.browser.opera=/opera/.test(navigator.userAgent.toLowerCase()),$.browser.msie=/msie/.test(navigator.userAgent.toLowerCase()));var a={destroy:function(){return $(this).unbind(".maskMoney"),$.browser.msie&&(this.onpaste=null),this},mask:function(a){return this.each(function(){var b,c=$(this);return"number"==typeof a&&(c.trigger("mask"),b=$(c.val().split(/\D/)).last()[0].length,a=a.toFixed(b),c.val(a)),c.trigger("mask")})},unmasked:function(){return this.map(function(){var a,b=$(this).val()||"0",c=-1!==b.indexOf("-");return $(b.split(/\D/).reverse()).each(function(b,c){return c?(a=c,!1):void 0}),b=b.replace(/\D/g,""),b=b.replace(new RegExp(a+"$"),"."+a),c&&(b="-"+b),parseFloat(b)})},init:function(a){return a=$.extend({prefix:"",suffix:"",affixesStay:!0,thousands:",",decimal:".",precision:2,allowZero:!1,allowNegative:!1},a),this.each(function(){function b(){var a,b,c,d,e,f=s.get(0),g=0,h=0;return"number"==typeof f.selectionStart&&"number"==typeof f.selectionEnd?(g=f.selectionStart,h=f.selectionEnd):(b=document.selection.createRange(),b&&b.parentElement()===f&&(d=f.value.length,a=f.value.replace(/\r\n/g,"\n"),c=f.createTextRange(),c.moveToBookmark(b.getBookmark()),e=f.createTextRange(),e.collapse(!1),c.compareEndPoints("StartToEnd",e)>-1?g=h=d:(g=-c.moveStart("character",-d),g+=a.slice(0,g).split("\n").length-1,c.compareEndPoints("EndToEnd",e)>-1?h=d:(h=-c.moveEnd("character",-d),h+=a.slice(0,h).split("\n").length-1)))),{start:g,end:h}}function c(){var a=!(s.val().length>=s.attr("maxlength")&&s.attr("maxlength")>=0),c=b(),d=c.start,e=c.end,f=c.start!==c.end&&s.val().substring(d,e).match(/\d/)?!0:!1,g="0"===s.val().substring(0,1);return a||f||g}function d(a){s.each(function(b,c){if(c.setSelectionRange)c.focus(),c.setSelectionRange(a,a);else if(c.createTextRange){var d=c.createTextRange();d.collapse(!0),d.moveEnd("character",a),d.moveStart("character",a),d.select()}})}function e(b){var c="";return b.indexOf("-")>-1&&(b=b.replace("-",""),c="-"),c+a.prefix+b+a.suffix}function f(b){var c,d,f,g=b.indexOf("-")>-1&&a.allowNegative?"-":"",h=b.replace(/[^0-9]/g,""),i=h.slice(0,h.length-a.precision);return i=i.replace(/^0*/g,""),i=i.replace(/\B(?=(\d{3})+(?!\d))/g,a.thousands),""===i&&(i="0"),c=g+i,a.precision>0&&(d=h.slice(h.length-a.precision),f=new Array(a.precision+1-d.length).join(0),c+=a.decimal+f+d),e(c)}function g(a){var b,c=s.val().length;s.val(f(s.val())),b=s.val().length,a-=c-b,d(a)}function h(){var a=s.val();s.val(f(a))}function i(){var b=s.val();return a.allowNegative?""!==b&&"-"===b.charAt(0)?b.replace("-",""):"-"+b:b}function j(a){a.preventDefault?a.preventDefault():a.returnValue=!1}function k(a){a=a||window.event;var d,e,f,h,k,l=a.which||a.charCode||a.keyCode;return void 0===l?!1:48>l||l>57?45===l?(s.val(i()),!1):43===l?(s.val(s.val().replace("-","")),!1):13===l||9===l?!0:!$.browser.mozilla||37!==l&&39!==l||0!==a.charCode?(j(a),!0):!0:c()?(j(a),d=String.fromCharCode(l),e=b(),f=e.start,h=e.end,k=s.val(),s.val(k.substring(0,f)+d+k.substring(h,k.length)),g(f+1),!1):!1}function l(c){c=c||window.event;var d,e,f,h,i,k=c.which||c.charCode||c.keyCode;return void 0===k?!1:(d=b(),e=d.start,f=d.end,8===k||46===k||63272===k?(j(c),h=s.val(),e===f&&(8===k?""===a.suffix?e-=1:(i=h.split("").reverse().join("").search(/\d/),e=h.length-i-1,f=e+1):f+=1),s.val(h.substring(0,e)+h.substring(f,h.length)),g(e),!1):9===k?!0:!0)}function m(){r=s.val(),h();var a,b=s.get(0);b.createTextRange&&(a=b.createTextRange(),a.collapse(!1),a.select())}function n(){setTimeout(function(){h()},0)}function o(){var b=parseFloat("0")/Math.pow(10,a.precision);return b.toFixed(a.precision).replace(new RegExp("\\.","g"),a.decimal)}function p(b){if($.browser.msie&&k(b),""===s.val()||s.val()===e(o()))a.allowZero?a.affixesStay?s.val(e(o())):s.val(o()):s.val("");else if(!a.affixesStay){var c=s.val().replace(a.prefix,"").replace(a.suffix,"");s.val(c)}s.val()!==r&&s.change()}function q(){var a,b=s.get(0);b.setSelectionRange?(a=s.val().length,b.setSelectionRange(a,a)):s.val(s.val())}var r,s=$(this);a=$.extend(a,s.data()),s.unbind(".maskMoney"),s.bind("keypress.maskMoney",k),s.bind("keydown.maskMoney",l),s.bind("blur.maskMoney",p),s.bind("focus.maskMoney",m),s.bind("click.maskMoney",q),s.bind("cut.maskMoney",n),s.bind("paste.maskMoney",n),s.bind("mask.maskMoney",h)})}};$.fn.maskMoney=function(b){return a[b]?a[b].apply(this,Array.prototype.slice.call(arguments,1)):"object"!=typeof b&&b?($.error("Method "+b+" does not exist on jQuery.maskMoney"),void 0):a.init.apply(this,arguments)}}(window.jQuery||window.Zepto);
+(function() {
+
+
+}).call(this);
+(function() {
+
+
+}).call(this);
+(function() {
+
+
+}).call(this);
+(function() {
+
+
+}).call(this);
+(function() {
+
+
+}).call(this);
 (function() {
 
 
@@ -37091,4 +37420,15 @@ jQuery(function() {
 
 
 
-;
+
+var sweetAlertConfirmConfig = {
+  title: 'Are you sure?',
+  type: 'warning',
+  showCancelButton: true,
+  cancelButtonColor: "#DD6B55",
+  confirmButtonColor: "#DD6B55",
+  confirmButtonText: "Sim",
+  cancelButtonText: "Cancelar",
+
+
+};

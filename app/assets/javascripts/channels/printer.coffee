@@ -7,9 +7,9 @@ App.printer = App.cable.subscriptions.create "PrinterChannel",
 
   received: (variavel_printer) ->
     #chama a impressão
-    #window.print()
+    window.print()
+    alert('testando pra ver se chega lá!')
 
 
   speak: (variavel_printer)->
     @perform 'speak', message: variavel_printer
-window.print()
