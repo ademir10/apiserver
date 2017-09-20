@@ -1,1 +1,133 @@
-GLORIA A DEUS SEMPRE!!!!
+
+ <!-- CSS PARA REMOVER O BOTÃO IMPRIMIR NA VIEW DE IMPRESSÃO E MOSTRAR A IMPRESSÃO SEM O CSS -->
+    <style type="text/css">
+	@media print {
+    #printbtn {
+        display :  none;
+    }
+}
+#printOnly {
+   display : none;
+}
+@media print {
+    #printOnly {
+       display : block;
+    }
+}
+</style>
+
+<style>
+@page {
+margin:0;
+padding:0;
+
+width: 100%;
+}
+
+body {
+margin:0;
+padding:0;
+
+width: 100%;
+}
+</style>
+
+<!-- somente o que irá aparecer na impressão -->
+  <div id="printOnly">
+  <%- model_class = DeskOrder -%>
+
+    <div class="panel-heading">
+
+  <h3>G4 Sublimação </h3>
+  <h4>Unidade 1 - SP</h4>
+  <h6>Rua Bresser, 409 - Brás</br>
+  Centro – São Paulo / SP
+  (11)2738-2115 / (11)94838 9159</h6>
+
+      <h1 class="panel-title">
+      	Cupom de Venda
+      	Nº <b><%= @desk_order.qrpoint.description %></b>
+      </div><!-- fim .panel-heading -->
+
+    <br />
+
+   <table class="table table-striped">
+    <thead>
+      <tr>
+        <th><%= 'Produto' %></th>
+        <th><%= 'Qnt ' %></th>
+        <th><%= ' Unit' %></th>
+        <th><%= 'Total' %></th>
+
+      </tr>
+    </thead>
+    <tbody>
+
+   	<% @desk_order.items.each do |item| %>
+          <tr>
+          <td><%= item.product.name %></td>
+          <td><%= item.qnt %></td>
+          <td><%= number_with_precision(item.val_unit, precision: 2) %></td>
+          <td><%= number_with_precision(item.val_total, precision: 2) %></td>
+          </tr>
+        <% end %>
+         </tbody>
+
+     </table>
+
+      Forma pagto: <%= @desk_order.form_payment.type_payment %> <br />
+      <%= @desk_order.items.count %>
+      <% if @desk_order.items.count.to_s == '1' %>
+      Item
+      <%else%>
+      Itens
+      <%end%>
+       / Total R$ <strong>R$ <%= number_with_precision(@desk_order.total, precision: 2) %></strong>
+
+  <button type="button" id ="printbtn" class="btn btn-success", onclick ="window.print();return false;">Imprimir</button>
+
+</div>
+
+<!-- os dados são exibidos normalmente na view -->
+<div class="container-fluid" id="printbtn">
+  <%- model_class = DeskOrder -%>
+  <div class="page-header">
+    <h1>QRpoint: <%= @desk_order.qrpoint.description %></h1>
+    <h3>Status: <%= @desk_order.status %></h3>
+    <h4>Tipo: <%= @desk_order.type_service %></h4>
+  </div>
+
+  <!-- EXIBE OS ITENS NA O.S -->
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th> <%= 'Produto' %></th>
+        <th><%= 'Qnt' %></th>
+        <th><%= 'Valor unit' %></th>
+        <th><%= 'Total' %></th>
+        <th><%= 'Imagem' %></th>
+      </tr>
+    </thead>
+    <tbody>
+
+   	<% @desk_order.items.order(:created_at).each do |item| %>
+          <tr>
+          <td><%= item.product.name %></td>
+          <td><%= item.qnt %></td>
+          <td>R$ <%= number_with_precision(item.val_unit, precision: 2) %></td>
+          <td>R$ <%= number_with_precision(item.val_total, precision: 2) %></td>
+          <% if item.product.image.present? %>
+  	      <td><%= image_tag(item.product.image.url, :size => "25x25", class: "css-style") %></td>
+  	      <% else %>
+  	      <td>Sem imagem</td>
+  	      <% end %>
+          </tr>
+        <% end %>
+         </tbody>
+     </table>
+
+    <h4>Forma de pagamento: <%= @desk_order.form_payment.type_payment %> </h4>
+    <h3><%= @desk_order.items.count %> Itens / <b>Total R$ <%= number_with_precision(@total_items, precision: 2) %></b> </h3>
+    <button type="button" id ="printbtn" class="btn btn-success", onclick ="window.print();return false;">Imprimir</button>
+    <%= link_to t('.back', :default => t("helpers.links.back")), dashboard_path, :class => 'btn btn-default'  %>
+</div>

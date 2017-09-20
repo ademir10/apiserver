@@ -1,7 +1,7 @@
 class DeskOrdersController < ApplicationController
-  before_action :set_desk_order, only: [:show, :edit, :update, :destroy]
+  before_action :set_desk_order, only: [:show, :edit, :update, :destroy, :baixar]
   before_action :must_login, only: [:show, :edit, :update, :destroy]
-  before_action :show_form_payment, only: [:show, :edit, :update, :destroy, :create]
+  before_action :show_form_payment, only: [:show, :edit, :update, :destroy, :create, :baixar]
   #Para permitir o acesso via aplicativo
   skip_before_action :verify_authenticity_token
 
@@ -139,20 +139,10 @@ class DeskOrdersController < ApplicationController
 
      # SE JÁ FOI RECEBIDA A VENDA. não enviará para o contar á Receber
      if @desk_order.status == "Recebida"  || @desk_order.status == "Finalizada"
-      redirect_to print_cupom_path
+       @total_items = Item.where(desk_order_id: @desk_order.id).sum(:val_total)
+      return
 
      else
-
-         if @desk_order.status == "Solicita o fechamento" || @desk_order.status == "Aberta" || @desk_order.status == "Em uso"
-           #finalizando a O.S e salvando a forma de pagamento
-           DeskOrder.update(@desk_order.id, status: 'Finalizada', form_payment_id: desk_order_params[:form_payment_id])
-           Qrpoint.update(@desk_order.qrpoint_id, status: 'Aberta')
-
-           log = Loginfo.new(params[:loginfo])
-           log.employee = current_user.name
-           log.task = 'Finalizou a mesa de nome: ' + @desk_order.qrpoint.description.to_s
-           log.save!
-         end
 
            #FAZENDO A SOMA DE TODOS OS ITENS PARA JOGAR NO CONTAS Á RECEBER
            @total_items = Item.where(desk_order_id: @desk_order.id).sum(:val_total)
@@ -175,10 +165,19 @@ class DeskOrdersController < ApplicationController
               cta_receber.desk_order_id = @desk_order.id
               cta_receber.form_payment_id = desk_order_params[:form_payment_id]
               cta_receber.save!
-              sweetalert_success('Mesa fechada!', 'Sucesso!')
-
+              #sweetalert_success('Mesa fechada!', 'Sucesso!')
             end
 
+            if @desk_order.status == "Solicita o fechamento" || @desk_order.status == "Aberta" || @desk_order.status == "Em uso"
+
+              log = Loginfo.new(params[:loginfo])
+              log.employee = current_user.name
+              log.task = 'Finalizou a mesa de nome: ' + @desk_order.qrpoint.description.to_s
+              log.save!
+              #finalizando a O.S e salvando a forma de pagamento
+              DeskOrder.update(@desk_order.id, status: 'Finalizada', form_payment_id: desk_order_params[:form_payment_id])
+              Qrpoint.update(@desk_order.qrpoint_id, status: 'Aberta')
+            end
         end
       end
 

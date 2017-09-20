@@ -10,6 +10,8 @@ class DeskOrder < ApplicationRecord
     if status == 'Solicita o fechamento'
       $desk_order_id = id
       DeskOrderBroadCastJob.perform_later self
+    elsif status == 'Finalizada'
+      PrinterBroadcastJob.perform_later self
     end
   end
 
