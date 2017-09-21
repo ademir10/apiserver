@@ -116,10 +116,40 @@ class DeskOrdersController < ApplicationController
       end
   end
 
-  def baixar
+  def nfce
+
+  end
+
+  def gerar_nfce
     @desk_order = DeskOrder.find(params[:id])
 
-    #verifica se foi adicionado algum item na Invoice
+    #verifica se já é uma venda, caso contrário não permite a emissão da NFE
+    if @desk_order.status == 'NFCe emitida'
+      sweetalert_warning('Você já emitiu uma nota fiscal do consumidor eletrônica para esta venda!', 'Atenção')
+       redirect_to desk_order_path(@desk_order) and return
+    end
+
+     #VERIFICA SE SE TODOS OS PRODUTOS ADICIONADOS NA VENDA JÁ FORAM INFORMADOS OS IMPOSTOS PARA LIBERAR O BOTÃO
+          #DE EMISSÃO DA NOTA FISCAL
+           Item.where(desk_order_id: @desk_order).find_each do |item|
+                if item.product.codigo_ncm.blank? || item.product.codigo_ncm == ''
+                 @check_tributos = @check_tributos.to_s + ' ' + item.product.name.to_s + ', '
+                 end
+           end
+                   if @check_tributos.present?
+                   sweetalert_warning('Você não informou o codigo NCM para o(s) produto(s): ' + @check_tributos, 'Atenção', persistent: 'OK')
+                   redirect_to desk_order_path(@desk_order) and return
+                   end
+
+    @show_emitente = Config.first
+    @total_items = Item.where(desk_order_id: @desk_order.id).sum(:val_total)
+  end
+
+  def baixar
+    @config = Config.first
+    @desk_order = DeskOrder.find(params[:id])
+
+    #verifica se foi adicionado algum item na desk_order
     @qnt_items = Item.where(desk_order_id: @desk_order.id).count
     if @qnt_items == 0
        sweetalert_warning('Insira pelo menos 1 item!', 'Atenção!')
@@ -172,9 +202,9 @@ class DeskOrdersController < ApplicationController
               #finalizando a O.S e salvando a forma de pagamento
               DeskOrder.update(@desk_order.id, status: 'Finalizada', form_payment_id: desk_order_params[:form_payment_id])
               Qrpoint.update(@desk_order.qrpoint_id, status: 'Aberta')
+              @desk_order = DeskOrder.find(params[:id])
             end
         end
-        return
       end
 
   def index
@@ -259,7 +289,7 @@ class DeskOrdersController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def desk_order_params
-      params.require(:desk_order).permit(:id, :number, :total, :status, :qrpoint_id, :type_service, :form_payment_id)
+      params.require(:desk_order).permit(:id, :number, :total, :status, :qrpoint_id, :type_service, :form_payment_id, :cpf_cnpj_nfce, :email_nfce, :forma_pagamento_nfce, :bandeira_operadora, :informacoes_adicionais_contribuinte)
     end
 
     def show_form_payment

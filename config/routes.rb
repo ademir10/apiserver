@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :configs
   resources :form_payments
   #Para o action cable
   mount ActionCable.server => '/cable'
@@ -31,6 +32,8 @@ Rails.application.routes.draw do
   resources :desk_orders do
     member do
      post 'baixar'
+     post 'nfce'
+     get 'gerar_nfce'
    end
     resources :items do
 

@@ -21,7 +21,7 @@ $(document).ready(function(){
    <font-color="red">
     <div class="col-lg-2">
     <h4><b><font color="red">Total geral R$</b></h4>
-       <b><%= f.text_field :total, :value=> @desk_order.items.sum(:val_total).round(2), placeholder: 'Total R$', :class => 'form-control', id: 'r1' %></b>
+       <b><%= f.text_field :total, :value=> @desk_order.items.sum(:val_total).round(2), :class => 'form-control', readonly: true %></b>
     </div>
     <%= f.error_span(:total) %>
     </font>

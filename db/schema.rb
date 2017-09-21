@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170919114010) do
+ActiveRecord::Schema.define(version: 20170921204019) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -27,6 +27,31 @@ ActiveRecord::Schema.define(version: 20170919114010) do
     t.string "interval_print"
     t.string "printer1"
     t.string "printer2"
+    t.string "razao"
+    t.string "nome_fantasia"
+    t.string "cnpj"
+    t.string "cep"
+    t.string "endereco"
+    t.string "numero"
+    t.string "bairro"
+    t.string "cidade"
+    t.string "uf"
+    t.string "telefone"
+    t.string "email"
+    t.string "inscricao"
+    t.string "url_server_test"
+    t.string "token_test"
+    t.string "url_server_production"
+    t.string "token_production"
+    t.string "port"
+    t.string "integer"
+    t.string "sleep"
+    t.string "check_date"
+    t.string "boolean"
+    t.string "expiration_date"
+    t.string "date"
+    t.string "check_env"
+    t.string "site"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -40,6 +65,11 @@ ActiveRecord::Schema.define(version: 20170919114010) do
     t.bigint "qrpoint_id"
     t.string "type_service"
     t.bigint "form_payment_id"
+    t.string "cpf_cnpj_nfce"
+    t.string "email_nfce"
+    t.string "forma_pagamento_nfce"
+    t.integer "bandeira_operadora"
+    t.text "informacoes_adicionais_contribuinte"
     t.index ["form_payment_id"], name: "index_desk_orders_on_form_payment_id"
     t.index ["qrpoint_id"], name: "index_desk_orders_on_qrpoint_id"
   end
@@ -106,6 +136,7 @@ ActiveRecord::Schema.define(version: 20170919114010) do
     t.string "description"
     t.boolean "check_stock"
     t.string "local_print"
+    t.integer "codigo_ncm"
     t.index ["category_id"], name: "index_products_on_category_id"
   end
 
@@ -155,6 +186,7 @@ ActiveRecord::Schema.define(version: 20170919114010) do
     t.string "password"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "type_access"
   end
 
   add_foreign_key "desk_orders", "form_payments"

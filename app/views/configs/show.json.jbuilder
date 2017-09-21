@@ -1,0 +1,1 @@
+json.extract! @config, :id, :razao, :nome_fantasia, :cnpj, :cep, :endereco, :numero, :bairro, :cidade, :uf, :telefone, :inscricao, :check_date, :expiration_date, :filename, :content_type, :file_contents, :created_at, :updated_at

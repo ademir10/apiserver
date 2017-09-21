@@ -1,0 +1,66 @@
+<%- model_class = Config -%>
+<div class="page-header">
+  <h1>Configurações gerais</h1>
+</div>
+
+<dl class="dl-horizontal">
+  <dt><strong><%= model_class.human_attribute_name(:razao) %>:</strong></dt>
+  <dd><%= @config.razao %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:nome_fantasia) %>:</strong></dt>
+  <dd><%= @config.nome_fantasia %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:cnpj) %>:</strong></dt>
+  <dd><%= @config.cnpj %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:cep) %>:</strong></dt>
+  <dd><%= @config.cep %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:endereco) %>:</strong></dt>
+  <dd><%= @config.endereco %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:numero) %>:</strong></dt>
+  <dd><%= @config.numero %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:bairro) %>:</strong></dt>
+  <dd><%= @config.bairro %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:cidade) %>:</strong></dt>
+  <dd><%= @config.cidade %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:uf) %>:</strong></dt>
+  <dd><%= @config.uf %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:telefone) %>:</strong></dt>
+  <dd><%= @config.telefone %></dd>
+    <dt><strong><%= model_class.human_attribute_name(:email) %>:</strong></dt>
+  <dd><%= @config.email %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:inscricao) %>:</strong></dt>
+  <dd><%= @config.inscricao %></dd>
+
+  <dt><strong><%= model_class.human_attribute_name('url de teste') %>:</strong></dt>
+  <dd><%= @config.url_server_test %></dd>
+  <dt><strong><%= model_class.human_attribute_name('token de teste') %>:</strong></dt>
+  <dd><%= @config.token_test %></dd>
+  <dt><strong><%= model_class.human_attribute_name('url de produção') %>:</strong></dt>
+  <dd><%= @config.url_server_production %></dd>
+  <dt><strong><%= model_class.human_attribute_name('token de produção') %>:</strong></dt>
+  <dd><%= @config.token_production %></dd>
+  <dt><strong><%= model_class.human_attribute_name('porta') %>:</strong></dt>
+  <dd><%= @config.port %></dd>
+  <dt><strong><%= model_class.human_attribute_name('sleep') %>:</strong></dt>
+  <dd><%= @config.sleep %></dd>
+
+  <dt><strong><%= model_class.human_attribute_name(:check_date) %>:</strong></dt>
+  <dd><%= @config.check_date %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:expiration_date) %>:</strong></dt>
+  <dd><%= @config.expiration_date %></dd>
+  <dt><strong><%= model_class.human_attribute_name('ambiente NFE') %>:</strong></dt>
+  <dd><%= @config.check_env %></dd>
+  <dt><strong><%= model_class.human_attribute_name('Site') %>:</strong></dt>
+  <dd><%= @config.site %></dd>
+
+  </dl>
+</dl>
+
+
+<%= link_to t('.back', :default => t("helpers.links.back")),
+              configs_path, :class => 'btn btn-default'  %>
+<%= link_to t('.edit', :default => t("helpers.links.edit")),
+              edit_config_path(@config), :class => 'btn btn-default' %>
+<%= link_to t('.destroy', :default => t("helpers.links.destroy")),
+              config_path(@config),
+              :method => 'delete',
+              :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) },
+              :class => 'btn btn-danger' %>

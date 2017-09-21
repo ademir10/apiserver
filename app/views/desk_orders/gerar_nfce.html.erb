@@ -1,0 +1,130 @@
+
+<script>
+$(document).ready(function(){
+
+	$(function() {
+ $('#cpfcnpj').focusout(function() {
+        var cpfcnpj, element;
+        element = $(this);
+        element.unmask();
+        cpfcnpj = element.val().replace(/\D/g, '');
+        if (cpfcnpj.length > 11) {
+            element.mask("99.999.999/999?9-99");
+        } else {
+            element.mask("999.999.999-99?9-99");
+        }
+    }).trigger('focusout');
+
+});
+
+});
+</script>
+
+<!-- Escondendo as formas de pagamento de acordo com a forma de pagamento selecionada -->
+<script>
+	$('#forma-pagto').ready(function () {
+
+    if ($('#forma-pagto option:selected').text() != "Cartão de Crédito" && $('#forma-pagto option:selected').text() != "Cartão de Débito"){
+    	$('.hide-field').hide();
+    }
+    else if ($('#forma-pagto').val() ) {
+       $('.hide-field').show();
+       $("#bandeira-cartao").focus();
+    }
+    else{
+    	$('.hide-field').hide();
+    }
+});
+
+
+	$(document).ready(function() {
+    $('#forma-pagto').change(function () {
+        if ($('#forma-pagto option:selected').text() != "Cartão de Crédito" && $('#forma-pagto option:selected').text() != "Cartão de Débito"){
+
+            $('.hide-field').hide();
+        }
+        else {
+        	$('.hide-field').show();
+        	$("#bandeira-cartao").focus();
+        }
+
+    });
+});
+</script>
+
+
+<h2>Nota fiscal do consumidor Eletrônica <%= image_tag "logo_nfce.png" %><br /> </h2>
+<h4>Ambiente de <b><%=@show_emitente.check_env %></b></h4>
+
+<hr />
+<h4><b>Informações gerais</b></h4>
+
+<%= form_for(@desk_order, :html => { :class => "form-horizontal desk_order" }, url: nfce_desk_order_path, method: :post) do |f| %>
+
+  <% if @desk_order.errors.any? %>
+    <div id="error_expl" class="panel panel-danger">
+      <div class="panel-heading">
+        <h3 class="panel-title"><%= pluralize(@desk_order.errors.count, "error") %> prohibited this desk_order from being saved:</h3>
+      </div>
+      <div class="panel-body">
+        <ul>
+        <% @desk_order.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+        </ul>
+      </div>
+    </div>
+  <% end %>
+    <!-- guardando o ambiente para saber se é teste ou produção -->
+    <%= f.hidden_field :environment, :value=> @show_emitente.check_env %>
+    <%= f.hidden_field :id, :value=> @desk_order.id %>
+
+    <div class="form-group">
+    <%= f.label 'cpf / Cnpj', :class => 'control-label col-lg-2' %>
+    <div class="col-lg-3">
+      <%= f.text_field :cpf_cnpj_nfce, :class => 'form-control', placeholder: 'Informação opcional' , id: 'cpfcnpj' %>
+    </div>
+    <%=f.error_span(:cpf_cnpj_nfce) %>
+  </div>
+
+   <div class="form-group">
+    <%= f.label 'email', :class => 'control-label col-lg-2' %>
+    <div class="col-lg-3">
+      <%= f.text_field :email_nfce, :class => 'form-control', placeholder: 'Informação opcional' %>
+    </div>
+    <%=f.error_span(:email_nfce) %>
+  </div>
+
+    <div class="form-group">
+    <%= f.label 'Forma Pagamento *', :class => 'control-label col-lg-2' %>
+    <div class="col-lg-3">
+    <%= f.select(:forma_pagamento_nfce, options_for_select([["Dinheiro","01"], ["Cheque","02"], ["Cartão de Crédito","03"], ["Cartão de Débito","04"], ["Crédito Loja","05"], ["Vale Alimentação","10"], ["Vale Refeição","11"], ["Vale Presente","12"], ["Vale Combustível","13"], ["Outros","99"]], @desk_order.forma_pagamento_nfce), {include_blank: 'Selecione'}, :class => 'form-control', id: 'forma-pagto' ) %>
+	</div>
+      <%=f.error_span(:forma_pagamento_nfce) %>
+    </div>
+
+    <div class="hide-field">
+    	<div class="form-group">
+	    <%= f.label 'Bandeira Cartão *', :class => 'control-label col-lg-2' %>
+		    <div class="col-lg-3">
+		    <%= f.select(:bandeira_operadora, options_for_select([["01: Visa","01"], ["02: Mastercard","02"], ["03: American Express","03"], ["04: Sorocred","04"], ["99: Outros","99"]], @desk_order.bandeira_operadora), {include_blank: 'Selecione'}, :class => 'form-control', id: 'bandeira-cartao' ) %>
+			</div>
+		<%=f.error_span(:bandeira_operadora) %>
+	    </div>
+    </div>
+
+    <div class="form-group">
+    <%= f.label 'info adicionais', :class => 'control-label col-lg-2' %>
+    <div class="col-lg-5">
+    <%= f.text_area :informacoes_adicionais_contribuinte, :class => 'form-control', :placeholder => "Digite aqui as informações adicionais..." %>
+	</div>
+    </div>
+
+
+ <div class="form-group">
+    <div class="col-lg-offset-2 col-lg-10">
+      <%= f.submit 'Emitir NFC-e', :class => 'btn btn-success', onclick: "waitingDialog.show('Aguarde enquanto emitimos o Documento fiscal...', {dialogSize: 'md', progressType: 'warning'});setTimeout(function () {waitingDialog.hide();}, 50000);" %>
+      <%= link_to 'Cancelar', desk_orders_path, :class => 'btn btn-default' %>
+    </div>
+  </div>
+<% end %>

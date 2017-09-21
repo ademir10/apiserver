@@ -109,6 +109,9 @@ html, body {
           </a>
           <!-- Dropdown level one -->
           <ul class="dnl-sub-one collapse" id="collapseStatistics">
+            <% if current_user.type_access == 'MASTER' %>
+            <%= link_to '<span class="glyphicon glyphicon-tags dnl-link-icon"></span> Configurações'.html_safe, configs_path, class: 'dnl-link-text' %>
+            <% end %>
             <%= link_to '<span class="glyphicon glyphicon-tags dnl-link-icon"></span> Categorias'.html_safe, categories_path, class: 'dnl-link-text' %>
             <%= link_to '<span class="glyphicon glyphicon-tags dnl-link-icon"></span> Formas de pagamento'.html_safe, form_payments_path, class: 'dnl-link-text' %>
             <%= link_to '<span class="glyphicon glyphicon-tags dnl-link-icon"></span> Fornecedores'.html_safe, suppliers_path, class: 'dnl-link-text' %>
@@ -130,7 +133,7 @@ html, body {
             <!-- Dropdown level one -->
             <ul class="dnl-sub-one collapse" id="collapseCategoryAll2">
               <li>
-               <%= link_to '<span class="fa fa-check-circle dnl-link-icon"></span> Verificar Mesas'.html_safe, desk_orders_path, class: 'dnl-link-text' %>
+               <%= link_to '<span class="fa fa-check-circle dnl-link-icon"></span> Verificar Vendas'.html_safe, desk_orders_path, class: 'dnl-link-text' %>
               </li>
               <li>
                 <%= link_to '<span class="fa fa-tachometer dnl-link-icon"></span> Dashboard'.html_safe, dashboard_path, class: 'dnl-link-text' %>

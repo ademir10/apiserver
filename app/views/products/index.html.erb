@@ -16,6 +16,7 @@
       <th><%= model_class.human_attribute_name('valor R$') %></th>
       <th><%= model_class.human_attribute_name('Categoria') %></th>
       <th><%= model_class.human_attribute_name('Imagem') %></th>
+      <th><%= model_class.human_attribute_name('NCM') %></th>
             <th><%=t '.actions', :default => t("helpers.actions") %></th>
     </tr>
   </thead>
@@ -31,7 +32,8 @@
         <td><%= product.qnt %></td>
         <td><%= number_with_precision(product.value, precision: 2) %></td>
         <td><%= product.category.name %></td>
-          <td><%= image_tag(product.image.url, :size => "25x25", class: "css-style") %></td>
+        <td><%= image_tag(product.image.url, :size => "25x25", class: "css-style") %></td>
+        <td><%= product.codigo_ncm %></td>  
         <td>
           <%= link_to t('.show', :default => t("helpers.links.show")),
                       product_path(product), :class => 'btn btn-default btn-xs' %>

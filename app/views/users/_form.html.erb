@@ -32,9 +32,22 @@
   <div class="form-group">
     <%= f.label 'senha', :class => 'control-label col-lg-2' %>
     <div class="col-lg-2">
-      <%= f.text_field :password, :class => 'form-control' %>
+      <%= f.password_field :password, :class => 'form-control' %>
     </div>
     <%=f.error_span(:password) %>
+  </div>
+  <div class="form-group">
+      <%= f.label "tipo de acesso", :class => 'control-label col-lg-2' %>
+      <div class="col-lg-2">
+      <% if current_user.type_access == 'USER' %>
+        <%= f.select(:type_access, options_for_select([["MASTER"], ["ADMIN"],["USER"]], @user.type_access), {include_blank: 'Selecione'}, disabled: true ,:class => 'form-control') %>
+      <% elsif current_user.type_access == 'ADMIN' %>
+     	  <%= f.select(:type_access, options_for_select([["ADMIN"],["USER"]], @user.type_access), {include_blank: 'Selecione'},:class => 'form-control') %>
+      <% elsif current_user.type_access == 'MASTER' %>
+      <%= f.select(:type_access, options_for_select([["MASTER"], ["ADMIN"],["USER"]], @user.type_access), {include_blank: 'Selecione'},:class => 'form-control') %>
+      <% end %>
+      </div>
+      <%=f.error_span(:type_access) %>
   </div>
 
   <div class="form-group">

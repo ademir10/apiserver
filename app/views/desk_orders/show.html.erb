@@ -6,11 +6,13 @@
 
 
 </div>
-
-<%= link_to t('.back', :default => t("helpers.links.back")),
-              dashboard_path, :class => 'btn btn-default'  %>
+<%= link_to t('.back', :default => t("helpers.links.back")), dashboard_path, :class => 'btn btn-default'  %>
+<% if @desk_order.status == "Finalizada" %>
+<%= link_to 'Gerar Cupom fiscal', gerar_nfce_desk_order_path(:id => @desk_order.id), :class => 'btn btn-warning', id: 'printbtn', data: {disable_with: "<i class='fa fa-spinner fa-pulse fa-spin'></i> Processando...".html_safe} %>          
+  <%end%>
+<!--
 <%= link_to t('.edit', :default => t("helpers.links.edit")),
-              edit_desk_order_path(@desk_order), :class => 'btn btn-default' %>
+              edit_desk_order_path(@desk_order), :class => 'btn btn-default' %> -->
 <%= link_to t('.destroy', :default => t("helpers.links.destroy")),
               desk_order_path(@desk_order),
               :method => 'delete',

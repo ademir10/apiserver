@@ -44,11 +44,11 @@ width: 100%;
 
     <div class="panel-heading">
 
-  <h3>Temakeria Dsoft </h3>
-  <h4>A melhor de São Paulo</h4>
-  <h6>Rua Bresser, 409 - Brás</br>
-  Centro – São Paulo / SP </br>
-  (11)2738-2115 / (11)94838 9159</h6>
+  <h4><%= @config.razao %></h4>
+  <h6><%= @config.endereco %> <%= @config.numero %></br>
+  <%= @config.bairro %> / <%= @config.cidade %> </br>
+  Fone: <%= @config.telefone %></br>
+  <%= @config.site %></h6>
 
       <h1 class="panel-title">
       	Venda <b><%= @desk_order.qrpoint.description %></b>
