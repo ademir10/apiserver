@@ -20,6 +20,10 @@ Rails.application.routes.draw do
   #exclui o item selecionado se ainda não mudou o status
   post 'delete_item', to: 'desk_orders#delete_item'
   #----------------------------------------------------
+
+  #abrindo um form modal para informar os tributos do pruduto na invoice
+  get 'items/editar_tributo' => 'items#editar_tributo', :as => :editar_tributo
+  
   resources :payments
   resources :loginfos
   resources :suppliers do
@@ -36,9 +40,11 @@ Rails.application.routes.draw do
      get 'gerar_nfce'
    end
     resources :items do
-
     end
   end
+
+  resources :items
+
   resources :products do
     #para autocompletar o nome do produto
    get :autocomplete_product_name, :on => :collection

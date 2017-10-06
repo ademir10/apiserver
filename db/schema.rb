@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171006173055) do
+ActiveRecord::Schema.define(version: 20171006212351) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -21,6 +21,13 @@ ActiveRecord::Schema.define(version: 20171006173055) do
     t.datetime "updated_at", null: false
     t.string "image"
     t.string "description"
+  end
+
+  create_table "cfops", force: :cascade do |t|
+    t.integer "codigo"
+    t.string "descricao"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "configs", force: :cascade do |t|
@@ -92,6 +99,10 @@ ActiveRecord::Schema.define(version: 20171006173055) do
     t.string "status"
     t.string "qrpoint_name"
     t.string "local_print"
+    t.integer "cfop"
+    t.integer "codigo_ncm"
+    t.string "icms_situacao_tributaria"
+    t.integer "ipi_situacao_tributaria"
     t.index ["desk_order_id"], name: "index_items_on_desk_order_id"
     t.index ["product_id"], name: "index_items_on_product_id"
   end

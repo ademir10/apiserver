@@ -237,7 +237,7 @@ class DeskOrdersController < ApplicationController
         i_hash[:codigo_ncm] = i.product.codigo_ncm
         i_hash[:cfop] = i.cfop
         i_hash[:icms_origem] = 0
-        #i_hash[:icms_situacao_tributaria] = i.icms_situacao_tributaria
+        i_hash[:icms_situacao_tributaria] = i.icms_situacao_tributaria
         i_hash[:unidade_comercial] = i.product.unidade_comercial
         i_hash[:unidade_tributavel] = i.product.unidade_comercial
         i_hash[:quantidade_comercial] = i.qnt

@@ -1,17 +1,23 @@
 class ItemsController < ApplicationController
   before_action :must_login
 
+  #form modal para editar tributos
+    def editar_tributo
+    @item = Item.find_by(id: params[:id])
+    @produto = Product.find_by(id: @item.product_id)
+    @cfops = Cfop.order(:codigo)
+    respond_to do |format|
+    format.html
+    format.js
+    end
+  end
+
   #para autocompletar o nome do produto
   autocomplete :product, :name
   # GET /items
   # GET /items.json
   def index
     @items = Item.all
-  end
-
-  # GET /items/1
-  # GET /items/1.json
-  def show
   end
 
   # GET /items/new
@@ -81,6 +87,6 @@ class ItemsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def item_params
-      params.require(:item).permit(:product_id, :desk_order_id, :qnt, :val_unit, :val_total, :status, :name_prod, :status, :qrpoint_name, :local_print)
+      params.require(:item).permit(:product_id, :desk_order_id, :qnt, :val_unit, :val_total, :status, :name_prod, :status, :qrpoint_name, :local_print, :cfop, :codigo_ncm, :icms_situacao_tributaria, :apply_all)
     end
 end

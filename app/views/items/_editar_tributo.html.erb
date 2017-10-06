@@ -1,0 +1,66 @@
+<script>
+	$("#ncm").mask("99999999",{placeholder:""});
+	$("#cfop").mask("9999",{placeholder:""});
+</script>
+
+<!-- Modal -->
+<div data-toggle="modal" data-target="myModal" >
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Informação de tributos <%= image_tag('taxes.png') %></h4>
+      </div>
+      <div class="modal-body">
+
+
+<h5><font color="red"><%= @produto.name %></font></h5>
+<hr />
+
+<%= form_for @item, :html => { :class => "form-horizontal invoice" } do |f| %>
+
+    <%= f.hidden_field :id, :value=> @item.id %>
+
+    <div class="form-group">
+    <%= f.label 'CFOP', :class => 'control-label col-lg-2' %>
+    <div class="col-lg-3">
+    <%= f.collection_select(:cfop, @cfops, :codigo, :codigo, {include_blank: 'Selecione:'},:class => 'form-control', id: 'cfop') %>
+    </div>
+    </div>
+
+    <div class="form-group">
+    <%= f.label 'NCM', :class => 'control-label col-lg-2' %>
+    <div class="col-lg-4">
+    <%= f.text_field :codigo_ncm, :class => 'form-control', id: 'ncm' %>
+    </div>
+    </div>
+
+	<div class="form-group">
+    <%= f.label 'ICMS:', :class => 'control-label col-lg-2' %>
+    <div class="col-lg-5">
+    <%= f.select(:icms_situacao_tributaria, options_for_select([["00: tributada integralmente","00"],["10: tributada e com cobrança do ICMS por substituição tributária","10"],["20: tributada com redução de base de cálculo","20"],["30: isenta ou não tributada e com cobrança do ICMS por substituição tributária","30"],["40: isenta","40"],["41: não tributada","41"],["50: suspensão","50"],["51: diferimento (a exigência do preenchimento das informações do ICMS diferido fica a critério de cada UF)","51"],["60: cobrado anteriormente por substituição tributária","60"],["70: tributada com redução de base de cálculo e com cobrança do ICMS por substituição tributária","70"],["90: outras (regime Normal)","90"],["101: tributada pelo Simples Nacional com permissão de crédito","101"],["102: tributada pelo Simples Nacional sem permissão de crédito","102"],["103: isenção do ICMS no Simples Nacional para faixa de receita bruta","103"],["201: tributada pelo Simples Nacional com permissão de crédito e com cobrança do ICMS por substituição tributária","201"],["202: tributada pelo Simples Nacional sem permissão de crédito e com cobrança do ICMS por substituição tributária","202"],["203: isenção do ICMS nos Simples Nacional para faixa de receita bruta e com cobrança do ICMS por substituição tributária","203"],["300: imune","300"],["400: não tributada pelo Simples Nacional","400"],["500: ICMS cobrado anteriormente por substituição tributária (substituído) ou por antecipação"],["900: outras (regime Simples Nacional)","900"]], @item.icms_situacao_tributaria), {include_blank: 'Selecione'}, :class => 'form-control') %>
+	</div>
+    </div>
+    <!--
+    <div class="form-group">
+    <%= f.label 'IPI:', :class => 'control-label col-lg-2' %>
+    <div class="col-lg-3">
+    <%= f.select(:ipi_situacao_tributaria, options_for_select([["00: entrada com recuperação de crédito","00"],["01: entrada tributada com alíquota zero","01"],["02: entrada isenta","02"],["03: entrada não-tributada","03"],["04: entrada imune","04"],["05: entrada com suspensão","05"],["49: outras entradas","49"],["50: saída tributada","50"],["51: saída tributada com alíquota zero","51"],["52: saída isenta","52"],["53: saída não-tributada","53"],["54: saída imune","54"],["55: saída com suspensão","56"],["99: outras saídas","99"]], @item.ipi_situacao_tributaria), {include_blank: 'Selecione'}, :class => 'form-control') %>
+	</div>
+    </div>
+    -->
+
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <%= f.check_box :apply_all %>&nbsp;<%= f.label "Aplicar á todos itens" %>
+
+
+<div class="form-group">
+    <div class="col-lg-offset-2 col-lg-10">
+      <%= f.submit 'Salvar', :class => 'btn btn-primary' %>
+      <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+    </div>
+  </div>
+
+<% end %>
