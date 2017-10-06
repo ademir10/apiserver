@@ -45,6 +45,13 @@ $(document).ready(function() {
     <%=f.error_span(:description) %>
   </div>
   <div class="form-group">
+    <%= f.label 'Unid medida', :class => 'control-label col-lg-2' %>
+    <div class="col-lg-2">
+     <%= f.select(:unidade_comercial, options_for_select([["BD"], ["CJ"], ["CM"], ["CX"], ["DZ"], ["FD"], ["GL"], ["GR"], ["KG"], ["LT"], ["M2"], ["M3"], ["MG"], ["ML"], ["MM"], ["MT"], ["PR"], ["PC"], ["UN"]], @product.unidade_comercial), {include_blank: 'Selecione'}, :class => 'form-control') %>
+      </div>
+    <%=f.error_span(:unidade_comercial) %>
+  </div>
+  <div class="form-group">
     <%= f.label "controlar estoque?", :class => 'control-label col-lg-2' %>
     <div class="col-lg-10">
       <%= f.check_box :check_stock, id: 'check_stock' %>
@@ -84,6 +91,14 @@ $(document).ready(function() {
   	</div>
 
     <div class="form-group">
+      <%= f.label 'NCM', :class => 'control-label col-lg-2' %>
+      <div class="col-lg-1">
+        <%= f.text_field :codigo_ncm, :class => 'form-control', id: 'ncm' %>
+      </div>
+      <%=f.error_span(:codigo_ncm) %>
+    </div>
+
+    <div class="form-group">
       <%= f.label 'Imagem', :class => 'control-label col-lg-2' %>
       <div class="col-lg-4">
       <%= f.file_field :image, :class => 'form-control' %>
@@ -94,15 +109,6 @@ $(document).ready(function() {
   	  </div>
   	    <%=f.error_span(:remove_image) %>
   	  <% end %>
-
-      <div class="form-group">
-        <%= f.label 'NCM', :class => 'control-label col-lg-2' %>
-        <div class="col-lg-1">
-          <%= f.text_field :codigo_ncm, :class => 'form-control', id: 'ncm' %>
-        </div>
-        <%=f.error_span(:codigo_ncm) %>
-      </div>
-
 
   <div class="form-group">
     <div class="col-lg-offset-2 col-lg-10">

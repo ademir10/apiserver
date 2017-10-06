@@ -113,7 +113,7 @@
 
 	<%if @total_por_forma_recebimento.present? %>
 	<% @total_por_forma_recebimento.each do |resultado| %>
-		Total <%= resultado.form_receipt %>: <b>R$ <%= number_with_precision(resultado.total, precision: 2) %></b><br />
+		Total <%= resultado.type_payment %>: <b>R$ <%= number_with_precision(resultado.total, precision: 2) %></b><br />
 	<% end %>
 	<% end %>
 </div>

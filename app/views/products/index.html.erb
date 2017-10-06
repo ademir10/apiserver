@@ -11,6 +11,7 @@
   <thead>
     <tr>
       <th><%= model_class.human_attribute_name('nome') %></th>
+      <th><%= model_class.human_attribute_name('unid medida') %></th>
       <th><%= model_class.human_attribute_name('estoque?') %></th>
       <th><%= model_class.human_attribute_name('qnt') %></th>
       <th><%= model_class.human_attribute_name('valor R$') %></th>
@@ -24,6 +25,7 @@
     <% @products.each do |product| %>
       <tr>
         <td><%= link_to product.name, product_path(product) %></td>
+        <td><%= product.unidade_comercial %></td>
         <% if product.check_stock == true %>
         <td>Sim</td>
         <% else %>
@@ -33,7 +35,7 @@
         <td><%= number_with_precision(product.value, precision: 2) %></td>
         <td><%= product.category.name %></td>
         <td><%= image_tag(product.image.url, :size => "25x25", class: "css-style") %></td>
-        <td><%= product.codigo_ncm %></td>  
+        <td><%= product.codigo_ncm %></td>
         <td>
           <%= link_to t('.show', :default => t("helpers.links.show")),
                       product_path(product), :class => 'btn btn-default btn-xs' %>

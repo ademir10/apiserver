@@ -13,12 +13,12 @@ class ReceiptsController < ApplicationController
 
       if params[:date1].present? && params[:date2].present? && params[:tipo_consulta].blank?
         @receipts = Receipt.where("created_at::date BETWEEN ? AND ?", params[:date1], params[:date2]).order(:id)
-        @total_por_forma_recebimento = Receipt.select('form_receipt', 'sum(value_doc) as total').where("created_at::date BETWEEN ? AND ?", params[:date1], params[:date2]).group('form_receipt').order('form_receipt')
+        @total_por_forma_recebimento = Receipt.select('form_payments.type_payment', 'sum(value_doc) as total').joins(:form_payment).where("receipts.created_at::date BETWEEN ? AND ?", params[:date1], params[:date2]).group('form_payments.type_payment').order('form_payments.type_payment')
         @total_receipts = Receipt.where("created_at::date BETWEEN ? AND ?", params[:date1], params[:date2]).sum(:value_doc)
 
       elsif params[:date1].present? && params[:date2].present? && params[:tipo_consulta].present?
         @receipts = Receipt.where("created_at::date BETWEEN ? AND ?", params[:date1], params[:date2]).where(status: params[:tipo_consulta]).order(:id)
-        @total_por_forma_recebimento = Receipt.select('form_receipt', 'sum(value_doc) as total').where("created_at::date BETWEEN ? AND ?", params[:date1], params[:date2]).where(status: params[:tipo_consulta]).group('form_receipt').order('form_receipt')
+        @total_por_forma_recebimento = Receipt.select('form_payments.type_payment', 'sum(value_doc) as total').joins(:form_payment).where("receipts.created_at::date BETWEEN ? AND ?", params[:date1], params[:date2]).where(status: params[:tipo_consulta]).group('form_payments.type_payment').order('form_payment.type_payment')
         @total_receipts = Receipt.where("created_at::date BETWEEN ? AND ?", params[:date1], params[:date2]).where(status: params[:tipo_consulta]).sum(:value_doc)
 
        end

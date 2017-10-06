@@ -1,5 +1,5 @@
 class DeskOrdersController < ApplicationController
-  before_action :set_desk_order, only: [:show, :edit, :update, :destroy, :baixar]
+  before_action :set_desk_order, only: [:show, :edit, :update, :destroy, :baixar, :nfce]
   before_action :must_login, only: [:show, :edit, :update, :destroy]
   before_action :show_form_payment, only: [:show, :edit, :update, :destroy, :create, :baixar]
   #Para permitir o acesso via aplicativo
@@ -116,9 +116,227 @@ class DeskOrdersController < ApplicationController
       end
   end
 
-  def nfce
 
-  end
+
+
+
+
+
+
+
+  #gerando o cupom fiscal
+  def nfce
+    require 'net/http'
+    require 'json'
+
+      @desk_order.update(desk_order_params)
+
+      #verifica se os campos obrigatórios foram preenchidos primeiro
+        if desk_order_params[:forma_pagamento_nfce].blank?
+          sweetalert_warning('Selecione uma forma de pagamento!', 'Atenção', persistent: 'OK')
+          redirect_to gerar_nfce_desk_order_path() and return
+        end
+
+      #verifica se a forma de pagamento é Débito ou crédito, se for tem que informar a bandeira do cartão
+      if desk_order_params[:forma_pagamento_nfce] == '03' && desk_order_params[:bandeira_operadora].blank?
+        sweetalert_warning('Você precisa informar a bandeira do cartão!', 'Atenção', persistent: 'OK')
+        redirect_to gerar_nfce_desk_order_path(desk_order_params) and return
+      end
+
+      if desk_order_params[:forma_pagamento_nfce] == '04' && desk_order_params[:bandeira_operadora].blank?
+        sweetalert_warning('Você precisa informar a bandeira do cartão!', 'Atenção', persistent: 'OK')
+        redirect_to gerar_nfce_desk_order_path(desk_order_params) and return
+      end
+
+  #para verificar em qual ambiente está a App
+      @show_emitente = Config.first
+
+        if @show_emitente.check_env == 'Teste'
+          puts 'ambiente de TESTE e o SERVER é ' + @show_emitente.url_server_test.to_s + ' E TOKEN ' + @show_emitente.token_test.to_s
+          server = @show_emitente.url_server_test.to_s;
+          token = @show_emitente.token_test.to_s;
+        else
+          puts 'ambiente de PRODUÇÃO e o SERVER é ' + @show_emitente.url_server_production.to_s + ' E TOKEN ' + @show_emitente.token_production.to_s
+          server = @show_emitente.url_server_production.to_s;
+          token = @show_emitente.token_production.to_s;
+        end
+
+       #se estiver em ambiente de testes é obrigatória a informação do CPF / CNPJ
+        if @show_emitente.check_env == 'Teste' && desk_order_params[:cpf_cnpj_nfce].blank?
+          sweetalert_warning('No ambiente de testes é obrigatório informar um CPF / CNPJ válidos.', 'Atenção', persistent: 'OK')
+        redirect_to gerar_nfce_desk_order_path(desk_order_params) and return
+        end
+
+         # porta de comunicação
+        port = @show_emitente.port.to_i
+
+       @DeskOrders = DeskOrder.find(params[:id])
+
+
+        #carregando os dados do cabeçalho da NFCe
+        hash = {}
+
+        #dados do emitente
+        hash[:cnpj_emitente] = @show_emitente.cnpj
+        hash[:nome_emitente] = @show_emitente.razao
+        hash[:nome_fantasia_emitente] = @show_emitente.nome_fantasia
+        hash[:logradouro_emitente] = @show_emitente.endereco
+        hash[:numero_emitente] = @show_emitente.numero
+        hash[:bairro_emitente] = @show_emitente.bairro
+        hash[:municipio_emitente] = @show_emitente.cidade
+        hash[:uf_emitente] = @show_emitente.uf
+        hash[:cep_emitente] = @show_emitente.cep
+        hash[:inscricao_estadual_emitente] = @show_emitente.inscricao
+
+        hash[:data_emissao] = DateTime.now
+        hash[:natureza_operacao] = 'Venda ao Consumidor'
+        hash[:tipo_documento] = 1
+        hash[:presenca_comprador] = 1
+        hash[:finalidade_emissao] = 1
+        hash[:modalidade_frete] = 9
+        hash[:forma_pagamento] = 0
+
+        #se for ambiente de testes
+        if @show_emitente.check_env == 'Teste'
+        hash[:nome_destinatario] = 'NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL'
+
+        else
+        #hash[:nome_destinatario] = @DeskOrders.destinatario.nome_destinatario
+        end
+
+        if desk_order_params[:cpf_cnpj_nfce].blank?
+          hash[:consumidor_final] = 1
+        else
+            #verifica se foi o cpf ou cnpj informado
+            if desk_order_params[:cpf_cnpj_nfce].present?
+              if desk_order_params[:cpf_cnpj_nfce].mb_chars.length == 14
+                hash[:cpf_destinatario] = @DeskOrders.cpf_cnpj_nfce
+              elsif desk_order_params[:cpf_cnpj_nfce].mb_chars.length > 14
+                hash[:cnpj_destinatario] = @DeskOrders.cpf_cnpj_nfce
+              end
+            end
+        end
+
+        if desk_order_params[:email_destinatario].present?
+          #hash[:email_destinatario] = @DeskOrders.email_nfce
+        end
+        hash[:informacoes_adicionais_contribuinte] = @DeskOrders.informacoes_adicionais_contribuinte
+
+        hash[:valor_produtos] = @DeskOrders.total
+        hash[:valor_desconto] = '0.00'
+        hash[:valor_total] = @DeskOrders.total
+
+        #carregando os itens da NFCe
+        hash[:items] = []
+        counter = 0
+        @DeskOrders.items.order(:id).each do |i|
+        i_hash = {}
+        i_hash[:numero_item] = counter+=1
+        i_hash[:codigo_produto] = i.product_id
+        i_hash[:descricao] = i.product.name
+        i_hash[:codigo_ncm] = i.product.codigo_ncm
+        i_hash[:cfop] = i.cfop
+        i_hash[:icms_origem] = 0
+        #i_hash[:icms_situacao_tributaria] = i.icms_situacao_tributaria
+        i_hash[:unidade_comercial] = i.product.unidade_comercial
+        i_hash[:unidade_tributavel] = i.product.unidade_comercial
+        i_hash[:quantidade_comercial] = i.qnt
+        i_hash[:quantidade_tributavel] = i.qnt
+        i_hash[:valor_unitario_comercial] = i.val_unit
+        i_hash[:valor_unitario_tributavel] = i.val_unit
+        i_hash[:valor_bruto] = i.val_total
+        hash[:items] << i_hash
+        end
+
+        hash[:formas_pagamento] = []
+        @DeskOrders.items.each do |f|
+        f_hash = {}
+        f_hash[:forma_pagamento] = @DeskOrders.forma_pagamento_nfce
+        f_hash[:valor_pagamento] = f.total
+
+        #se a forma de pagamento for Débito ou crédito, precisa informar a bandeira do cartão
+        if @DeskOrders.forma_pagamento_nf == 3 || @DeskOrders.forma_pagamento_nfce == 4
+          f_hash[:bandeira_operadora] = @DeskOrders.bandeira_operadora
+        end
+
+        hash[:formas_pagamento] << f_hash
+       end
+
+
+        puts "=> Teste de envio NFCe"
+
+            # A referência é uma string que identifica univocamente uma NFSe e
+            # será usada para consultas posteriores
+            # tem que ser a mesma ref usada no envio
+            ref = params[:id].to_i
+
+        Net::HTTP.start(server, port) do |http|
+
+          res = http.post("/nfce.json?ref=#{ref}&token=#{token}", hash.to_json)
+
+
+          puts "Status = #{res.code}"
+          puts "Body = #{res.body}"
+          codigo_sefaz = res.code.to_i
+
+          if Net::HTTPSuccess === res
+            # Se a nota for aceita para processamento, o body vem vazio, deve-se agendar
+            # em seguida uma consulta da nota
+            puts "Nota aceita para processamento"
+
+                   if codigo_sefaz == 201
+                      response = JSON.parse(res.body)
+                      sweetalert_warning(response['mensagem_sefaz'].to_s, 'Aviso', persistent: 'OK')
+                        #gerando a URL da DANFE
+                        if response['status'] == 'autorizado'
+                          @DeskOrder = DeskOrder.find(params[:id])
+                            DeskOrder.update(@DeskOrder.id, status: 'NFCe emitida Nº' + response['numero'], url_danfe: 'https://api.focusnfe.com.br' + response['caminho_danfe'], url_xml: 'https://api.focusnfe.com.br' + response['caminho_xml_nota_fiscal'])
+                            sweetalert_success('NFCe Nº' + response['numero'].to_s + ' foi emitida com sucesso!', 'Aviso', persistent: 'OK')
+
+                              #redireciona para o cupom fiscal
+                              #@DeskOrder.update(desk_order_params)
+                              #redirect_to print_cupom_path(id: @DeskOrder) and return
+
+                        elsif response['status'] == 'processando_autorizacao'
+                           sweetalert("Não houve tempo hábil para processar sua requisição, tente novamente: " + "(" + "#{res.code}" + ")" + " #{res.body}".force_encoding("UTF-8"), 'Aviso', persistent: 'OK')
+                            redirect_to desk_order_path(@DeskOrder) and return
+                        end
+                    end
+
+                   #se a nfe já foi emitida para garantir é salvo novamente o endereço do xml e danfe
+                   elsif codigo_sefaz == 422
+                    sweetalert("Ocorreu um erro: " + "(" + "#{res.code}" + ")" + " #{res.body}".force_encoding("UTF-8"), 'Aviso', persistent: 'OK')
+                   end
+
+
+            #inserindo no log de atividades
+                log = Loginfo.new(params[:loginfo])
+                log.employee = current_user.name
+                log.task = 'Tentativa de emissão de NFCe ref venda: ' + params[:id].to_s
+                log.save!
+
+         end
+
+       redirect_to desk_orders_path and return
+
+    end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   def gerar_nfce
     @desk_order = DeskOrder.find(params[:id])
@@ -289,7 +507,7 @@ class DeskOrdersController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def desk_order_params
-      params.require(:desk_order).permit(:id, :number, :total, :status, :qrpoint_id, :type_service, :form_payment_id, :cpf_cnpj_nfce, :email_nfce, :forma_pagamento_nfce, :bandeira_operadora, :informacoes_adicionais_contribuinte)
+      params.require(:desk_order).permit(:id, :number, :total, :status, :qrpoint_id, :type_service, :form_payment_id, :cpf_cnpj_nfce, :email_nfce, :forma_pagamento_nfce, :bandeira_operadora, :informacoes_adicionais_contribuinte, :environment)
     end
 
     def show_form_payment
