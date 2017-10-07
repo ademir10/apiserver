@@ -190,12 +190,13 @@ html, body {
     <!-- SE NÃO ESTIVER LOGADO -->
     <% if !logged_in? %>
      <div class="content-wrap dnl-hidden" data-effect="dnl-push">
-
       <%= yield %>
      </div>
     <% else %>
     <!-- SE JÁ ESTIVER LOGADO -->
     <div class="content-wrap dnl-hidden" data-effect="dnl-push">
+      <!-- CARREGA AQUI O FORM MODAL PRA CADASTRAR PRODUTO NOVO -->
+      <div id="myModal" class="modal fade" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"></div>
 
 
     <br><br>

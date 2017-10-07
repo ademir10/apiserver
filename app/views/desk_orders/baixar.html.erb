@@ -132,5 +132,6 @@ width: 100%;
     <h4>Forma de pagamento: <%= @desk_order.form_payment.type_payment %> </h4>
     <h3><%= @desk_order.items.count %> Itens / <b>Total R$ <%= number_with_precision(@total_items, precision: 2) %></b> </h3>
     <button type="button" id ="printbtn" class="btn btn-success", onclick ="window.print();return false;">Imprimir</button>
-    <%= link_to t('.back', :default => t("helpers.links.back")), dashboard_path, :class => 'btn btn-default'  %>
+    <%= link_to t('.back', :default => t("helpers.links.back")), desk_order_path(@desk_order), :class => 'btn btn-default'  %>
+
 </div>

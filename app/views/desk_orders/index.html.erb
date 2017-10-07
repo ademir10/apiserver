@@ -75,11 +75,27 @@
         <td><%= desk_order.status %></td>
         <td><%=l desk_order.created_at %></td>
         <td>
+
+					<!-- LINK PARA A DANFE (NF EMITIDA) -->
+          <% if desk_order.url_danfe.present? && desk_order.caminho_xml_cancelamento.blank? %>
+ 	          <!-- verifica se é uma NFe ou NFCe porque são carregadas diferentemente -->
+ 	                   <%= link_to 'NFCe', desk_order.url_danfe, target: '_blank', class: 'btn btn-primary btn-xs' %>
+           <% end %>
+
+ 	         <!-- LINK PARA O XML DA DANFE - FICARÁ DISPONIVEL EM TODOS OS CASOS -->
+ 	          <% if desk_order.url_danfe.present? %>
+ 	           	<%= link_to 'XML', desk_order.url_xml, download: 'data', class: 'btn btn-primary btn-xs' %>
+                  <% end %>
+
+
           <%= link_to t('.show', :default => t("helpers.links.show")),
                       desk_order_path(desk_order), :class => 'btn btn-default btn-xs', id: "printbtn" %>
-          <%= link_to t('.edit', :default => t("helpers.links.edit")),
-                      edit_desk_order_path(desk_order), :class => 'btn btn-default btn-xs', id: "printbtn" %>
-          <%= link_to t('.destroy', :default => t("helpers.links.destroy")),
+
+					<% if desk_order.status == 'Aberta' || desk_order.status == 'Em uso' %>
+          <%= link_to t('.edit', :default => t("helpers.links.edit")), edit_desk_order_path(desk_order), :class => 'btn btn-default btn-xs', id: "printbtn" %>
+					<% end %>
+
+					<%= link_to t('.destroy', :default => t("helpers.links.destroy")),
                       desk_order_path(desk_order),
                       :method => :delete,
                       :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) },

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171006212351) do
+ActiveRecord::Schema.define(version: 20171007002308) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -75,8 +75,12 @@ ActiveRecord::Schema.define(version: 20171006212351) do
     t.string "cpf_cnpj_nfce"
     t.string "email_nfce"
     t.string "forma_pagamento_nfce"
-    t.integer "bandeira_operadora"
+    t.string "bandeira_operadora"
     t.text "informacoes_adicionais_contribuinte"
+    t.string "url_danfe"
+    t.string "url_xml"
+    t.text "justificativa_cancelamento"
+    t.string "caminho_xml_cancelamento"
     t.index ["form_payment_id"], name: "index_desk_orders_on_form_payment_id"
     t.index ["qrpoint_id"], name: "index_desk_orders_on_qrpoint_id"
   end

@@ -73,6 +73,7 @@ class DeskOrdersController < ApplicationController
           add_item.val_total = val_total_items
           add_item.qrpoint_name = qrpoint.description
           add_item.local_print = product.local_print
+          add_item.codigo_ncm = product.codigo_ncm
           add_item.save!
           sum_items = Item.where(desk_order_id: params[:desk_order_id].to_i).sum(:val_total)
           DeskOrder.update(params[:desk_order_id].to_i, total: sum_items.to_f)
@@ -235,7 +236,7 @@ class DeskOrdersController < ApplicationController
         i_hash[:codigo_produto] = i.product_id
         i_hash[:descricao] = i.product.name
         i_hash[:codigo_ncm] = i.product.codigo_ncm
-        i_hash[:cfop] = i.cfop
+        i_hash[:cfop] = 5102
         i_hash[:icms_origem] = 0
         i_hash[:icms_situacao_tributaria] = i.icms_situacao_tributaria
         i_hash[:unidade_comercial] = i.product.unidade_comercial
@@ -252,10 +253,10 @@ class DeskOrdersController < ApplicationController
         @DeskOrders.items.each do |f|
         f_hash = {}
         f_hash[:forma_pagamento] = @DeskOrders.forma_pagamento_nfce
-        f_hash[:valor_pagamento] = f.total
-
+        f_hash[:valor_pagamento] = f.val_total
         #se a forma de pagamento for Débito ou crédito, precisa informar a bandeira do cartão
-        if @DeskOrders.forma_pagamento_nf == 3 || @DeskOrders.forma_pagamento_nfce == 4
+        if @DeskOrders.forma_pagamento_nfce == '03' || @DeskOrders.forma_pagamento_nfce == '04'
+          puts 'TÁ PASSANDO AQUI SIM NA BANDEIRA!!!'
           f_hash[:bandeira_operadora] = @DeskOrders.bandeira_operadora
         end
 
@@ -318,7 +319,7 @@ class DeskOrdersController < ApplicationController
          end
 
        redirect_to desk_orders_path and return
-
+       #render :json => hash
     end
 
 
@@ -507,7 +508,7 @@ class DeskOrdersController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def desk_order_params
-      params.require(:desk_order).permit(:id, :number, :total, :status, :qrpoint_id, :type_service, :form_payment_id, :cpf_cnpj_nfce, :email_nfce, :forma_pagamento_nfce, :bandeira_operadora, :informacoes_adicionais_contribuinte, :environment)
+      params.require(:desk_order).permit(:id, :number, :total, :status, :qrpoint_id, :type_service, :form_payment_id, :cpf_cnpj_nfce, :email_nfce, :forma_pagamento_nfce, :bandeira_operadora, :informacoes_adicionais_contribuinte, :environment, :url_danfe, :url_xml, :justificativa_cancelamento, :caminho_xml_cancelamento)
     end
 
     def show_form_payment

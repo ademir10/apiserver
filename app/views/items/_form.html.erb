@@ -22,7 +22,8 @@ $('#val_unit').on('keyup',function(){
 
     		$('#id_prod').val(obj.id);
     		$('#descricao_produto').val(obj.descricao);
-        	$('#quantidade').val(obj.qnt);
+        $('#quantidade').val(obj.qnt);
+        $('#ncm').val(obj.codigo_ncm);
 			//AQUI É ONDE MOSTRA O VALOR COM .00 AO TRAZER O VALOR DE VENDA DO PRODUTO
 			$('#val_unit').val(parseFloat(obj.value).toFixed(2));
 
@@ -54,7 +55,7 @@ $('#val_unit').on('keyup',function(){
       </div>
     </div>
   <% end %>
-
+  <%= f.hidden_field :codigo_ncm, id: 'ncm' -%>
 
 	<div class="col-lg-2">
 	<%= f.autocomplete_field :product_id, autocomplete_product_name_products_path, :id_element => '#id_prod', :class => 'form-control',placeholder: 'Digite o nome:', id: 'id_do_produto' %>

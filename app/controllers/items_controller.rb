@@ -59,14 +59,20 @@ class ItemsController < ApplicationController
   # PATCH/PUT /items/1
   # PATCH/PUT /items/1.json
   def update
-    respond_to do |format|
-      if @item.update(item_params)
-        format.html { redirect_to @item, notice: 'Item was successfully updated.' }
-        format.json { render :show, status: :ok, location: @item }
-      else
-        format.html { render :edit }
-        format.json { render json: @item.errors, status: :unprocessable_entity }
-      end
+    @item = Item.find(params[:id])
+    @desk_order = DeskOrder.find(@item.desk_order_id)
+
+    if item_params[:codigo_ncm].blank?
+      sweetalert_warning('O campo NCM do item: ' + @item.product.name.to_s + ' não pode ficar em branco, informe o Código com 8 digitos caso queira emitir um documento fiscal posteriormente!', 'Atenção', persistent: 'OK')
+    end
+    #quando é marcado para aplicar os impostos de uma só vez em todos os itens da venda
+    if item_params[:apply_all] == '1'
+         Item.where('desk_order_id = ?', @item.desk_order_id).update_all(cfop: item_params[:cfop], icms_situacao_tributaria: item_params[:icms_situacao_tributaria])
+         redirect_to desk_order_path(@desk_order) and return
+    end
+    if @item.update(item_params)
+       @item = @desk_order.items.find(params[:id])
+     redirect_to desk_order_path(@desk_order)
     end
   end
 
