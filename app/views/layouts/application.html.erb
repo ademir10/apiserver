@@ -1,3 +1,27 @@
+<style type="text/css">
+	@media print {
+    #printbtn {
+        display :  none;
+    }
+
+    @media print {
+  a[href]:after {
+    content: none !important;
+  }
+}
+}
+
+#printOnly {
+   display : none;
+}
+
+@media print {
+    #printOnly {
+       display : block;
+    }
+}
+</style>
+
 <!-- PARA REMOVER AS SCROLLBARS SOMENTE NA PAGINA INICIA -->
 <% if !logged_in? %>
 <style>
@@ -98,7 +122,7 @@ html, body {
 
     <!-- Dash Navbar Left
     Available versions: dnl-visible, dnl-hidden -->
-    <div class="dash-navbar-left dnl-hidden">
+    <div class="dash-navbar-left dnl-hidden" id="printbtn">
       <p class="dnl-nav-title"><b>Cadastros</b></p>
       <ul class="dnl-nav">
         <li>
