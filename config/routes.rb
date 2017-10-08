@@ -23,7 +23,7 @@ Rails.application.routes.draw do
 
   #abrindo um form modal para informar os tributos do pruduto na invoice
   get 'items/editar_tributo' => 'items#editar_tributo', :as => :editar_tributo
-  
+
   resources :payments
   resources :loginfos
   resources :suppliers do
@@ -44,6 +44,11 @@ Rails.application.routes.draw do
   end
 
   resources :items
+
+  #para cancelar a nfe
+  get 'cancelar_nfe', to: 'desk_orders#cancelar_nfe'
+  #para efetivar o cancelamento da nfe
+  post 'cancel_nfe', to: 'desk_orders#cancel_nfe'
 
   resources :products do
     #para autocompletar o nome do produto

@@ -87,6 +87,16 @@
  	           	<%= link_to 'XML', desk_order.url_xml, download: 'data', class: 'btn btn-primary btn-xs' %>
                   <% end %>
 
+									<!-- LINK PARA CANCELAMENTO DE NF -->
+								<% if desk_order.url_danfe.present? && desk_order.caminho_xml_cancelamento.blank? %>
+											<%= link_to 'Canc. NFe', cancelar_nfe_path(:id => desk_order.id), class: 'btn btn-warning btn-xs' %>
+									<% end %>
+
+							<!-- LINK PARA O XML DO CANCELAMENTO -->
+							<% if desk_order.caminho_xml_cancelamento.present? %>
+									<%= link_to 'XML Cancelamento', desk_order.caminho_xml_cancelamento, download: 'data', class: 'btn btn-default btn-xs' %>
+								<% end %>
+
 
           <%= link_to t('.show', :default => t("helpers.links.show")),
                       desk_order_path(desk_order), :class => 'btn btn-default btn-xs', id: "printbtn" %>

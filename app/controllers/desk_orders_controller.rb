@@ -117,13 +117,87 @@ class DeskOrdersController < ApplicationController
       end
   end
 
+  #chama a tela de cancelamento NFCe
+  def cancelar_nfe
+    @desk_order = DeskOrder.find(params[:id])
+    @show_emitente = Config.first
+  end
 
+  #efetiva o cancelamento da NFCe
+  def cancel_nfe
 
+    if desk_order_params[:justificativa_cancelamento].blank?
+                  sweetalert_warning("Você precisa informar uma justificativa!", 'Atenção', persistent: 'OK')
+            redirect_to cancelar_nfe_path(:id => desk_order_params[:id]) and return
+    end
 
+    require 'net/http'
+    require 'json'
 
+    #para verificar em qual ambiente está a App
+    @show_emitente = Config.first
 
+      if @show_emitente.check_env == 'Teste'
+        puts 'ambiente de TESTE e o SERVER é ' + @show_emitente.url_server_test.to_s + ' E TOKEN ' + @show_emitente.token_test.to_s
+        server = @show_emitente.url_server_test.to_s;
+        token = @show_emitente.token_test.to_s;
+      else
+        puts 'ambiente de PRODUÇÃO e o SERVER é ' + @show_emitente.url_server_production.to_s + ' E TOKEN ' + @show_emitente.token_production.to_s
+        server = @show_emitente.url_server_production.to_s;
+        token = @show_emitente.token_production.to_s;
+      end
+       # porta de comunicação
+      port = @show_emitente.port.to_i
 
+      ref = desk_order_params[:id].to_i
+      @desk_order = DeskOrder.find(desk_order_params[:id])
 
+      hash = {}
+      hash[:justificativa] = desk_order_params[:justificativa_cancelamento].to_s
+
+  Net::HTTP.start(server, port) do |http|
+
+       url = "/nfce/#{ref}.json?token=#{token}&justificativa=#{URI.encode(hash[:justificativa])}"
+
+       res = http.delete(url)
+       codigo_sefaz = res.code.to_i
+
+                if codigo_sefaz == 200
+
+                       url = "/nfce/#{ref}.json?token=#{token}"
+                       res = http.get(url)
+                          response = JSON.parse(res.body)
+                          codigo_sefaz = res.code.to_i
+
+                          DeskOrder.update(@desk_order.id, status: 'NFCe cancelada', justificativa_cancelamento: desk_order_params[:justificativa_cancelamento], url_xml: 'https://api.focusnfe.com.br' + response['caminho_xml_nota_fiscal'], caminho_xml_cancelamento: 'https://api.focusnfe.com.br' + response['caminho_xml_cancelamento'])
+
+                                      #inserindo no log de atividades
+                                      log = Loginfo.new(params[:loginfo])
+                                      log.employee = current_user.name
+                                      log.task = 'Cancelamento de NFCe ref venda: ' + desk_order_params[:id].to_s
+                                      log.save!
+
+                         sweetalert_success("NFCe cancelada com sucesso!".force_encoding("UTF-8"), 'Aviso', persistent: 'OK')
+                          redirect_to desk_orders_path and return
+
+                 else
+
+                       url = "/nfce/#{ref}.json?token=#{token}"
+                       res2 = http.get(url)
+
+                          response = JSON.parse(res2.body)
+                          codigo_sefaz = res2.code.to_i
+
+                                      #inserindo no log de atividades
+                                      log = Loginfo.new(params[:loginfo])
+                                      log.employee = current_user.name
+                                      log.task = 'Tentativa de cancelamento de NFCe ref venda: ' + invoice_params[:id].to_s
+                                      log.save!
+                          sweetalert_warning("Retorno Sefaz: " + "(" + "#{res2.code}" + ")" + " #{response['mensagem_sefaz_cancelamento']}".force_encoding("UTF-8"), 'Aviso', persistent: 'OK')
+                          redirect_to desk_orders_path and return
+                 end
+        end      
+  end
 
   #gerando o cupom fiscal
   def nfce
@@ -171,7 +245,7 @@ class DeskOrdersController < ApplicationController
          # porta de comunicação
         port = @show_emitente.port.to_i
 
-       @DeskOrders = DeskOrder.find(params[:id])
+       @desk_orders = DeskOrder.find(params[:id])
 
 
         #carregando os dados do cabeçalho da NFCe
@@ -202,7 +276,7 @@ class DeskOrdersController < ApplicationController
         hash[:nome_destinatario] = 'NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL'
 
         else
-        #hash[:nome_destinatario] = @DeskOrders.destinatario.nome_destinatario
+        #hash[:nome_destinatario] = @desk_orders.destinatario.nome_destinatario
         end
 
         if desk_order_params[:cpf_cnpj_nfce].blank?
@@ -211,26 +285,26 @@ class DeskOrdersController < ApplicationController
             #verifica se foi o cpf ou cnpj informado
             if desk_order_params[:cpf_cnpj_nfce].present?
               if desk_order_params[:cpf_cnpj_nfce].mb_chars.length == 14
-                hash[:cpf_destinatario] = @DeskOrders.cpf_cnpj_nfce
+                hash[:cpf_destinatario] = @desk_orders.cpf_cnpj_nfce
               elsif desk_order_params[:cpf_cnpj_nfce].mb_chars.length > 14
-                hash[:cnpj_destinatario] = @DeskOrders.cpf_cnpj_nfce
+                hash[:cnpj_destinatario] = @desk_orders.cpf_cnpj_nfce
               end
             end
         end
 
         if desk_order_params[:email_destinatario].present?
-          #hash[:email_destinatario] = @DeskOrders.email_nfce
+          #hash[:email_destinatario] = @desk_orders.email_nfce
         end
-        hash[:informacoes_adicionais_contribuinte] = @DeskOrders.informacoes_adicionais_contribuinte
+        hash[:informacoes_adicionais_contribuinte] = @desk_orders.informacoes_adicionais_contribuinte
 
-        hash[:valor_produtos] = @DeskOrders.total
+        hash[:valor_produtos] = @desk_orders.total
         hash[:valor_desconto] = '0.00'
-        hash[:valor_total] = @DeskOrders.total
+        hash[:valor_total] = @desk_orders.total
 
         #carregando os itens da NFCe
         hash[:items] = []
         counter = 0
-        @DeskOrders.items.order(:id).each do |i|
+        @desk_orders.items.order(:id).each do |i|
         i_hash = {}
         i_hash[:numero_item] = counter+=1
         i_hash[:codigo_produto] = i.product_id
@@ -250,14 +324,14 @@ class DeskOrdersController < ApplicationController
         end
 
         hash[:formas_pagamento] = []
-        @DeskOrders.items.each do |f|
+        @desk_orders.items.each do |f|
         f_hash = {}
-        f_hash[:forma_pagamento] = @DeskOrders.forma_pagamento_nfce
+        f_hash[:forma_pagamento] = @desk_orders.forma_pagamento_nfce
         f_hash[:valor_pagamento] = f.val_total
         #se a forma de pagamento for Débito ou crédito, precisa informar a bandeira do cartão
-        if @DeskOrders.forma_pagamento_nfce == '03' || @DeskOrders.forma_pagamento_nfce == '04'
+        if @desk_orders.forma_pagamento_nfce == '03' || @desk_orders.forma_pagamento_nfce == '04'
           puts 'TÁ PASSANDO AQUI SIM NA BANDEIRA!!!'
-          f_hash[:bandeira_operadora] = @DeskOrders.bandeira_operadora
+          f_hash[:bandeira_operadora] = @desk_orders.bandeira_operadora
         end
 
         hash[:formas_pagamento] << f_hash
@@ -290,17 +364,17 @@ class DeskOrdersController < ApplicationController
                       sweetalert_warning(response['mensagem_sefaz'].to_s, 'Aviso', persistent: 'OK')
                         #gerando a URL da DANFE
                         if response['status'] == 'autorizado'
-                          @DeskOrder = DeskOrder.find(params[:id])
-                            DeskOrder.update(@DeskOrder.id, status: 'NFCe emitida Nº' + response['numero'], url_danfe: 'https://api.focusnfe.com.br' + response['caminho_danfe'], url_xml: 'https://api.focusnfe.com.br' + response['caminho_xml_nota_fiscal'])
+                          @desk_order = DeskOrder.find(params[:id])
+                            DeskOrder.update(@desk_order.id, status: 'NFCe emitida Nº' + response['numero'], url_danfe: 'https://api.focusnfe.com.br' + response['caminho_danfe'], url_xml: 'https://api.focusnfe.com.br' + response['caminho_xml_nota_fiscal'])
                             sweetalert_success('NFCe Nº' + response['numero'].to_s + ' foi emitida com sucesso!', 'Aviso', persistent: 'OK')
 
                               #redireciona para o cupom fiscal
-                              #@DeskOrder.update(desk_order_params)
-                              #redirect_to print_cupom_path(id: @DeskOrder) and return
+                              #@desk_order.update(desk_order_params)
+                              #redirect_to print_cupom_path(id: @desk_order) and return
 
                         elsif response['status'] == 'processando_autorizacao'
                            sweetalert("Não houve tempo hábil para processar sua requisição, tente novamente: " + "(" + "#{res.code}" + ")" + " #{res.body}".force_encoding("UTF-8"), 'Aviso', persistent: 'OK')
-                            redirect_to desk_order_path(@DeskOrder) and return
+                            redirect_to desk_order_path(@desk_order) and return
                         end
                     end
 
@@ -351,7 +425,7 @@ class DeskOrdersController < ApplicationController
      #VERIFICA SE SE TODOS OS PRODUTOS ADICIONADOS NA VENDA JÁ FORAM INFORMADOS OS IMPOSTOS PARA LIBERAR O BOTÃO
           #DE EMISSÃO DA NOTA FISCAL
            Item.where(desk_order_id: @desk_order).find_each do |item|
-                if item.product.codigo_ncm.blank? || item.product.codigo_ncm == ''
+             if item.cfop.blank? || item.cfop == '' || item.codigo_ncm.blank? || item.codigo_ncm == '' || item.icms_situacao_tributaria.blank? || item.icms_situacao_tributaria == ''
                  @check_tributos = @check_tributos.to_s + ' ' + item.product.name.to_s + ', '
                  end
            end
