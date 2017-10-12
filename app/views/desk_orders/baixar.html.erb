@@ -85,7 +85,7 @@ width: 100%;
       <%else%>
       Itens
       <%end%>
-       / Total R$ <strong>R$ <%= number_with_precision(@desk_order.total, precision: 2) %></strong>
+       / Total R$ <strong>R$ <%= number_with_precision(@total_items, precision: 2) %></strong>
     </div><!-- fim .panel-heading -->
   <button type="button" id ="printbtn" class="btn btn-success", onclick ="window.print();return false;">Imprimir</button>
 
