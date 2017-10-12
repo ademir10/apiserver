@@ -51,7 +51,7 @@ class ItemsController < ApplicationController
        @item = @desk_order.items.create(item_params)
 
          total_itens_atualizado = Item.where(desk_order_id: params[:desk_order_id]).sum(:val_total)
-         DeskOrder.update(@desk_order, total: total_itens_atualizado.to_f)
+         DeskOrder.update(@desk_order.id, total: total_itens_atualizado.to_f)
        redirect_to desk_order_path(@desk_order)
       end
   end
