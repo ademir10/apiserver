@@ -196,7 +196,7 @@ class DeskOrdersController < ApplicationController
                           sweetalert_warning("Retorno Sefaz: " + "(" + "#{res2.code}" + ")" + " #{response['mensagem_sefaz_cancelamento']}".force_encoding("UTF-8"), 'Aviso', persistent: 'OK')
                           redirect_to desk_orders_path and return
                  end
-        end      
+        end
   end
 
   #gerando o cupom fiscal
@@ -396,29 +396,12 @@ class DeskOrdersController < ApplicationController
        #render :json => hash
     end
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   def gerar_nfce
     @desk_order = DeskOrder.find(params[:id])
 
     #verifica se já é uma venda, caso contrário não permite a emissão da NFE
     if @desk_order.status == 'NFCe emitida'
-      sweetalert_warning('Você já emitiu uma nota fiscal do consumidor eletrônica para esta venda!', 'Atenção')
+      sweetalert_warning('Você já emitiu uma nota fiscal do consumidor eletrônica para esta venda!', 'Atenção', useRejections: false)
        redirect_to desk_order_path(@desk_order) and return
     end
 
@@ -445,13 +428,13 @@ class DeskOrdersController < ApplicationController
     #verifica se foi adicionado algum item na desk_order
     @qnt_items = Item.where(desk_order_id: @desk_order.id).count
     if @qnt_items == 0
-       sweetalert_warning('Insira pelo menos 1 item!', 'Atenção!')
+       sweetalert_warning('Insira pelo menos 1 item!', 'Atenção!', useRejections: false)
      redirect_to desk_order_path(@desk_order) and return
     end
 
     #verifica se foi informada a forma de pagamento no caso de O.S
     if desk_order_params[:form_payment_id].blank?
-       sweetalert_warning('Selecione uma forma de pagamento válida!', 'Atenção!')
+       sweetalert_warning('Selecione uma forma de pagamento válida!', 'Atenção!', useRejections: false)
       redirect_to desk_order_path(@desk_order) and return
     end
 
@@ -570,7 +553,7 @@ class DeskOrdersController < ApplicationController
         log.employee = current_user.name
         log.task = 'Excluiu venda da mesa Nº: ' + @desk_order.qrpoint.description.to_s
         log.save!
-        sweetalert_success('Venda excluida com sucesso!', 'Sucesso!')
+        sweetalert_success('Venda excluida com sucesso!', 'Sucesso!', useRejections: false)
         redirect_to desk_orders_path
   end
 

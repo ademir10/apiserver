@@ -19,7 +19,7 @@
 //= require turbolinks
 //= require rails-ujs
 //= require sweetalert2
-//= require sweet-alert2-rails
+
 //= require maskedinput
 //= require masks
 //= require_tree .
@@ -32,6 +32,4 @@ var sweetAlertConfirmConfig = {
   confirmButtonColor: "#DD6B55",
   confirmButtonText: "Sim",
   cancelButtonText: "Cancelar",
-
-
 };

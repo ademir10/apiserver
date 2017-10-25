@@ -34,18 +34,18 @@ class ItemsController < ApplicationController
   def create
     @desk_order = DeskOrder.find(params[:desk_order_id])
     if item_params[:product_id].blank?
-       sweetalert_warning('Selecione o produto que deseja adicionar!', 'Atenção!')
+       sweetalert_warning('Selecione o produto que deseja adicionar!', 'Atenção!', useRejections: false)
        redirect_to desk_order_path(@desk_order) and return
      end
    #verifica se no campo do valor unitário foi digitado incorretamente
     if item_params[:val_unit].to_s == 'NaN'
-       sweetalert_warning('O valor unitário do produto foi informado incorretamente, verifique os dados!', 'Atenção!')
+       sweetalert_warning('O valor unitário do produto foi informado incorretamente, verifique os dados!', 'Atenção!', useRejections: false)
        redirect_to desk_order_path(@desk_order) and return
      end
 
 
        if item_params[:qnt].blank?
-         sweetalert_warning('Informe uma quantidade para o produto!', 'Atenção!')
+         sweetalert_warning('Informe uma quantidade para o produto!', 'Atenção!', useRejections: false)
       redirect_to desk_order_path(@desk_order) and return
       else
        @item = @desk_order.items.create(item_params)

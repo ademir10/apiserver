@@ -35,7 +35,7 @@ class SuppliersController < ApplicationController
         log.save!
         format.html { redirect_to @supplier, notice: 'Form payment was successfully created.' }
         format.json { render :show, status: :created, location: @form_payment }
-        sweetalert_success('Dados cadastrados com sucesso!', 'Sucesso!')
+        sweetalert_success('Dados cadastrados com sucesso!', 'Sucesso!', useRejections: false)
       else
         format.html { render :new }
         format.json { render json: @supplier.errors, status: :unprocessable_entity }
@@ -54,7 +54,7 @@ class SuppliersController < ApplicationController
         log.save!
         format.html { redirect_to @supplier, notice: 'Form payment was successfully updated.' }
         format.json { render :show, status: :ok, location: @form_payment }
-        sweetalert_success('Dados atualizados com sucesso!', 'Sucesso!')
+        sweetalert_success('Dados atualizados com sucesso!', 'Sucesso!', useRejections: false)
         else
         format.html { render :edit }
         format.json { render json: @supplier.errors, status: :unprocessable_entity }
@@ -74,7 +74,7 @@ class SuppliersController < ApplicationController
     log.save!
     format.html { redirect_to form_payments_url, notice: 'Form payment was successfully destroyed.' }
     format.json { head :no_content }
-    sweetalert_success('Dados excluidos com sucesso!', 'Sucesso!')
+    sweetalert_success('Dados excluidos com sucesso!', 'Sucesso!', useRejections: false)
   end
   end
 

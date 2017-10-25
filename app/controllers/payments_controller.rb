@@ -46,25 +46,25 @@ class PaymentsController < ApplicationController
     @qnt_parcela = payment_params[:installments].to_i
 
     if payment_params[:type_doc].blank? || payment_params[:supplier_id].blank? || payment_params[:description].blank? || payment_params[:due_date].blank? || payment_params[:installments].blank? || payment_params[:value_doc].blank?
-        sweetalert_warning('Os dados precisam ser informados primeiro!', 'Atenção!')
+        sweetalert_warning('Os dados precisam ser informados primeiro!', 'Atenção!', useRejections: false)
       redirect_to new_payment_path and return
     end
 
     #verifica se foi informada a forma de pagamento na baixa
     if payment_params[:status] == 'Paga' && payment_params[:form_payment].blank?
-        sweetalert_warning('Selecione uma forma de pagamento!', 'Atenção!')
+        sweetalert_warning('Selecione uma forma de pagamento!', 'Atenção!', useRejections: false)
       redirect_to new_payment_path and return
     end
 
     #se informou a data da baixa e não alterou para PAGA o status
     if payment_params[:payment_date].present? && payment_params[:status] == 'Á Pagar'
-    sweetalert_warning('Altere o Status para PAGA, já que você informou a data de pagamento!', 'Atenção!')
+    sweetalert_warning('Altere o Status para PAGA, já que você informou a data de pagamento!', 'Atenção!', useRejections: false)
       redirect_to new_payment_path and return
     end
 
     #se alterou para PAGA o status e não informou a data do pagamento
     if payment_params[:status] == 'Paga' && payment_params[:payment_date].blank?
-        sweetalert_warning('Informe a data de pagamento, já que você alterou o status para PAGA!', 'Atenção!')
+        sweetalert_warning('Informe a data de pagamento, já que você alterou o status para PAGA!', 'Atenção!', useRejections: false)
       redirect_to new_payment_path and return
     end
 
@@ -81,7 +81,7 @@ class PaymentsController < ApplicationController
         log.save!
                 format.html { }
                 format.json { render :show, status: :created, location: @payment }
-                sweetalert_success('Pagamento cadastrado com sucesso!', 'Sucesso!')
+                sweetalert_success('Pagamento cadastrado com sucesso!', 'Sucesso!', useRejections: false)
                 redirect_to @payment
               else
                 format.html { render :new }
@@ -115,7 +115,7 @@ class PaymentsController < ApplicationController
          @payment = Payment.new(payment_params)
         end
       redirect_to payments_path
-      sweetalert_success('Parcelamento realizado com sucesso!', 'Sucesso!')
+      sweetalert_success('Parcelamento realizado com sucesso!', 'Sucesso!', useRejections: false)
      end
   end
 
@@ -124,19 +124,19 @@ class PaymentsController < ApplicationController
   def update
     #verifica se foi informada a forma de pagamento na baixa
     if payment_params[:payment_date].present? && payment_params[:form_payment].blank?
-        sweetalert_warning('Selecione uma forma de Pagamento!', 'Atenção!')
+        sweetalert_warning('Selecione uma forma de Pagamento!', 'Atenção!', useRejections: false)
       redirect_to edit_payment_path(@payment) and return
     end
 
     #se informou a data da baixa e não alterou para PAGA o status
     if payment_params[:payment_date].present? && payment_params[:status] == 'Á Pagar'
-        sweetalert_warning('Altere o Status para PAGA, já que você informou a data de pagamento!', 'Atenção!')
+        sweetalert_warning('Altere o Status para PAGA, já que você informou a data de pagamento!', 'Atenção!', useRejections: false)
       redirect_to edit_payment_path(@payment) and return
     end
 
     #se alterou para PAGA o status e não informou a data do pagamento
     if payment_params[:status] == 'Paga' && payment_params[:payment_date].blank?
-        sweetalert_warning('Informe a data de pagamento, já que você alerou o status para PAGA!', 'Atenção!')
+        sweetalert_warning('Informe a data de pagamento, já que você alerou o status para PAGA!', 'Atenção!', useRejections: false)
       redirect_to edit_payment_path(@payment) and return
     end
 
@@ -149,7 +149,7 @@ class PaymentsController < ApplicationController
         log.save!
         format.html { }
         format.json { render :show, status: :ok, location: @payment }
-          sweetalert_success('Dados atualizados com sucesso.', 'Sucesso!')
+          sweetalert_success('Dados atualizados com sucesso.', 'Sucesso!', useRejections: false)
         redirect_to @payment
       else
         format.html { render :edit }
@@ -167,7 +167,7 @@ class PaymentsController < ApplicationController
         log.employee = current_user.name
         log.task = 'Excluiu conta á pagar - Nº doc ' + @payment.doc_number.to_s
         log.save!
-        sweetalert_success('Dados excluidos com sucesso.', 'Sucesso!')
+        sweetalert_success('Dados excluidos com sucesso.', 'Sucesso!', useRejections: false)
       redirect_to payments_path
   end
 

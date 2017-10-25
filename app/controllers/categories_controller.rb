@@ -30,7 +30,7 @@ class CategoriesController < ApplicationController
       if @category.save
         format.html { redirect_to @category, notice: 'Category was successfully created.' }
         format.json { render :show, status: :created, location: @category }
-        sweetalert_success('Dados cadastrados com sucesso!', 'Sucesso!')
+        sweetalert_success('Dados cadastrados com sucesso!', 'Sucesso!', useRejections: false)
       else
         format.html { render :new }
         format.json { render json: @category.errors, status: :unprocessable_entity }
@@ -45,7 +45,7 @@ class CategoriesController < ApplicationController
       if @category.update(category_params)
         format.html { redirect_to @category, notice: 'Category was successfully updated.' }
         format.json { render :show, status: :ok, location: @category }
-        sweetalert_success('Dados atualizados com sucesso!', 'Sucesso!')
+        sweetalert_success('Dados atualizados com sucesso!', 'Sucesso!', useRejections: false)
       else
         format.html { render :edit }
         format.json { render json: @category.errors, status: :unprocessable_entity }
@@ -60,7 +60,7 @@ class CategoriesController < ApplicationController
     respond_to do |format|
       format.html { redirect_to categories_url, notice: 'Category was successfully destroyed.' }
       format.json { head :no_content }
-      sweetalert_success('Dados excluidos com sucesso!', 'Sucesso!')
+      sweetalert_success('Dados excluidos com sucesso!', 'Sucesso!', useRejections: false)
     end
   end
 

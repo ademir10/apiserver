@@ -48,7 +48,7 @@ class ProductsController < ApplicationController
         log.save!
         format.html { redirect_to @product, notice: 'Form payment was successfully created.' }
         format.json { render :show, status: :created, location: @product }
-        sweetalert_success('Dados cadastrados com sucesso!', 'Sucesso!')
+        sweetalert_success('Dados cadastrados com sucesso!', 'Sucesso!', useRejections: false)
         else
         format.html { render :new }
         format.json { render json: @product.errors, status: :unprocessable_entity }
@@ -67,7 +67,7 @@ class ProductsController < ApplicationController
         log.save!
         format.html { redirect_to @product, notice: 'Form payment was successfully updated.' }
         format.json { render :show, status: :ok, location: @product }
-        sweetalert_success('Dados atualizados com sucesso!', 'Sucesso!')
+        sweetalert_success('Dados atualizados com sucesso!', 'Sucesso!', useRejections: false)
       else
         format.html { render :edit }
         format.json { render json: @product.errors, status: :unprocessable_entity }
@@ -86,7 +86,7 @@ class ProductsController < ApplicationController
     log.save!
     format.html { redirect_to products_url, notice: 'Form payment was successfully destroyed.' }
     format.json { head :no_content }
-   sweetalert_success('Dados excluidos com sucesso!', 'Sucesso!')
+   sweetalert_success('Dados excluidos com sucesso!', 'Sucesso!', useRejections: false)
  end
   end
 

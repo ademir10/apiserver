@@ -31,7 +31,7 @@ class ConfigsController < ApplicationController
         if @config.save
           format.html { }
           format.json { render :show, status: :created, location: @config }
-          sweetalert_success('Configurações criadas com sucesso.', 'Aviso')
+          sweetalert_success('Configurações criadas com sucesso.', 'Aviso', useRejections: false)
           redirect_to @config
         else
           format.html { render :new }
@@ -48,7 +48,7 @@ class ConfigsController < ApplicationController
         if @config.update(config_params)
           format.html { }
           format.json { render :show, status: :ok, location: @config }
-          sweetalert_success('Configurações atualizadas com sucesso.', 'Aviso')
+          sweetalert_success('Configurações atualizadas com sucesso.', 'Aviso', useRejections: false)
           redirect_to @config
         else
           format.html { render :edit }

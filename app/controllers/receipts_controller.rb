@@ -43,7 +43,7 @@ class ReceiptsController < ApplicationController
   def create
 
     if receipt_params[:installments].blank?
-       sweetalert_warning('Você precisa informar a quantidade de parcelas!', 'Atenção!')
+       sweetalert_warning('Você precisa informar a quantidade de parcelas!', 'Atenção!', useRejections: false)
       redirect_to new_receipt_path and return
     end
 
@@ -60,7 +60,7 @@ class ReceiptsController < ApplicationController
             log.task = 'Cadastrou nova conta á receber - Nº doc ' + receipt_params[:doc_number].to_s
             log.save!
 
-              sweetalert_success('Dados cadastrados com sucesso!', 'Sucesso!')
+              sweetalert_success('Dados cadastrados com sucesso!', 'Sucesso!', useRejections: false)
               redirect_to @receipt
             else
               format.html { render :new }
@@ -98,7 +98,7 @@ class ReceiptsController < ApplicationController
         log.save!
 
          redirect_to receipts_path
-         sweetalert_success('Dados cadastrados com sucesso!', 'Sucesso!')
+         sweetalert_success('Dados cadastrados com sucesso!', 'Sucesso!', useRejections: false)
      end
   end
 
@@ -107,19 +107,19 @@ class ReceiptsController < ApplicationController
   def update
         #verifica se foi informada a forma de pagamento na baixa
     if receipt_params[:receipt_date].present? && receipt_params[:form_receipt].blank?
-      sweetalert_warning('Selecione uma forma de Recebimento!', 'Atenção!')
+      sweetalert_warning('Selecione uma forma de Recebimento!', 'Atenção!', useRejections: false)
       redirect_to edit_receipt_path(@receipt) and return
     end
 
     #se informou a data da baixa e não alterou para PAGA o status
     if receipt_params[:receipt_date].present? && receipt_params[:status] == 'Á RECEBER'
-        sweetalert_warning('Altere o Status para RECEBIDA, já que você informou a data de recebimento!', 'Atenção!')
+        sweetalert_warning('Altere o Status para RECEBIDA, já que você informou a data de recebimento!', 'Atenção!', useRejections: false)
       redirect_to edit_receipt_path(@receipt) and return
     end
 
     #se alterou para PAGA o status e não informou a data do pagamento
     if receipt_params[:status] == 'RECEBIDA' && receipt_params[:receipt_date].blank?
-      sweetalert_warning('Informe a data de recebimento, já que você alterou o status para RECEBIDA!', 'Atenção!')
+      sweetalert_warning('Informe a data de recebimento, já que você alterou o status para RECEBIDA!', 'Atenção!', useRejections: false)
       redirect_to edit_receipt_path(@receipt) and return
     end
 
@@ -132,7 +132,7 @@ class ReceiptsController < ApplicationController
         log.save!
         format.html { }
         format.json { render :show, status: :ok, location: @receipt }
-        sweetalert_success('Dados atualizados com sucesso.', 'Sucesso!')
+        sweetalert_success('Dados atualizados com sucesso.', 'Sucesso!', useRejections: false)
         redirect_to @receipt
       else
         format.html { render :edit }
@@ -150,7 +150,7 @@ class ReceiptsController < ApplicationController
         log.employee = current_user.name
         log.task = 'Excluiu conta á receber - ID: ' + @receipt.id.to_s +  ' Nº doc ' + @receipt.doc_number.to_s
         log.save!
-         sweetalert_success('Dados excluidos com sucesso.', 'Sucesso!')
+         sweetalert_success('Dados excluidos com sucesso.', 'Sucesso!', useRejections: false)
       redirect_to receipts_path
   end
 

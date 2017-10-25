@@ -40,7 +40,7 @@ class QrpointsController < ApplicationController
       format.html { }
       format.json { render :show, status: :created, location: @banco }
       redirect_to @qrpoint
-      sweetalert_success('Dados cadastrados com sucesso!', 'Sucesso!')
+      sweetalert_success('Dados cadastrados com sucesso!', 'Sucesso!', useRejections: false)
       else
         format.html { render :new }
         format.json { render json: @qrpoint.errors, status: :unprocessable_entity }
@@ -59,7 +59,7 @@ class QrpointsController < ApplicationController
       log.save!
       format.html { }
       format.json { render :show, status: :created, location: @qrpoint }
-      sweetalert_success('Dados atualizados com sucesso!', 'Sucesso!')
+      sweetalert_success('Dados atualizados com sucesso!', 'Sucesso!', useRejections: false)
       redirect_to @qrpoint
     else
         format.html { render :edit }
@@ -77,7 +77,7 @@ class QrpointsController < ApplicationController
     log.task = 'Excluiu QRpoint - Nome: ' + @qrpoint.description.to_s
     log.save!
     redirect_to qrpoints_url
-    sweetalert_success('Dados excluidos com sucesso!', 'Sucesso!')
+    sweetalert_success('Dados excluidos com sucesso!', 'Sucesso!', useRejections: false)
   end
 
   private

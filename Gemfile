@@ -22,7 +22,7 @@ gem 'jquery-ui-rails'
 gem 'maskedinput-rails'
 gem 'rails-i18n', '~> 5.0.0' # For 5.0.x and 5.1.x
 gem 'sweetify'
-gem 'rails-assets-sweetalert2', '~> 5.1.1', source: 'https://rails-assets.org'
+gem 'rails-assets-sweetalert2', source: 'https://rails-assets.org'
 gem 'sweet-alert2-rails'
 #para funcionar o javascript dentro das views
 gem 'twitter-bootstrap-rails'

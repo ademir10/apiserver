@@ -11,7 +11,7 @@ class SessionsController < ApplicationController
   def create
 
     if params[:email].blank? || params[:password].blank?
-      sweetalert_error('Informe os seus dados!', 'Atenção!')
+      sweetalert_error('Informe os seus dados!', 'Atenção!', useRejections: false)
 
          redirect_to root_path and return
     end
@@ -29,11 +29,12 @@ class SessionsController < ApplicationController
 
     #se estiver tudo ok e a licença ok
 
-  sweetalert_success('Bem vindo ' + current_user.name.to_s + "!", 'Olá!')
+  sweetalert_success('Bem vindo ' + current_user.name.to_s + "!", 'Olá!', useRejections: false)
+
      redirect_to dashboard_path
    else
 
-     sweetalert_warning('Dados inválidos, tente outra vez!', 'Erro.')
+     sweetalert_warning('Dados inválidos, tente outra vez!', 'Erro.', useRejections: false)
       redirect_to root_path
   end
 end
@@ -46,7 +47,7 @@ end
         #log.save!
 
     session[:user_id] = nil
-     sweetalert_success('See you soon!', '')
+     sweetalert_success('See you soon!', '', useRejections: false)
 
     redirect_to root_path
   end

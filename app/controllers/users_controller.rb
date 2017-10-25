@@ -33,7 +33,7 @@ class UsersController < ApplicationController
         log.save!
         format.html { redirect_to @user, notice: 'user was successfully created.' }
         format.json { render :show, status: :created, location: @user }
-        sweetalert_success('Dados cadastrados com sucesso!', 'Sucesso!')
+        sweetalert_success('Dados cadastrados com sucesso!', 'Sucesso!', useRejections: false)
       else
         format.html { render :new }
         format.json { render json: @user.errors, status: :unprocessable_entity }
@@ -52,7 +52,7 @@ class UsersController < ApplicationController
         log.save!
         format.html { redirect_to @user, notice: 'user was successfully updated.' }
         format.json { render :show, status: :ok, location: @user }
-        sweetalert_success('Dados atualizados com sucesso!', 'Sucesso!')
+        sweetalert_success('Dados atualizados com sucesso!', 'Sucesso!', useRejections: false)
       else
         format.html { render :edit }
         format.json { render json: @user.errors, status: :unprocessable_entity }
@@ -71,7 +71,7 @@ class UsersController < ApplicationController
     log.save!
     format.html { redirect_to users_url, notice: 'Form payment was successfully destroyed.' }
     format.json { head :no_content }
-    sweetalert_success('Dados excluidos com sucesso!', 'Sucesso!')
+    sweetalert_success('Dados excluidos com sucesso!', 'Sucesso!', useRejections: false)
   end
   end
 
