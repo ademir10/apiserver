@@ -19,6 +19,7 @@
 //= require turbolinks
 //= require rails-ujs
 //= require sweetalert2
+//= require sweet-alert2-rails
 
 //= require maskedinput
 //= require masks
