@@ -7,4 +7,8 @@ class PagesController < ApplicationController
     @desk_orders_opened = Qrpoint.where(status: 'Aberta').order(:description)
   end
 
+  def message_error_relation_tables
+    #chama a mensagem informando que não pode excluir um cadastro com relacionamento em outra tabela
+  end
+
 end

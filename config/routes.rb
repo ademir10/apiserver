@@ -72,5 +72,6 @@ Rails.application.routes.draw do
   post 'login', to: 'sessions#create'
   #---------------------------------------------
   get 'dashboard', to: 'pages#dashboard'
-
+  #para carregar a view informando que não pode excluir cadastro com relacionamento em outra table
+  get 'message_error_relation_tables', to: 'pages#message_error_relation_tables'
 end
