@@ -3,6 +3,7 @@ class DeskOrder < ApplicationRecord
   has_many :items, dependent: :destroy
   belongs_to :qrpoint, optional: true
   belongs_to :form_payment, optional: true
+  belongs_to :destinatario, optional: true
   attr_accessor :environment
 
   #chama o job depois que é fechada a mesa

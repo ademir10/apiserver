@@ -27,7 +27,7 @@
 	        <td>Sem imagem</td>
 	      <% end %>
         <td><%= link_to 'Informar tributos', editar_tributo_path(:id => item.id), {:remote => true, 'data-toggle' =>  "modal", 'data-target' => '#myModal', :class => 'btn btn-xs btn-default'}  %></td>
-        <% if @desk_order.status == 'Aberta' || @desk_order.status == 'Em uso' %>
+        <% if @desk_order.status == 'Aberta' || @desk_order.status == 'Em uso' || @desk_order.status.blank? %>
           <td><%= link_to t('.destroy', :default => t("helpers.links.destroy")), [item.desk_order, item], :method => :delete, :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) }, :class => 'btn btn-xs btn-danger' %></td>
         <% end %>
        </tr>

@@ -50,10 +50,16 @@ width: 100%;
   Fone: <%= @config.telefone %></br>
   <%= @config.site %></h6>
 
-      <h1 class="panel-title">
-      	Venda <b><%= @desk_order.qrpoint.description %></b>
-    <br />
+  <% if @desk_order.destinatario_id.blank? %>
+  Venda <b><%= @desk_order.qrpoint.description %></b>
+  <% else %>
+  Cliente: <%= @desk_order.destinatario.nome %><br>
+  Endereço: <%= @desk_order.destinatario.endereco %> Nº<%= @desk_order.destinatario.numero %> <%= @desk_order.destinatario.complemento %><br>
+  Bairro: <%= @desk_order.destinatario.bairro %> / Fone: <%= @desk_order.destinatario.celular %>
+  <% end %>
 
+
+  <h1 class="panel-title">
    <table class="table table-striped">
     <thead>
       <tr>
@@ -95,9 +101,15 @@ width: 100%;
 <div class="container-fluid" id="printbtn">
   <%- model_class = DeskOrder -%>
   <div class="page-header">
+    <% if @desk_order.destinatario_id.blank? %>
     <h1>QRpoint: <%= @desk_order.qrpoint.description %></h1>
     <h3>Status: <%= @desk_order.status %></h3>
     <h4>Tipo: <%= @desk_order.type_service %></h4>
+    <% else %>
+    <h1>Cliente: <%= @desk_order.destinatario.nome %></h1>
+    <h3>Endereço: <%= @desk_order.destinatario.endereco %> Nº<%= @desk_order.destinatario.numero %> <%= @desk_order.destinatario.complemento %> </h3>
+    <h4>Bairro: <%= @desk_order.destinatario.bairro %> / Fone: <%= @desk_order.destinatario.celular %></h4>
+    <% end %>
   </div>
 
   <!-- EXIBE OS ITENS NA O.S -->

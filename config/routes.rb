@@ -1,4 +1,12 @@
 Rails.application.routes.draw do
+
+  resources :destinatarios do
+  #para autocompletar o fone do cliente na venda
+  get :autocomplete_destinatario_celular, :on => :collection
+  end
+  #abrindo um form modal para cadastrar novos clientes na venda delivery
+  get 'desk_orders/new_cliente' => 'desk_orders#new_cliente', :as => :new_cliente
+
   resources :configs
   resources :form_payments
   #Para o action cable

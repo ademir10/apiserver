@@ -5,6 +5,16 @@ class DeskOrdersController < ApplicationController
   #Para permitir o acesso via aplicativo
   skip_before_action :verify_authenticity_token
 
+  #para chamar o form modal e criar novo cliente
+  def new_cliente
+    @destinatario = Destinatario.new
+    respond_to do |format|
+      format.html
+      format.js
+    end
+
+  end
+
   # RECEBE O QRCODE DO APLICATIVO E VERIFICA SE A MESA ESTÁ DISPONÍVEL
   def check_mesa
       #verifica se o token é valido primeiro
@@ -457,7 +467,11 @@ class DeskOrdersController < ApplicationController
               cta_receber = Receipt.new(params[:receipt])
               cta_receber.doc_number = @desk_order.id
               cta_receber.type_doc = "Venda"
+              if @desk_order.destinatario_id.blank?
               cta_receber.description = 'Referente Venda: ' + @desk_order.qrpoint.description.to_s
+            else
+              cta_receber.description = 'Ref Venda delivery Cliente: ' + @desk_order.destinatario.nome.to_s
+            end
               cta_receber.value_doc = @total_items.round(2).to_f
               cta_receber.due_date = Date.today
               cta_receber.receipt_date = Date.today
@@ -479,7 +493,17 @@ class DeskOrdersController < ApplicationController
               DeskOrder.update(@desk_order.id, status: 'Finalizada', form_payment_id: desk_order_params[:form_payment_id])
               Qrpoint.update(@desk_order.qrpoint_id, status: 'Aberta')
               @desk_order = DeskOrder.find(params[:id])
+
+            else
+              log = Loginfo.new(params[:loginfo])
+              log.employee = current_user.name
+              log.task = 'Finalizou a venda do cliente: ' + @desk_order.destinatario.nome.to_s
+              log.save!
+              #finalizando a O.S e salvando a forma de pagamento
+              DeskOrder.update(@desk_order.id, status: 'Finalizada', form_payment_id: desk_order_params[:form_payment_id])
+              @desk_order = DeskOrder.find(params[:id])
             end
+
         end
       end
 
@@ -545,13 +569,19 @@ class DeskOrdersController < ApplicationController
   # DELETE /desk_orders/1.json
   def destroy
     @desk_order.destroy
+    if @desk_order.destinatario_id.blank?
     Qrpoint.update(@desk_order.qrpoint_id, status: 'Aberta')
+  end
     Receipt.where(desk_order_id: @desk_order).destroy_all
 
     #inserindo no log de atividades
         log = Loginfo.new(params[:loginfo])
         log.employee = current_user.name
+        if @desk_order.destinatario_id.blank?
         log.task = 'Excluiu venda da mesa Nº: ' + @desk_order.qrpoint.description.to_s
+        else
+        log.task = 'Excluiu venda delivery cliente: ' + @desk_order.destinatario.nome.to_s
+        end
         log.save!
         sweetalert_success('Venda excluida com sucesso!', 'Sucesso!', useRejections: false)
         redirect_to desk_orders_path
@@ -565,7 +595,7 @@ class DeskOrdersController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def desk_order_params
-      params.require(:desk_order).permit(:id, :number, :total, :status, :qrpoint_id, :type_service, :form_payment_id, :cpf_cnpj_nfce, :email_nfce, :forma_pagamento_nfce, :bandeira_operadora, :informacoes_adicionais_contribuinte, :environment, :url_danfe, :url_xml, :justificativa_cancelamento, :caminho_xml_cancelamento)
+      params.require(:desk_order).permit(:id, :number, :total, :status, :qrpoint_id, :type_service, :form_payment_id, :cpf_cnpj_nfce, :email_nfce, :forma_pagamento_nfce, :bandeira_operadora, :informacoes_adicionais_contribuinte, :environment, :url_danfe, :url_xml, :justificativa_cancelamento, :caminho_xml_cancelamento, :destinatario_id)
     end
 
     def show_form_payment

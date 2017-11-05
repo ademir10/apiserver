@@ -1,0 +1,50 @@
+<%- model_class = Destinatario -%>
+<div class="page-header">
+  <h1>Cadastro de Clientes <%=image_tag('client.png') %></h1>
+  <%= link_to t('.new', :default => t("helpers.links.new")), new_destinatario_path, :class => 'btn btn-primary' %>
+</div>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Nome</th>
+      <th>Cep</th>
+      <th>Endereço</th>
+      <th>Nº</th>
+      <th>Bairro</th>
+      <th>Complemento</th>
+      <th>Cidade</th>
+      <th>Celular</th>
+      <th>Email</th>
+      <th>Criado em</th>
+      <th><%=t '.actions', :default => t("helpers.actions") %></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @destinatarios.each do |destinatario| %>
+      <tr>
+        <td><%= link_to destinatario.nome, destinatario_path(destinatario) %></td>
+        <td><%= destinatario.cep %></td>
+        <td><%= destinatario.endereco %></td>
+        <td><%= destinatario.numero %></td>
+        <td><%= destinatario.bairro %></td>
+        <td><%= destinatario.complemento %></td>
+        <td><%= destinatario.cidade %></td>
+        <td><%= destinatario.celular %></td>
+        <td><%= destinatario.email %></td>
+        <td><%= destinatario.created_at %></td>
+        <td>
+          <%= link_to t('.show', :default => t("helpers.links.show")),
+                      destinatario_path(destinatario), :class => 'btn btn-default btn-xs' %>
+          <%= link_to t('.edit', :default => t("helpers.links.edit")),
+                      edit_destinatario_path(destinatario), :class => 'btn btn-default btn-xs' %>
+          <%= link_to t('.destroy', :default => t("helpers.links.destroy")),
+                      destinatario_path(destinatario),
+                      :method => :delete,
+                      :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) },
+                      :class => 'btn btn-xs btn-danger' %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

@@ -16,18 +16,23 @@
   <% end %>
 
   <div class="form-group">
-    <%= f.label 'status', :class => 'control-label col-lg-2' %>
-    <div class="col-lg-2">
-      <%= f.select(:status, options_for_select([["Aberta"], ["Em uso"], ["Fechada"]], @desk_order.status), {include_blank: 'Selecione'}, :class => 'form-control') %>
+      <%= f.label 'Celular do cliente', :class => 'control-label col-lg-2' %>
+      <div class="col-lg-2">
+        <% if @desk_order.destinatario_id.present? %>
+  	   <%= f.autocomplete_field :destinatario_id, autocomplete_destinatario_celular_destinatarios_path, :id_element => '#pega_id', :value => @invoice.destinatario.telefone_destinatario, :class => 'form-control',placeholder: 'Digite o telefone:', id: 'ofone' %>
+  	  <% else %>
+  	  <%= f.autocomplete_field :destinatario_id, autocomplete_destinatario_celular_destinatarios_path, :id_element => '#pega_id', :class => 'form-control',placeholder: 'Digite o numero:', id: 'ofone' %>
+  		 <% end %>
+  		 <%= f.hidden_field :destinatario_id, :id => "pega_id" %>
+      </div>
+      <%=f.error_span(:destinatario_id) %>
     </div>
-    <%=f.error_span(:status) %>
-  </div>
 
   <div class="form-group">
     <div class="col-lg-offset-2 col-lg-10">
-      <%= f.submit 'Salvar', :class => 'btn btn-primary' %>
-      <%= link_to t('.cancel', :default => t("helpers.links.cancel")),
-                desk_orders_path, :class => 'btn btn-default' %>
+      <%= f.submit 'Salvar', data: { disable_with: "Processando..." }, :class => 'btn btn-primary' %>
+      <%= link_to 'Novo cliente', new_cliente_path, {:remote => true, 'data-toggle' =>  "modal", 'data-target' => '#myModal', :class => 'btn btn-primary'}  %>
+      <%= link_to 'Cancelar', desk_orders_path, class: 'btn btn-default btn-md' %>
     </div>
   </div>
 

@@ -49,6 +49,7 @@ $(document).on('turbolinks:load', function() {
    $("#ncm").mask("99999999",{placeholder:""});
    $("#cfop").mask("9999",{placeholder:""});
    $("#sleep").mask("99",{placeholder:""});
+	 $("#ofone").mask("99999999999",{placeholder:""});
 
    //Faz a mascara de moeda do Brasil
    //maskMoney({symbol:"R$",decimal:",",thousands:"."})
