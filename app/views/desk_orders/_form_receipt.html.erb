@@ -1,15 +1,42 @@
 <script>
-//ao clicar no campo para digitar o desconto, o campo é limpo
+//ao clicar no campo para digitar o troco, o campo é limpo
 $(document).ready(function(){
-	$( "#r1" ).focus(function() {
-  $("#r1").val('');
-  });
+		$( "#r1" ).focus(function() {
+	  $("#r1").val('');
+		$("#obs").val('');
+	  });
+	//ao digitar o valor do troco é inserido automaticamente nas observações o que voltará em dinheiro
+	if ($('#forma-pagamento option:selected').text() == "Dinheiro"){
+		$('#troco').show();
+		$('#observacoes').show();
+	} else {
+		$('#troco').hide();
+		$('#observacoes').hide();
+	}
+});
+
+$(document).ready(function() {
+	$('#forma-pagamento').change(function () {
+			if ($('#forma-pagamento option:selected').text() == "Dinheiro"){
+				$('#troco').show();
+				$('#observacoes').show();
+				$('#r1').focus();
+			} else {
+				$('#troco').hide();
+				$('#observacoes').hide();
+			}
+		});
+		//ao digitar o valor do troco é inserido no campo observações o valor do troco a ser levado
+		$('#r1').on('keyup',function(){
+		     var resultado = $('#r1').val() - $('#total-geral').val();
+
+		      var observacao = 'Levar troco para R$ ' + $('#r1').val() + ' e trazer R$ ' + (resultado.toFixed(2));;
+		     $('#obs').val(observacao);
+			});
 });
 </script>
 
-
 <%= form_for(@desk_order, url: baixar_desk_order_path, method: :post) do |f| %>
-
 <%= f.hidden_field :id, id: 'id_desk_order' %>
 
   <div class="form-group">
@@ -19,18 +46,34 @@ $(document).ready(function(){
    <div class="col-lg-14">
 
    <font-color="red">
-    <div class="col-lg-2">
-    <h4><b><font color="red">Total geral R$</b></h4>
-       <b><%= f.text_field :total, :value=> @desk_order.items.sum(:val_total).round(2), :class => 'form-control', readonly: true %></b>
+    <div class="col-lg-1">
+    <h4><b><font color="red">Geral R$</b></h4>
+       <b><%= f.text_field :total, :value=> @desk_order.items.sum(:val_total).round(2), :class => 'form-control', id: 'total-geral', readonly: true %></b>
     </div>
     <%= f.error_span(:total) %>
     </font>
 
-   <div class="col-lg-3">
-    <h4>Forma de pagto</h4>
-			<%= f.collection_select(:form_payment_id, @form_payments, :id, :type_payment, {include_blank: 'Selecione:'},:class => 'form-control') %>
+		<div class="col-lg-2">
+		 <h4>Forma de pagto</h4>
+			 <%= f.collection_select(:form_payment_id, @form_payments, :id, :type_payment, {include_blank: 'Selecione:'},:class => 'form-control', id: 'forma-pagamento') %>
+		 </div>
+		 <%= f.error_span(:form_payment_id) %>
+
+<div id="troco">
+	<div class="col-lg-1">
+		<h4><b>Troco p/ R$</b></h4>
+			 <b><%= f.text_field :troco_para, :class => 'form-control', id: 'r1' %></b>
 		</div>
-    <%= f.error_span(:form_payment_id) %>
+		<%= f.error_span(:troco_para) %>
+</div>
+
+<div id="observacoes">
+			<div class="col-lg-3">
+			 <h4>Observações</h4>
+				 <b><%= f.text_area :obs, :class => 'form-control', id: 'obs' %></b>
+			 </div>
+			 <%= f.error_span(:obs) %>
+</div>
 
  <div class="col-lg-2">
  <h4><font color="white">.</font></h4>

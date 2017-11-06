@@ -490,7 +490,7 @@ class DeskOrdersController < ApplicationController
               log.task = 'Finalizou a mesa de nome: ' + @desk_order.qrpoint.description.to_s
               log.save!
               #finalizando a O.S e salvando a forma de pagamento
-              DeskOrder.update(@desk_order.id, status: 'Finalizada', form_payment_id: desk_order_params[:form_payment_id])
+              DeskOrder.update(@desk_order.id, status: 'Finalizada', form_payment_id: desk_order_params[:form_payment_id], troco_para: desk_order_params[:troco_para], obs: desk_order_params[:obs])
               Qrpoint.update(@desk_order.qrpoint_id, status: 'Aberta')
               @desk_order = DeskOrder.find(params[:id])
 
@@ -500,7 +500,7 @@ class DeskOrdersController < ApplicationController
               log.task = 'Finalizou a venda do cliente: ' + @desk_order.destinatario.nome.to_s
               log.save!
               #finalizando a O.S e salvando a forma de pagamento
-              DeskOrder.update(@desk_order.id, status: 'Finalizada', form_payment_id: desk_order_params[:form_payment_id])
+              DeskOrder.update(@desk_order.id, status: 'Finalizada', form_payment_id: desk_order_params[:form_payment_id], troco_para: desk_order_params[:troco_para], obs: desk_order_params[:obs])
               @desk_order = DeskOrder.find(params[:id])
             end
 
@@ -595,7 +595,7 @@ class DeskOrdersController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def desk_order_params
-      params.require(:desk_order).permit(:id, :number, :total, :status, :qrpoint_id, :type_service, :form_payment_id, :cpf_cnpj_nfce, :email_nfce, :forma_pagamento_nfce, :bandeira_operadora, :informacoes_adicionais_contribuinte, :environment, :url_danfe, :url_xml, :justificativa_cancelamento, :caminho_xml_cancelamento, :destinatario_id)
+      params.require(:desk_order).permit(:id, :number, :total, :status, :qrpoint_id, :type_service, :form_payment_id, :cpf_cnpj_nfce, :email_nfce, :forma_pagamento_nfce, :bandeira_operadora, :informacoes_adicionais_contribuinte, :environment, :url_danfe, :url_xml, :justificativa_cancelamento, :caminho_xml_cancelamento, :destinatario_id, :troco_para, :obs)
     end
 
     def show_form_payment

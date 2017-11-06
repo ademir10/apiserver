@@ -224,7 +224,7 @@
     <%=f.error_span(:expiration_date) %>
   </div>
   <div class="form-group">
-    <%= f.label 'Ambiente NFE', :class => 'control-label col-lg-2' %>
+    <%= f.label 'Ambiente', :class => 'control-label col-lg-2' %>
     <div class="col-lg-2">
       <%= f.select(:check_env, options_for_select([["Teste"], ["Produção"]], @config.check_env), {include_blank: 'Selecione'}, :class => 'form-control') %>
     </div>

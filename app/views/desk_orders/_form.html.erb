@@ -1,3 +1,10 @@
+<!-- Dá o foco no campo para que seja feita a busca com o autocompletar -->
+<script>
+$(document).ready(function(){
+$('#ofone').focus();
+});
+</script>
+
 <%= form_for @desk_order, :html => { :class => "form-horizontal desk_order" } do |f| %>
 
   <% if @desk_order.errors.any? %>
