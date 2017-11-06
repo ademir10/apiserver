@@ -1,5 +1,16 @@
+<style>
+img{
+max-width:100%;
+height:auto;
+}
+</style>
+
 <%- model_class = DeskOrder -%>
 <div class="page-header">
   <h1>Nova Venda Delivery</h1>
 </div>
 <%= render :partial => 'form' %>
+
+<div class="img" align="center">
+	<%= image_tag("delivery.png")%>
+</div>

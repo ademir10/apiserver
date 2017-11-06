@@ -55,9 +55,8 @@ width: 100%;
   <% else %>
   Cliente: <%= @desk_order.destinatario.nome %><br>
   Endereço: <%= @desk_order.destinatario.endereco %> Nº<%= @desk_order.destinatario.numero %> <%= @desk_order.destinatario.complemento %><br>
-  Bairro: <%= @desk_order.destinatario.bairro %> / Fone: <%= @desk_order.destinatario.celular %>
+  Bairro: <%= @desk_order.destinatario.bairro %> / <%= @desk_order.destinatario.celular %>
   <% end %>
-
 
   <h1 class="panel-title">
    <table class="table table-striped">
@@ -83,7 +82,6 @@ width: 100%;
          </tbody>
 
      </table>
-
       Forma pagto: <%= @desk_order.form_payment.type_payment %> <br />
       <%= @desk_order.items.count %>
       <% if @desk_order.items.count.to_s == '1' %>
@@ -93,7 +91,7 @@ width: 100%;
       <%end%>
        / Total R$ <strong>R$ <%= number_with_precision(@total_items, precision: 2) %></strong><br>
        <% if @desk_order.obs.present? %>
-       Observações: <%= @desk_order.obs %>
+       <h6>Obs: <%= @desk_order.obs %></h6>
        <% end %>
 
 
@@ -149,7 +147,7 @@ width: 100%;
     <h4>Forma de pagamento: <%= @desk_order.form_payment.type_payment %> </h4>
     <h3><%= @desk_order.items.count %> Itens / <b>Total R$ <%= number_with_precision(@total_items, precision: 2) %></b> </h3>
     <% if @desk_order.obs.present? %>
-    Observações: <%= @desk_order.obs %>
+    <h6>Observações: <%= @desk_order.obs %></h6>
     <% end %><br>
     <button type="button" id ="printbtn" class="btn btn-success", onclick ="window.print();return false;">Imprimir</button>
     <%= link_to t('.back', :default => t("helpers.links.back")), desk_order_path(@desk_order), :class => 'btn btn-default'  %>

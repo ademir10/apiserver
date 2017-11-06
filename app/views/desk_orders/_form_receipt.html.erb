@@ -1,6 +1,9 @@
 <script>
 //ao clicar no campo para digitar o troco, o campo é limpo
 $(document).ready(function(){
+	var val = $('#total-geral').val().replace(',','.');
+	$('#total-geral').val(val);
+
 		$( "#r1" ).focus(function() {
 	  $("#r1").val('');
 		$("#obs").val('');
@@ -30,7 +33,7 @@ $(document).ready(function() {
 		$('#r1').on('keyup',function(){
 		     var resultado = $('#r1').val() - $('#total-geral').val();
 
-		      var observacao = 'Levar troco para R$ ' + $('#r1').val() + ' e trazer R$ ' + (resultado.toFixed(2));;
+		      var observacao = 'Troco para R$ ' + $('#r1').val() + ' levar R$ ' + (resultado.toFixed(2));;
 		     $('#obs').val(observacao);
 			});
 });
@@ -48,7 +51,7 @@ $(document).ready(function() {
    <font-color="red">
     <div class="col-lg-1">
     <h4><b><font color="red">Geral R$</b></h4>
-       <b><%= f.text_field :total, :value=> @desk_order.items.sum(:val_total).round(2), :class => 'form-control', id: 'total-geral', readonly: true %></b>
+       <b><%= f.text_field :total, value: number_to_currency(@desk_order.items.sum(:val_total), delimiter: '', unit: ''), :class => 'form-control', id: 'total-geral', readonly: true %></b>
     </div>
     <%= f.error_span(:total) %>
     </font>
@@ -62,7 +65,7 @@ $(document).ready(function() {
 <div id="troco">
 	<div class="col-lg-1">
 		<h4><b>Troco p/ R$</b></h4>
-			 <b><%= f.text_field :troco_para, :class => 'form-control', id: 'r1' %></b>
+			 <b><%= f.text_field :troco_para, value: number_to_currency(f.object.troco_para.to_f, delimiter: '', unit: ''), step: :any, :class => 'form-control', id: 'r1' %></b>
 		</div>
 		<%= f.error_span(:troco_para) %>
 </div>

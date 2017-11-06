@@ -134,15 +134,15 @@ html, body {
           <!-- Dropdown level one -->
           <ul class="dnl-sub-one collapse" id="collapseStatistics">
             <% if current_user.type_access == 'MASTER' %>
-            <%= link_to '<span class="glyphicon glyphicon-tags dnl-link-icon"></span> Configurações'.html_safe, configs_path, class: 'dnl-link-text' %>
+            <%= link_to '<span class="glyphicon glyphicon-tags dnl-link-icon"></span>Configurações'.html_safe, configs_path, class: 'dnl-link-text' %>
             <% end %>
-            <%= link_to '<span class="glyphicon glyphicon-tags dnl-link-icon"></span> Categorias'.html_safe, categories_path, class: 'dnl-link-text' %>
-						<%= link_to '<span class="glyphicon glyphicon-tags dnl-link-icon"></span> Clientes'.html_safe, destinatarios_path, class: 'dnl-link-text' %>
-						<%= link_to '<span class="glyphicon glyphicon-tags dnl-link-icon"></span> Formas de pagamento'.html_safe, form_payments_path, class: 'dnl-link-text' %>
-            <%= link_to '<span class="glyphicon glyphicon-tags dnl-link-icon"></span> Fornecedores'.html_safe, suppliers_path, class: 'dnl-link-text' %>
-            <%= link_to '<span class="glyphicon glyphicon-tags dnl-link-icon"></span> Produtos'.html_safe, products_path, class: 'dnl-link-text' %>
-            <%= link_to '<span class="glyphicon glyphicon-tags dnl-link-icon"></span> QRpoints'.html_safe, qrpoints_path, class: 'dnl-link-text' %>
-            <%= link_to '<span class="glyphicon glyphicon-tags dnl-link-icon"></span> Usuários'.html_safe, users_path, class: 'dnl-link-text' %>
+            <%= link_to '<span class="glyphicon glyphicon-tags dnl-link-icon"></span>Categorias'.html_safe, categories_path, class: 'dnl-link-text' %>
+						<%= link_to '<span class="glyphicon glyphicon-tags dnl-link-icon"></span>Clientes'.html_safe, destinatarios_path, class: 'dnl-link-text' %>
+						<%= link_to '<span class="glyphicon glyphicon-tags dnl-link-icon"></span>Formas de pagamento'.html_safe, form_payments_path, class: 'dnl-link-text' %>
+            <%= link_to '<span class="glyphicon glyphicon-tags dnl-link-icon"></span>Fornecedores'.html_safe, suppliers_path, class: 'dnl-link-text' %>
+            <%= link_to '<span class="glyphicon glyphicon-tags dnl-link-icon"></span>Produtos'.html_safe, products_path, class: 'dnl-link-text' %>
+            <%= link_to '<span class="glyphicon glyphicon-tags dnl-link-icon"></span>QRpoints'.html_safe, qrpoints_path, class: 'dnl-link-text' %>
+            <%= link_to '<span class="glyphicon glyphicon-tags dnl-link-icon"></span>Usuários'.html_safe, users_path, class: 'dnl-link-text' %>
           </ul>
         </li>
 
@@ -157,14 +157,14 @@ html, body {
             </a>
             <!-- Dropdown level one -->
             <ul class="dnl-sub-one collapse" id="collapseCategoryAll2">
-              <li>
-               <%= link_to '<span class="fa fa-check-circle dnl-link-icon"></span> Verificar Vendas'.html_safe, desk_orders_path, class: 'dnl-link-text' %>
+							<li>
+                <%= link_to '<span class="fa fa-tachometer dnl-link-icon"></span>Dashboard'.html_safe, dashboard_path, class: 'dnl-link-text' %>
               </li>
               <li>
-                <%= link_to '<span class="fa fa-tachometer dnl-link-icon"></span> Dashboard'.html_safe, dashboard_path, class: 'dnl-link-text' %>
+               <%= link_to '<span class="fa fa-check-circle dnl-link-icon"></span>Vendas'.html_safe, desk_orders_path, class: 'dnl-link-text' %>
               </li>
               <li>
-                <%= link_to '<span class="fa fa-user-secret dnl-link-icon"></span> Log de atividades'.html_safe, loginfos_path, class: 'dnl-link-text' %>
+                <%= link_to '<span class="fa fa-user-secret dnl-link-icon"></span>Log de atividades'.html_safe, loginfos_path, class: 'dnl-link-text' %>
               </li>
             </ul>
 
@@ -180,10 +180,10 @@ html, body {
                 <!-- Dropdown level one -->
                 <ul class="dnl-sub-one collapse" id="collapseCategoryAll3">
                   <li>
-                    <%= link_to '<span class="fa fa-money dnl-link-icon"></span> Contas a Pagar'.html_safe, payments_path, class: 'dnl-link-text' %>
+                    <%= link_to '<span class="fa fa-money dnl-link-icon"></span>Contas a Pagar'.html_safe, payments_path, class: 'dnl-link-text' %>
                   </li>
                   <li>
-                    <%= link_to '<span class="fa fa-credit-card dnl-link-icon"></span> Contas a Receber'.html_safe, receipts_path, class: 'dnl-link-text' %>
+                    <%= link_to '<span class="fa fa-credit-card dnl-link-icon"></span>Contas a Receber'.html_safe, receipts_path, class: 'dnl-link-text' %>
                   </li>
                 </ul>
 
