@@ -40,7 +40,7 @@
 
  <div class="form-group">
     <div class="col-lg-offset-2 col-lg-10">
-      <%= f.submit 'Enviar Cancelamento NF-e', :class => 'btn btn-primary', onclick: "waitingDialog.show('Aguarde enquanto processamos a sua solicitação...', {dialogSize: 'md', progressType: 'warning'});setTimeout(function () {waitingDialog.hide();}, 50000);" %>
+      <%= f.submit 'Enviar Cancelamento NF-e', :class => 'btn btn-primary' %>
       <%= link_to 'Cancelar', desk_orders_path, :class => 'btn btn-default' %>
     </div>
   </div>

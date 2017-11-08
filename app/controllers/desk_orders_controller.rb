@@ -204,8 +204,9 @@ class DeskOrdersController < ApplicationController
                                       log.employee = current_user.name
                                       log.task = 'Tentativa de cancelamento de NFCe ref venda: ' + desk_order_params[:id].to_s
                                       log.save!
-                          sweetalert_warning("Retorno Sefaz: " + "(" + "#{res2.code}" + ")" + " #{response['mensagem_sefaz_cancelamento']}".force_encoding("UTF-8"), 'Aviso', persistent: 'OK')
-                          redirect_to desk_orders_path and return
+                          sweetalert_warning("Retorno Sefaz: " + "(" + "#{res2.code}" + ")" + " Verifique se a sua justificativa possui pelo menos 15 caracteres!".force_encoding("UTF-8"), 'Aviso', persistent: 'OK')
+
+                          redirect_to cancelar_nfe_path(:id => desk_order_params[:id]) and return
                  end
         end
   end
@@ -341,7 +342,6 @@ class DeskOrdersController < ApplicationController
         f_hash[:valor_pagamento] = f.val_total
         #se a forma de pagamento for Débito ou crédito, precisa informar a bandeira do cartão
         if @desk_orders.forma_pagamento_nfce == '03' || @desk_orders.forma_pagamento_nfce == '04'
-          puts 'TÁ PASSANDO AQUI SIM NA BANDEIRA!!!'
           f_hash[:bandeira_operadora] = @desk_orders.bandeira_operadora
         end
 
