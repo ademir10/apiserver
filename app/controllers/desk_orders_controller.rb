@@ -202,7 +202,7 @@ class DeskOrdersController < ApplicationController
                                       #inserindo no log de atividades
                                       log = Loginfo.new(params[:loginfo])
                                       log.employee = current_user.name
-                                      log.task = 'Tentativa de cancelamento de NFCe ref venda: ' + invoice_params[:id].to_s
+                                      log.task = 'Tentativa de cancelamento de NFCe ref venda: ' + desk_order_params[:id].to_s
                                       log.save!
                           sweetalert_warning("Retorno Sefaz: " + "(" + "#{res2.code}" + ")" + " #{response['mensagem_sefaz_cancelamento']}".force_encoding("UTF-8"), 'Aviso', persistent: 'OK')
                           redirect_to desk_orders_path and return
@@ -285,23 +285,23 @@ class DeskOrdersController < ApplicationController
         #se for ambiente de testes
         if @show_emitente.check_env == 'Teste'
         hash[:nome_destinatario] = 'NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL'
-
-        else
-        #hash[:nome_destinatario] = @desk_orders.destinatario.nome_destinatario
+                else
+        hash[:nome_destinatario] = @desk_orders.destinatario.nome
         end
 
         if desk_order_params[:cpf_cnpj_nfce].blank?
           hash[:consumidor_final] = 1
         else
-            #verifica se foi o cpf ou cnpj informado
-            if desk_order_params[:cpf_cnpj_nfce].present?
               if desk_order_params[:cpf_cnpj_nfce].mb_chars.length == 14
-                hash[:cpf_destinatario] = @desk_orders.cpf_cnpj_nfce
+                hash[:cpf_destinatario] = desk_order_params[:cpf_cnpj_nfce]
               elsif desk_order_params[:cpf_cnpj_nfce].mb_chars.length > 14
-                hash[:cnpj_destinatario] = @desk_orders.cpf_cnpj_nfce
+                hash[:cnpj_destinatario] = desk_order_params[:cpf_cnpj_nfce]
               end
-            end
         end
+
+        puts 'ESSE É O CPF ' + hash[:cpf_destinatario].to_s
+
+        puts 'ESSE É O CNPJ ' + hash[:cnpj_destinatario].to_s
 
         if desk_order_params[:email_destinatario].present?
           #hash[:email_destinatario] = @desk_orders.email_nfce

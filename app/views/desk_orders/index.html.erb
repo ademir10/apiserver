@@ -96,12 +96,12 @@
 
  	         <!-- LINK PARA O XML DA DANFE - FICARÁ DISPONIVEL EM TODOS OS CASOS -->
  	          <% if desk_order.url_danfe.present? %>
- 	           	<%= link_to 'XML Cupom', desk_order.url_xml, download: 'data', class: 'btn btn-primary btn-xs', id: "printbtn" %>
+ 	           	<%= link_to 'XML NFCe', desk_order.url_xml, download: 'data', class: 'btn btn-primary btn-xs', id: "printbtn" %>
                   <% end %>
 
 									<!-- LINK PARA CANCELAMENTO DE NF -->
 								<% if desk_order.url_danfe.present? && desk_order.caminho_xml_cancelamento.blank? %>
-											<%= link_to 'Canc. NFe', cancelar_nfe_path(:id => desk_order.id), class: 'btn btn-warning btn-xs', id: "printbtn" %>
+											<%= link_to 'Canc. NFCe', cancelar_nfe_path(:id => desk_order.id), class: 'btn btn-warning btn-xs', id: "printbtn" %>
 									<% end %>
 
 							<!-- LINK PARA O XML DO CANCELAMENTO -->

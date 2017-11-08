@@ -12,7 +12,7 @@
 
 </div>
 <%= link_to t('.back', :default => t("helpers.links.back")), desk_orders_path, :class => 'btn btn-default'  %>
-<% if @desk_order.status == "Finalizada" %>
+<% if @desk_order.status == "Finalizada" && @desk_order.url_danfe.blank? %>
 <%= link_to 'Gerar Cupom fiscal', gerar_nfce_desk_order_path(:id => @desk_order.id), :class => 'btn btn-warning', id: 'printbtn', data: {disable_with: "<i class='fa fa-spinner fa-pulse fa-spin'></i> Processando...".html_safe} %>
   <%end%>
 <!--
