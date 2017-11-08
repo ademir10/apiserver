@@ -1,7 +1,7 @@
 class ItemsController < ApplicationController
   before_action :must_login
 
-  #form modal para editar tributos
+    #form modal para editar tributos
     def editar_tributo
     @item = Item.find_by(id: params[:id])
     @produto = Product.find_by(id: @item.product_id)
@@ -43,13 +43,11 @@ class ItemsController < ApplicationController
        redirect_to desk_order_path(@desk_order) and return
      end
 
-
        if item_params[:qnt].blank?
          sweetalert_warning('Informe uma quantidade para o produto!', 'Atenção!', useRejections: false)
       redirect_to desk_order_path(@desk_order) and return
       else
        @item = @desk_order.items.create(item_params)
-
          total_itens_atualizado = Item.where(desk_order_id: params[:desk_order_id]).sum(:val_total)
          DeskOrder.update(@desk_order.id, total: total_itens_atualizado.to_f)
        redirect_to desk_order_path(@desk_order)
@@ -93,6 +91,6 @@ class ItemsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def item_params
-      params.require(:item).permit(:product_id, :desk_order_id, :qnt, :val_unit, :val_total, :status, :name_prod, :status, :qrpoint_name, :local_print, :cfop, :codigo_ncm, :icms_situacao_tributaria, :apply_all)
+      params.require(:item).permit(:product_id, :desk_order_id, :qnt, :val_unit, :val_total, :status, :name_prod, :status, :qrpoint_name, :local_print, :cfop, :codigo_ncm, :icms_situacao_tributaria, :apply_all, :pizza1, :pizza2)
     end
 end

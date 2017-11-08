@@ -34,7 +34,6 @@ $('#val_unit').on('keyup',function(){
 			//AQUI É ONDE MOSTRA O VALOR COM .00 AO TRAZER O VALOR DE VENDA DO PRODUTO
 			$('#val_unit').val(parseFloat(obj.value).toFixed(2));
 
-
         },
         error: function(){
             console.log(arguments);
@@ -44,6 +43,22 @@ $('#val_unit').on('keyup',function(){
    	});
     });
 </script>
+
+<!-- chama o modal para montar as pizzas -->
+<script>
+$(document).ready(function(){
+  $('#id_do_produto').on('focusout',function(){
+    if ($('#id_do_produto').val() == "pz"){
+  $('#Modal-pizza').modal('show');
+}
+});
+
+$('#Modal-pizza').on('hidden.bs.modal', function (e) {
+  $('#id_do_produto').focus();
+});
+});
+</script>
+
 
 <h5><b>Adicionar produtos:</b></h5>
 <%= form_for ([@desk_order, @desk_order.items.build]) do |f| %>
@@ -83,8 +98,5 @@ $('#val_unit').on('keyup',function(){
 	<%= f.text_field :val_total, class: "form-control", placeholder: "Total R$", id: 'total_geral', readonly: true -%>
 	</div>
 
-
-    <%= f.submit 'Adicionar', class: 'btn btn-primary', id: 'add' %>
-
-
+  <%= f.submit 'Adicionar', class: 'btn btn-primary', id: 'add' %>
 <% end %>

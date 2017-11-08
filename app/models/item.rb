@@ -2,7 +2,7 @@ class Item < ApplicationRecord
   belongs_to :product
   belongs_to :desk_order
   #quando usar um parametro que não existe no banco de dados, é preciso usar o atributo attr_accessor
-  attr_accessor :apply_all
+  attr_accessor :apply_all, :pizza1, :pizza2
   #para salvar o nome do produto quando é feito uma adição de produto na mesa pelo balcão e naõ pelo produto
   before_create :insert_product_name, :if => lambda { |item| item.name_prod.nil? }
   def insert_product_name
@@ -18,18 +18,22 @@ class Item < ApplicationRecord
 
   #faz a baixa do produto
   def remove_from_stock
-    @product = Product.find_by_id(product_id)
-    if @product.check_stock == !false
-    product.qnt -= self.qnt
-    product.save
+    if self.product_id != 0
+      @product = Product.find_by_id(product_id)
+      if @product.check_stock == !false
+      product.qnt -= self.qnt
+      product.save
+      end
     end
   end
   #retorna o produto para o estoque quando acontece uma exclusão
   def return_to_stock
-    @product = Product.find_by_id(product_id)
-    if @product.check_stock == !false
-    product.qnt += self.qnt
-    product.save
+    if self.product_id != 0
+      @product = Product.find_by_id(product_id)
+      if @product.check_stock == !false
+      product.qnt += self.qnt
+      product.save
+      end
     end
   end
 end

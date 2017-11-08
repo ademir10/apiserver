@@ -71,9 +71,9 @@ width: 100%;
     </thead>
     <tbody>
 
-   	<% @desk_order.items.each do |item| %>
+   	<% @desk_order.items.order(:created_at).each do |item| %>
           <tr>
-          <td><%= item.product.name %></td>
+          <td><%= item.name_prod %></td>
           <td><%= item.qnt %></td>
           <td><%= number_with_precision(item.val_unit, precision: 2) %></td>
           <td><%= number_with_precision(item.val_total, precision: 2) %></td>
@@ -130,7 +130,7 @@ width: 100%;
 
    	<% @desk_order.items.order(:created_at).each do |item| %>
           <tr>
-          <td><%= item.product.name %></td>
+          <td><%= item.name_prod %></td>
           <td><%= item.qnt %></td>
           <td>R$ <%= number_with_precision(item.val_unit, precision: 2) %></td>
           <td>R$ <%= number_with_precision(item.val_total, precision: 2) %></td>

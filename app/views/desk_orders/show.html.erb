@@ -31,3 +31,19 @@
 <%= render "items/item" %>
 
 <%= render "desk_orders/form_receipt" %>
+
+<!-- O modal das pizzas -->
+<div class="modal fade" id="Modal-pizza" tabindex="-1" aria-labelledby="memberModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="memberModalLabel"><h4><b>Adicionar pizzas</b> <%= image_tag('pizza.png') %></h4></h4>
+      </div>
+      <div class="modal-body">
+        <%= render "items/pizza" %>
+      </div>
+
+    </div>
+  </div>
+</div>

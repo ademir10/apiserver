@@ -2,6 +2,7 @@ class DeskOrdersController < ApplicationController
   before_action :set_desk_order, only: [:show, :edit, :update, :destroy, :baixar, :nfce]
   before_action :must_login, only: [:show, :edit, :update, :destroy]
   before_action :show_form_payment, only: [:show, :edit, :update, :destroy, :create, :baixar]
+  before_action :show_pizzas, only: [:show]
   #Para permitir o acesso via aplicativo
   skip_before_action :verify_authenticity_token
 
@@ -514,7 +515,7 @@ class DeskOrdersController < ApplicationController
     if params[:date2].blank?
      params[:date2] = Date.today
     end
-    @desk_orders = DeskOrder.joins(:form_payment).where("desk_orders.created_at::date BETWEEN ? AND ?", params[:date1], params[:date2]).order('desk_orders.created_at')
+    @desk_orders = DeskOrder.where("desk_orders.created_at::date BETWEEN ? AND ?", params[:date1], params[:date2]).order('desk_orders.created_at')
     @total_por_forma_pagamento = DeskOrder.select('form_payments.type_payment', 'sum(total) as total').joins(:form_payment).where("desk_orders.created_at::date BETWEEN ? AND ?", params[:date1], params[:date2]).group('form_payments.type_payment').order('form_payments.type_payment')
     @total_desk_orders = DeskOrder.where("created_at::date BETWEEN ? AND ?", params[:date1], params[:date2]).sum(:total)
 
@@ -600,5 +601,9 @@ class DeskOrdersController < ApplicationController
 
     def show_form_payment
       @form_payments = FormPayment.order(:type_payment)
+    end
+
+    def show_pizzas
+      @products = Product.joins(:category).where('categories.name = ?', 'Pizzas').order('products.name')
     end
 end

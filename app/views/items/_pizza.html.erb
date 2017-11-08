@@ -1,0 +1,154 @@
+<script>
+$(document).ready(function(){
+  $("#quantidade").on('focusout',function(){
+  $(".btn").focus()
+  });
+
+$('#quantidade').on('keyup',function(){
+     var total = $('#quantidade').val() * $('#val_unitario').val();
+     $('#valor_geral').val(total.toFixed(2));
+});
+// AQUI É FEITA A CONSULTA COM BASE NO PRODUTO SELECIONADO NA PIZZA 1
+      $("#pizza1").change(function(){
+  	// limpa os campos primeiro
+    $("#quantidade").val('');
+  	$("#valor_geral").val('');
+    	var produto = $('#pizza1').val();
+    	$.ajax({
+    		url: '/consulta_prod.json',
+    		data: {
+    			name: produto,
+    		},
+    		datatype: "script",
+    		success: function(obj){
+    		$('#id_prod').val(obj.id);
+    		window.pizza_1 = obj.name;
+        window.valor_pizza1 = obj.value;
+        window.id_produto1 = obj.id;
+        $('#codigo_produto').val(window.id_produto1);
+        //$('#quantidade').val(obj.qnt);
+        $('#valor_ncm').val(obj.codigo_ncm);
+			//AQUI É ONDE MOSTRA O VALOR COM .00 AO TRAZER O VALOR DE VENDA DO PRODUTO
+			$('#val_unitario').val(parseFloat(obj.value).toFixed(2));
+      $('#pizza').val(window.pizza_1);
+      $("#pizza2").val('');
+      $('#pizza2').focus();
+          },
+        error: function(){
+            console.log(arguments);
+        }
+    	});
+   	});
+    // AQUI É FEITA A CONSULTA COM BASE NO PRODUTO SELECIONADO NA PIZZA 2
+          $("#pizza2").change(function(){
+      	// limpa os campos primeiro
+        $("#quantidade").val('');
+      	$("#valor_geral").val('');
+        	var produto = $('#pizza2').val();
+        	$.ajax({
+        		url: '/consulta_prod.json',
+        		data: {
+        			name: produto,
+        		},
+        		datatype: "script",
+        		success: function(obj){
+        		$('#id_prod').val(obj.id);
+            $('#valor_ncm').val(obj.codigo_ncm);
+        		window.pizza_2 = obj.name;
+            window.valor_pizza2 = obj.value;
+            window.id_produto2 = obj.id;
+            //verifica qual pizza é a mais cara
+            if(window.valor_pizza1 > window.valor_pizza2) {
+              $('#val_unitario').val(parseFloat(window.valor_pizza1).toFixed(2));
+              $('#codigo_produto').val(window.id_produto1);
+            } else {
+              $('#val_unitario').val(parseFloat(window.valor_pizza2).toFixed(2));
+              $('#codigo_produto').val(window.id_produto2);
+            }
+
+          // verifica se é meio a meio a pizza para concatenar o nome
+          if ( $('#pizza2').val() != 'Selecione:' ) {
+            var nome_pizza = '1/2 ' + window.pizza_1 + ' 1/2 ' + window.pizza_2;
+            $('#pizza').val(nome_pizza);
+          }
+          $('#quantidade').focus();
+            },
+            error: function(){
+                console.log(arguments);
+            }
+        	});
+
+       	});
+    });
+</script>
+
+<!-- chama o modal para montar as pizzas -->
+<script>
+$(document).ready(function(){
+  $('#Modal-pizza').on('hidden.bs.modal', function (e) {
+    $('#id_do_produto').focus();
+  });
+});
+</script>
+
+<h5><b>Selecione ou monte suas Pizzas:</b></h5>
+<%= form_for ([@desk_order, @desk_order.items.build]) do |f| %>
+
+<% if @desk_order.errors.any? %>
+    <div id="error_expl" class="panel panel-danger">
+      <div class="panel-heading">
+        <h3 class="panel-title"><%= pluralize(@desk_order.errors.count, "error") %> prohibited this heritage from being saved:</h3>
+      </div>
+      <div class="panel-body">
+        <ul>
+        <% @desk_order.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+        </ul>
+      </div>
+    </div>
+  <% end %>
+  <%= f.hidden_field :codigo_ncm, id: 'valor_ncm' %>
+  <%= f.hidden_field :product_id, id: 'codigo_produto' %>
+
+  <div class="form-group">
+      <%= f.label 'Pizza 1', :class => 'control-label col-lg-2' %>
+      <div class="col-lg-8">
+        <%= f.collection_select(:pizza1, @products, :id, :name, {include_blank: 'Selecione:'}, :class => 'form-control', id: 'pizza1') %>
+      </div>
+      <%=f.error_span(:pizza1) %>
+  </div>
+<br>
+<p>
+<br>
+  <div class="form-group">
+      <%= f.label 'Pizza 2', :class => 'control-label col-lg-2' %>
+      <div class="col-lg-8">
+        <%= f.collection_select(:pizza2, @products, :id, :name, {include_blank: 'Selecione:'}, :class => 'form-control',id: 'pizza2') %>
+      </div>
+      <%=f.error_span(:pizza2) %>
+  </div>
+<br>
+<p>
+<br>
+<div class="col-lg-10">
+<%= f.text_field :name_prod, class: "form-control", placeholder: "nome da pizza", id: 'pizza', readonly: true %>
+</div>
+<br>
+<p>
+<br>
+<div class="col-lg-2">
+<%= f.text_field :qnt, class: "form-control", placeholder: "qnt", id: 'quantidade' -%>
+</div>
+
+<!-- SE FOR PRECISO ALTERAR O VALOR DE VENDA UNITÁRIO DO PRODUTO NA HORA DA VENDA -->
+<div class="col-lg-3">
+<%= f.text_field :val_unit, class: "form-control", id: 'val_unitario', placeholder: 'Val. unit R$', readonly: true -%>
+</div>
+
+<div class="col-lg-3">
+<%= f.text_field :val_total, class: "form-control", placeholder: "Total R$", id: 'valor_geral', readonly: true -%>
+</div>
+
+  <%= f.submit 'Adicionar', class: 'btn btn-success', id: 'add' %>
+<% end %>

@@ -6,7 +6,7 @@ class ProductsController < ApplicationController
 
   #consultando e carregando os dados do produto selecionado que será adicionado na venda
   def consulta_prod
-    @product = Product.select('id,name,qnt,value').where(id: params[:name]).first
+    @product = Product.select('id,name,codigo_ncm,qnt,value').where(id: params[:name]).first
     respond_to do |format|
     format.html
     format.json { render :json => @product }

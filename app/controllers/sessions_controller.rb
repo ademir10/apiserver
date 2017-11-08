@@ -43,7 +43,7 @@ puts 'AQUI É A DATA DE AMANHÃ ' + Date.tomorrow.to_s
       #para informar ao form que expirou e precisa mostrar os dados bancários para pagamento
       params[:expire_date] = check_date.expiration_date
 
-       sweetalert_error('A sua licença expirou, efetue o pagamento e informe o departamento financeiro para que seja feito o desbloqueio automatico.', 'Atenção' , persistent: 'OK')
+       sweetalert_error('A sua licença expirou, efetue o pagamento e informe o departamento financeiro para que seja feito o desbloqueio automático.', 'Atenção' , persistent: 'OK')
       session[:user_id] = nil
      redirect_to root_path and return
       end
