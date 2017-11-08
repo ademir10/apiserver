@@ -26,7 +26,6 @@ gem 'rails-assets-sweetalert2', source: 'https://rails-assets.org'
 gem 'sweet-alert2-rails'
 #para funcionar o javascript dentro das views
 gem 'twitter-bootstrap-rails'
-gem 'bootstrap-sass'
 gem 'jquery-rails', '~> 4.2', '>= 4.2.2'
 #para o dropzone images
 gem 'paperclip'
