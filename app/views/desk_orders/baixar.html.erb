@@ -43,113 +43,122 @@ width: 100%;
   <%- model_class = DeskOrder -%>
 
     <div class="panel-heading">
-
-  <h4><%= @config.razao %></h4>
-  <h6><%= @config.endereco %> <%= @config.numero %></br>
-  <%= @config.bairro %> / <%= @config.cidade %> </br>
-  Fone: <%= @config.telefone %></br>
-  <%= @config.site %></h6>
-
-  <% if @desk_order.destinatario_id.blank? %>
-  Venda <b><%= @desk_order.qrpoint.description %></b>
+<% if @desk_order.status == 'Consumidor' %>
+  <h3>Status: <%= @desk_order.status %></h3>
   <% else %>
-  Cliente: <%= @desk_order.destinatario.nome %><br>
-  Endereço: <%= @desk_order.destinatario.endereco %> Nº<%= @desk_order.destinatario.numero %> <%= @desk_order.destinatario.complemento %><br>
-  Bairro: <%= @desk_order.destinatario.bairro %> / <%= @desk_order.destinatario.celular %>
+          <h4><%= @config.razao %></h4>
+          <h6><%= @config.endereco %> <%= @config.numero %></br>
+          <%= @config.bairro %> / <%= @config.cidade %> </br>
+          Fone: <%= @config.telefone %></br>
+          <%= @config.site %></h6>
+          <% if @desk_order.tipo_venda.present? %>
+          Venda <b>Consumidor</b>
+          <% elsif @desk_order.destinatario_id.blank? && @desk_order.tipo_venda.blank? %>
+          Venda <b><%= @desk_order.qrpoint.description %></b>
+          <% else %>
+          Cliente: <%= @desk_order.destinatario.nome %><br>
+          Endereço: <%= @desk_order.destinatario.endereco %> Nº<%= @desk_order.destinatario.numero %> <%= @desk_order.destinatario.complemento %><br>
+          Bairro: <%= @desk_order.destinatario.bairro %> / <%= @desk_order.destinatario.celular %>
+          <% end %>
+<% end %>
+          <h1 class="panel-title">
+           <table class="table table-striped">
+            <thead>
+              <tr>
+                <th><%= 'Produto' %></th>
+                <th><%= 'Qnt ' %></th>
+                <th><%= ' Unit' %></th>
+                <th><%= 'Total' %></th>
+
+              </tr>
+            </thead>
+            <tbody>
+
+           	<% @desk_order.items.order(:created_at).each do |item| %>
+                  <tr>
+                  <td><%= item.name_prod %></td>
+                  <td><%= item.qnt %></td>
+                  <td><%= number_with_precision(item.val_unit, precision: 2) %></td>
+                  <td><%= number_with_precision(item.val_total, precision: 2) %></td>
+                  </tr>
+                <% end %>
+                 </tbody>
+
+             </table>
+              Forma pagto: <%= @desk_order.form_payment.type_payment %> <br />
+              <%= @desk_order.items.count %>
+              <% if @desk_order.items.count.to_s == '1' %>
+              Item
+              <%else%>
+              Itens
+              <%end%>
+               / Total R$ <strong>R$ <%= number_with_precision(@total_items, precision: 2) %></strong><br>
+               <% if @desk_order.obs.present? %>
+               <h6>Obs: <%= @desk_order.obs %></h6>
+               <% end %>
+
+
+            </div><!-- fim .panel-heading -->
+          <button type="button" id ="printbtn" class="btn btn-success", onclick ="window.print();return false;">Imprimir</button>
+
+        </div>
+
+<% if @desk_order.status == 'Consumidor' %>
+  <h3>Status: <%= @desk_order.status %></h3>
+  <% else %>
+          <!-- os dados são exibidos normalmente na view -->
+          <div class="container-fluid" id="printbtn">
+            <%- model_class = DeskOrder -%>
+            <div class="page-header">
+              <% if @desk_order.tipo_venda.present? %>
+              <h1>Venda: Consumidor</h1>
+              <% elsif @desk_order.destinatario_id.blank? && @desk_order.tipo_venda.blank? %>
+              <h1>QRpoint: <%= @desk_order.qrpoint.description %></h1>
+              <h3>Status: <%= @desk_order.status %></h3>
+              <h4>Tipo: <%= @desk_order.type_service %></h4>
+              <% else %>
+              <h1>Cliente: <%= @desk_order.destinatario.nome %></h1>
+              <h3>Endereço: <%= @desk_order.destinatario.endereco %> Nº<%= @desk_order.destinatario.numero %> <%= @desk_order.destinatario.complemento %> </h3>
+              <h4>Bairro: <%= @desk_order.destinatario.bairro %> / Fone: <%= @desk_order.destinatario.celular %></h4>
+              <% end %>
+            </div>
   <% end %>
 
-  <h1 class="panel-title">
-   <table class="table table-striped">
-    <thead>
-      <tr>
-        <th><%= 'Produto' %></th>
-        <th><%= 'Qnt ' %></th>
-        <th><%= ' Unit' %></th>
-        <th><%= 'Total' %></th>
+            <!-- EXIBE OS ITENS NA O.S -->
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th> <%= 'Produto' %></th>
+                  <th><%= 'Qnt' %></th>
+                  <th><%= 'Valor unit' %></th>
+                  <th><%= 'Total' %></th>
+                  <th><%= 'Imagem' %></th>
+                </tr>
+              </thead>
+              <tbody>
 
-      </tr>
-    </thead>
-    <tbody>
+             	<% @desk_order.items.order(:created_at).each do |item| %>
+                    <tr>
+                    <td><%= item.name_prod %></td>
+                    <td><%= item.qnt %></td>
+                    <td>R$ <%= number_with_precision(item.val_unit, precision: 2) %></td>
+                    <td>R$ <%= number_with_precision(item.val_total, precision: 2) %></td>
+                    <% if item.product.image.present? %>
+            	      <td><%= image_tag(item.product.image.url, :size => "25x25", class: "css-style") %></td>
+            	      <% else %>
+            	      <td>Sem imagem</td>
+            	      <% end %>
+                    </tr>
+                  <% end %>
+                   </tbody>
+               </table>
 
-   	<% @desk_order.items.order(:created_at).each do |item| %>
-          <tr>
-          <td><%= item.name_prod %></td>
-          <td><%= item.qnt %></td>
-          <td><%= number_with_precision(item.val_unit, precision: 2) %></td>
-          <td><%= number_with_precision(item.val_total, precision: 2) %></td>
-          </tr>
-        <% end %>
-         </tbody>
+              <h4>Forma de pagamento: <%= @desk_order.form_payment.type_payment %> </h4>
+              <h3><%= @desk_order.items.count %> Itens / <b>Total R$ <%= number_with_precision(@total_items, precision: 2) %></b> </h3>
+              <% if @desk_order.obs.present? %>
+              <h6>Observações: <%= @desk_order.obs %></h6>
+              <% end %><br>
+              <button type="button" id ="printbtn" class="btn btn-success", onclick ="window.print();return false;">Imprimir</button>
+              <%= link_to t('.back', :default => t("helpers.links.back")), desk_order_path(@desk_order), :class => 'btn btn-default'  %>
 
-     </table>
-      Forma pagto: <%= @desk_order.form_payment.type_payment %> <br />
-      <%= @desk_order.items.count %>
-      <% if @desk_order.items.count.to_s == '1' %>
-      Item
-      <%else%>
-      Itens
-      <%end%>
-       / Total R$ <strong>R$ <%= number_with_precision(@total_items, precision: 2) %></strong><br>
-       <% if @desk_order.obs.present? %>
-       <h6>Obs: <%= @desk_order.obs %></h6>
-       <% end %>
-
-
-    </div><!-- fim .panel-heading -->
-  <button type="button" id ="printbtn" class="btn btn-success", onclick ="window.print();return false;">Imprimir</button>
-
-</div>
-
-<!-- os dados são exibidos normalmente na view -->
-<div class="container-fluid" id="printbtn">
-  <%- model_class = DeskOrder -%>
-  <div class="page-header">
-    <% if @desk_order.destinatario_id.blank? %>
-    <h1>QRpoint: <%= @desk_order.qrpoint.description %></h1>
-    <h3>Status: <%= @desk_order.status %></h3>
-    <h4>Tipo: <%= @desk_order.type_service %></h4>
-    <% else %>
-    <h1>Cliente: <%= @desk_order.destinatario.nome %></h1>
-    <h3>Endereço: <%= @desk_order.destinatario.endereco %> Nº<%= @desk_order.destinatario.numero %> <%= @desk_order.destinatario.complemento %> </h3>
-    <h4>Bairro: <%= @desk_order.destinatario.bairro %> / Fone: <%= @desk_order.destinatario.celular %></h4>
-    <% end %>
-  </div>
-
-  <!-- EXIBE OS ITENS NA O.S -->
-  <table class="table table-striped">
-    <thead>
-      <tr>
-        <th> <%= 'Produto' %></th>
-        <th><%= 'Qnt' %></th>
-        <th><%= 'Valor unit' %></th>
-        <th><%= 'Total' %></th>
-        <th><%= 'Imagem' %></th>
-      </tr>
-    </thead>
-    <tbody>
-
-   	<% @desk_order.items.order(:created_at).each do |item| %>
-          <tr>
-          <td><%= item.name_prod %></td>
-          <td><%= item.qnt %></td>
-          <td>R$ <%= number_with_precision(item.val_unit, precision: 2) %></td>
-          <td>R$ <%= number_with_precision(item.val_total, precision: 2) %></td>
-          <% if item.product.image.present? %>
-  	      <td><%= image_tag(item.product.image.url, :size => "25x25", class: "css-style") %></td>
-  	      <% else %>
-  	      <td>Sem imagem</td>
-  	      <% end %>
-          </tr>
-        <% end %>
-         </tbody>
-     </table>
-
-    <h4>Forma de pagamento: <%= @desk_order.form_payment.type_payment %> </h4>
-    <h3><%= @desk_order.items.count %> Itens / <b>Total R$ <%= number_with_precision(@total_items, precision: 2) %></b> </h3>
-    <% if @desk_order.obs.present? %>
-    <h6>Observações: <%= @desk_order.obs %></h6>
-    <% end %><br>
-    <button type="button" id ="printbtn" class="btn btn-success", onclick ="window.print();return false;">Imprimir</button>
-    <%= link_to t('.back', :default => t("helpers.links.back")), desk_order_path(@desk_order), :class => 'btn btn-default'  %>
-
-</div>
+          </div>

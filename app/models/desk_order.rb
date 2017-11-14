@@ -4,7 +4,13 @@ class DeskOrder < ApplicationRecord
   belongs_to :qrpoint, optional: true
   belongs_to :form_payment, optional: true
   belongs_to :destinatario, optional: true
-  attr_accessor :environment
+
+  before_create :check_tipo_venda
+  def check_tipo_venda
+    if status == 'Consumidor'
+    self.tipo_venda = 'barcode'
+  end
+  end
 
   #chama o job depois que é fechada a mesa
   after_update_commit :after_close_desk_order

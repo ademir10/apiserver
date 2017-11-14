@@ -1,38 +1,36 @@
 <!-- Dá o foco no campo para que seja feita a busca com o autocompletar -->
+
 <script>
 $(document).ready(function(){
-$('#id_do_produto').focus();
+$('#codigo-barra').focus();
 });
 </script>
 
 <script>
-$(document).ready(function(){
-$('#val_unit').on('keyup',function(){
-     var total = $('#qnt').val() * $('#val_unit').val();
-     $('#total_geral').val(total.toFixed(2));
-});
-// AQUI É FEITA A CONSULTA COM BASE NO PRODUTO SELECIONADO NO TEXTFIELD E EXIBIDO NOS TEXTFIELDS O RESULTADO
-    $("#id_do_produto").focusout(function() {
+// AQUI É FEITA A CONSULTA COM BASE NO PRODUTO SELECIONADO NO COMBOBOX E EXIBIDO NOS TEXTFIELDS O RESULTADO
+$(document).ready(function() {
+
+    $("#codigo-barra").on("focusout", function(){
   	// limpa os campos primeiro
-    $("#qnt").val('');
+  	$("#qnt").val('1');
+    $("#val_unit").val('');
   	$("#total_geral").val('');
-    	var produto = $('#id_prod').val()
 
     	$.ajax({
-    		url: '/consulta_prod.json',
+    		url: '/consulta_prod_barcode.json',
     		data: {
-    			name: produto,
+    			name: $( "#codigo-barra" ).val(),
+
     		},
     		datatype: "script",
 
     		success: function(obj){
+          $('#id-do-prod').val(obj.id);
+        	$('#qnt').val('1');
+        	$('#val_unit').val(obj.value);
 
-    		$('#id_prod').val(obj.id);
-    		$('#descricao_produto').val(obj.descricao);
-        $('#quantidade').val(obj.qnt);
-        $('#ncm').val(obj.codigo_ncm);
-			//AQUI É ONDE MOSTRA O VALOR COM .00 AO TRAZER O VALOR DE VENDA DO PRODUTO
-			$('#val_unit').val(parseFloat(obj.value).toFixed(2));
+               var total = $('#qnt').val() * $('#val_unit').val();
+               $('#total_geral').val(total.toFixed(2));
 
         },
         error: function(){
@@ -41,7 +39,21 @@ $('#val_unit').on('keyup',function(){
 
     	});
    	});
-    });
+ });
+
+</script>
+
+<script>
+$(document).ready(function(){
+$('#qnt').on('keyup',function(){
+     var total = $('#qnt').val() * $('#val_unit').val();
+     $('#total_geral').val(total.toFixed(2));
+});
+
+  $("#qnt").on('focusout',function(){
+  $(".teste").focus()
+  });
+});
 </script>
 
 <!-- chama o modal para montar as pizzas -->
@@ -78,12 +90,17 @@ $('#Modal-pizza').on('hidden.bs.modal', function (e) {
     </div>
   <% end %>
   <%= f.hidden_field :codigo_ncm, id: 'ncm' -%>
-
+<% if @desk_order.tipo_venda.present? %>
+<div class="col-lg-2">
+<%= f.text_field :product_id, :class => 'form-control',placeholder: 'Código de barras:', id: 'codigo-barra' %>
+<%= f.hidden_field :product_id, id: 'id-do-prod' %>
+</div>
+  <% else %>
 	<div class="col-lg-2">
 	<%= f.autocomplete_field :product_id, autocomplete_product_name_products_path, :id_element => '#id_prod', :class => 'form-control',placeholder: 'Digite o nome:', id: 'id_do_produto' %>
 	<%= f.hidden_field :product_id, id: 'id_prod' %>
 	</div>
-
+<% end %>
 
     <div class="col-lg-1">
 	<%= f.text_field :qnt, class: "form-control", placeholder: "qnt", id: 'qnt' -%>
@@ -98,5 +115,5 @@ $('#Modal-pizza').on('hidden.bs.modal', function (e) {
 	<%= f.text_field :val_total, class: "form-control", placeholder: "Total R$", id: 'total_geral', readonly: true -%>
 	</div>
 
-  <%= f.submit 'Adicionar', class: 'btn btn-primary', id: 'add' %>
+  <%= f.submit 'Adicionar', class: 'teste btn-primary btn-lg', id: 'add' %>
 <% end %>

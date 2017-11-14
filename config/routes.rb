@@ -46,13 +46,13 @@ Rails.application.routes.draw do
      post 'baixar'
      post 'nfce'
      get 'gerar_nfce'
-   end
+
+  end
     resources :items do
     end
   end
-
-  resources :items
-
+    resources :items
+    post 'barcode', to: 'desk_orders#barcode'
   #para cancelar a nfe
   get 'cancelar_nfe', to: 'desk_orders#cancelar_nfe'
   #para efetivar o cancelamento da nfe
@@ -61,9 +61,13 @@ Rails.application.routes.draw do
   resources :products do
     #para autocompletar o nome do produto
    get :autocomplete_product_name, :on => :collection
+   #para autocompletar com o codigo de barras lidos
+   get :autocomplete_product_barcode, :on => :collection
   end
   #rota para consultar produto selecionado no combobox na Ordem de serviço
   get 'consulta_prod', to: 'products#consulta_prod'
+  get 'consulta_prod_barcode', to: 'products#consulta_prod_barcode'
+
 
   resources :categories
   get 'pages/login'

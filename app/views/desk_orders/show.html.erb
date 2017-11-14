@@ -1,49 +1,71 @@
-<%- model_class = DeskOrder -%>
-<div class="page-header">
-  <% if @desk_order.destinatario_id.present? %>
-  <h1>Cliente: <%= @desk_order.destinatario.nome %></h1>
-  <h3>Endereço: <%= @desk_order.destinatario.endereco %> Nº<%= @desk_order.destinatario.numero %></h3>
-  <h4>Complemento: <%= @desk_order.destinatario.complemento %> Bairro: <%= @desk_order.destinatario.bairro %></h4>
-  <% else %>
-  <h1>QRpoint: <%= @desk_order.qrpoint.description %></h1>
-  <h3>Status: <%= @desk_order.status %></h3>
-  <h4>Tipo: <%= @desk_order.type_service %></h4>
- <% end %>
 
+<% if @desk_order.status == 'Consumidor' %>
+<div class="layout-venda">
+  <h1>Cliente: <%= @desk_order.status %></h1>
+  <%= link_to t('.destroy', :default => t("helpers.links.destroy")),
+                desk_order_path(@desk_order),
+                :method => 'delete',
+                :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) },
+                :class => 'btn btn-danger' %>
+  <!-- EXIBE OS ITENS NA O.S -->
+  <%= render "items/form" %>
+  <%= render "items/item" %>
+
+  <%= render "desk_orders/form_receipt" %>
 </div>
-<%= link_to t('.back', :default => t("helpers.links.back")), desk_orders_path, :class => 'btn btn-default'  %>
-<% if @desk_order.status == "Finalizada" && @desk_order.url_danfe.blank? %>
-<%= link_to 'Gerar Cupom fiscal', gerar_nfce_desk_order_path(:id => @desk_order.id), :class => 'btn btn-warning', id: 'printbtn', data: {disable_with: "<i class='fa fa-spinner fa-pulse fa-spin'></i> Processando...".html_safe} %>
-  <%end%>
-<!--
-<%= link_to t('.edit', :default => t("helpers.links.edit")),
-              edit_desk_order_path(@desk_order), :class => 'btn btn-default' %> -->
-<%= link_to t('.destroy', :default => t("helpers.links.destroy")),
-              desk_order_path(@desk_order),
-              :method => 'delete',
-              :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) },
-              :class => 'btn btn-danger' %>
 
-<h4><%= @desk_order.items.count %> Itens / <b>Total R$ <%= number_with_precision(@total_items, precision: 2) %></b> </h4>
+<% else %>
 
-<!-- EXIBE OS ITENS NA O.S -->
-<%= render "items/form" %>
-<%= render "items/item" %>
+      <%- model_class = DeskOrder -%>
+      <div class="page-header">
+        <% if @desk_order.tipo_venda.present? %>
+        <h1>Venda: Consumidor</h1>
+        <% elsif @desk_order.destinatario_id.present? && @desk_order.tipo_venda.blank? %>
+        <h1>Cliente: <%= @desk_order.destinatario.nome %></h1>
+        <h3>Endereço: <%= @desk_order.destinatario.endereco %> Nº<%= @desk_order.destinatario.numero %></h3>
+        <h4>Complemento: <%= @desk_order.destinatario.complemento %> Bairro: <%= @desk_order.destinatario.bairro %></h4>
+        <% else %>
+        <h1>QRpoint: <%= @desk_order.qrpoint.description %></h1>
+        <h3>Status: <%= @desk_order.status %></h3>
+        <h4>Tipo: <%= @desk_order.type_service %></h4>
+       <% end %>
 
-<%= render "desk_orders/form_receipt" %>
-
-<!-- O modal das pizzas -->
-<div class="modal fade" id="Modal-pizza" tabindex="-1" aria-labelledby="memberModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="memberModalLabel"><h4><b>Adicionar pizzas</b> <%= image_tag('pizza.png') %></h4></h4>
       </div>
-      <div class="modal-body">
-        <%= render "items/pizza" %>
+      <%= link_to t('.back', :default => t("helpers.links.back")), desk_orders_path, :class => 'btn btn-default'  %>
+      <% if @desk_order.status == "Finalizada" && @desk_order.url_danfe.blank? %>
+      <%= link_to 'Gerar Cupom fiscal', gerar_nfce_desk_order_path(:id => @desk_order.id), :class => 'btn btn-warning', id: 'printbtn', data: {disable_with: "<i class='fa fa-spinner fa-pulse fa-spin'></i> Processando...".html_safe} %>
+        <%end%>
+      <!--
+      <%= link_to t('.edit', :default => t("helpers.links.edit")),
+                    edit_desk_order_path(@desk_order), :class => 'btn btn-default' %> -->
+      <%= link_to t('.destroy', :default => t("helpers.links.destroy")),
+                    desk_order_path(@desk_order),
+                    :method => 'delete',
+                    :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) },
+                    :class => 'btn btn-danger' %>
+
+      <h4><%= @desk_order.items.count %> Itens / <b>Total R$ <%= number_with_precision(@total_items, precision: 2) %></b> </h4>
+
+      <!-- EXIBE OS ITENS NA O.S -->
+      <%= render "items/form" %>
+      <%= render "items/item" %>
+
+      <%= render "desk_orders/form_receipt" %>
+
+      <!-- O modal das pizzas -->
+      <div class="modal fade" id="Modal-pizza" tabindex="-1" aria-labelledby="memberModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title" id="memberModalLabel"><h4><b>Adicionar pizzas</b> <%= image_tag('pizza.png') %></h4></h4>
+            </div>
+            <div class="modal-body">
+              <%= render "items/pizza" %>
+            </div>
+
+          </div>
+        </div>
       </div>
 
-    </div>
-  </div>
-</div>
+<%end%>

@@ -8,7 +8,7 @@ class Item < ApplicationRecord
   def insert_product_name
       self.name_prod = self.product.name
       self.local_print = self.product.local_print
-      if self.desk_order.destinatario_id.blank?
+      if self.desk_order.destinatario_id.blank? && self.desk_order.status != 'Consumidor'
       self.qrpoint_name = self.desk_order.qrpoint.description
     end
   end

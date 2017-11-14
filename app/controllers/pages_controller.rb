@@ -5,6 +5,7 @@ class PagesController < ApplicationController
   def dashboard
     @desk_orders = DeskOrder.includes(:qrpoint).where(status: 'Em uso').or(DeskOrder.includes(:qrpoint).where(status: 'Solicita o fechamento')).order('qrpoints.description')
     @desk_orders_opened = Qrpoint.where(status: 'Aberta').order(:description)
+    @desk_order = DeskOrder.new
   end
 
   def message_error_relation_tables

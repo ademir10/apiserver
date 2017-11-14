@@ -6,6 +6,19 @@ class DeskOrdersController < ApplicationController
   #Para permitir o acesso via aplicativo
   skip_before_action :verify_authenticity_token
 
+  def barcode
+    @desk_order = DeskOrder.new(desk_order_params)
+    respond_to do |format|
+      if @desk_order.save
+        format.html { redirect_to @desk_order, notice: 'Desk order was successfully created.' }
+        format.json { render :show, status: :created, location: @desk_order }
+      else
+        format.html { render :new }
+        format.json { render json: @desk_order.errors, status: :unprocessable_entity }
+      end
+    end
+    end
+
   #para chamar o form modal e criar novo cliente
   def new_cliente
     @destinatario = Destinatario.new
@@ -468,7 +481,9 @@ class DeskOrdersController < ApplicationController
               cta_receber = Receipt.new(params[:receipt])
               cta_receber.doc_number = @desk_order.id
               cta_receber.type_doc = "Venda"
-              if @desk_order.destinatario_id.blank?
+              if @desk_order.status == 'Consumidor'
+              cta_receber.description = 'Referente Venda com código de barras'
+            elsif @desk_order.destinatario_id.blank? && status != 'Consumidor'
               cta_receber.description = 'Referente Venda: ' + @desk_order.qrpoint.description.to_s
             else
               cta_receber.description = 'Ref Venda delivery Cliente: ' + @desk_order.destinatario.nome.to_s
@@ -498,7 +513,11 @@ class DeskOrdersController < ApplicationController
             else
               log = Loginfo.new(params[:loginfo])
               log.employee = current_user.name
+              if @desk_order.status == 'Consumidor'
+                log.task = 'Finalizou a venda de código de barras'
+              else
               log.task = 'Finalizou a venda do cliente: ' + @desk_order.destinatario.nome.to_s
+            end
               log.save!
               #finalizando a O.S e salvando a forma de pagamento
               DeskOrder.update(@desk_order.id, status: 'Finalizada', form_payment_id: desk_order_params[:form_payment_id], troco_para: desk_order_params[:troco_para], obs: desk_order_params[:obs])
@@ -570,7 +589,7 @@ class DeskOrdersController < ApplicationController
   # DELETE /desk_orders/1.json
   def destroy
     @desk_order.destroy
-    if @desk_order.destinatario_id.blank?
+    if @desk_order.destinatario_id.blank? && @desk_order.tipo_venda.blank?
     Qrpoint.update(@desk_order.qrpoint_id, status: 'Aberta')
   end
     Receipt.where(desk_order_id: @desk_order).destroy_all
@@ -578,7 +597,9 @@ class DeskOrdersController < ApplicationController
     #inserindo no log de atividades
         log = Loginfo.new(params[:loginfo])
         log.employee = current_user.name
-        if @desk_order.destinatario_id.blank?
+        if @desk_order.tipo_venda.present?
+        log.task = 'Excluiu venda com código de barras - Nº ' + @desk_order.id.to_s
+      elsif @desk_order.destinatario_id.blank? && tipo_venda.blank?
         log.task = 'Excluiu venda da mesa Nº: ' + @desk_order.qrpoint.description.to_s
         else
         log.task = 'Excluiu venda delivery cliente: ' + @desk_order.destinatario.nome.to_s
@@ -596,7 +617,7 @@ class DeskOrdersController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def desk_order_params
-      params.require(:desk_order).permit(:id, :number, :total, :status, :qrpoint_id, :type_service, :form_payment_id, :cpf_cnpj_nfce, :email_nfce, :forma_pagamento_nfce, :bandeira_operadora, :informacoes_adicionais_contribuinte, :environment, :url_danfe, :url_xml, :justificativa_cancelamento, :caminho_xml_cancelamento, :destinatario_id, :troco_para, :obs)
+      params.require(:desk_order).permit(:id, :number, :total, :status, :qrpoint_id, :type_service, :form_payment_id, :cpf_cnpj_nfce, :email_nfce, :forma_pagamento_nfce, :bandeira_operadora, :informacoes_adicionais_contribuinte, :environment, :url_danfe, :url_xml, :justificativa_cancelamento, :caminho_xml_cancelamento, :destinatario_id, :troco_para, :obs, :tipo_venda)
     end
 
     def show_form_payment

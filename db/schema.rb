@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171107223605) do
+ActiveRecord::Schema.define(version: 20171114101712) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -84,6 +84,7 @@ ActiveRecord::Schema.define(version: 20171107223605) do
     t.bigint "destinatario_id"
     t.decimal "troco_para"
     t.text "obs"
+    t.string "tipo_venda"
     t.index ["destinatario_id"], name: "index_desk_orders_on_destinatario_id"
     t.index ["form_payment_id"], name: "index_desk_orders_on_form_payment_id"
     t.index ["qrpoint_id"], name: "index_desk_orders_on_qrpoint_id"
@@ -126,8 +127,6 @@ ActiveRecord::Schema.define(version: 20171107223605) do
     t.integer "codigo_ncm"
     t.string "icms_situacao_tributaria"
     t.integer "ipi_situacao_tributaria"
-    t.integer "pizza1"
-    t.integer "pizza2"
     t.index ["desk_order_id"], name: "index_items_on_desk_order_id"
     t.index ["product_id"], name: "index_items_on_product_id"
   end
@@ -174,6 +173,7 @@ ActiveRecord::Schema.define(version: 20171107223605) do
     t.string "local_print"
     t.integer "codigo_ncm"
     t.string "unidade_comercial"
+    t.string "barcode"
     t.index ["category_id"], name: "index_products_on_category_id"
   end
 

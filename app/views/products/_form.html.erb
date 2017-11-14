@@ -29,6 +29,13 @@ $(document).ready(function() {
       </div>
     </div>
   <% end %>
+  <div class="form-group">
+    <%= f.label 'Cód barras', :class => 'control-label col-lg-2' %>
+    <div class="col-lg-3">
+      <%= f.text_field :barcode, :class => 'form-control' %>
+    </div>
+    <%=f.error_span(:barcode) %>
+  </div>
 
   <div class="form-group">
     <%= f.label 'nome', :class => 'control-label col-lg-2' %>

@@ -11,6 +11,15 @@ class ProductsController < ApplicationController
     format.html
     format.json { render :json => @product }
     end
+  end
+
+  #consultando e carregando os dados do produto selecionado que será adicionado na venda
+  def consulta_prod_barcode
+    @product = Product.select('id,name,codigo_ncm,qnt,value').where(barcode: params[:name]).first
+    respond_to do |format|
+    format.html
+    format.json { render :json => @product }
+    end
     #------------DEU CERTO GLORIA Á DEUS!!!-----------------------------------------------
   end
 
@@ -98,7 +107,7 @@ class ProductsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def product_params
-      params.require(:product).permit(:name, :qnt, :value, :category_id, :image, :remove_image, :description, :check_stock, :local_print, :codigo_ncm, :unidade_comercial)
+      params.require(:product).permit(:name, :qnt, :value, :category_id, :image, :remove_image, :description, :check_stock, :local_print, :codigo_ncm, :unidade_comercial, :barcode)
     end
 
     def show_categories

@@ -65,11 +65,14 @@
   <tbody>
     <% @desk_orders.each do |desk_order| %>
       <tr>
-				<% if desk_order.destinatario.blank? %>
+				<% if desk_order.tipo_venda.present? %>
+					<td><%= link_to 'Consumidor', desk_order_path(desk_order) %></td>
+				<% elsif desk_order.destinatario.blank? && desk_order.tipo_venda.blank? %>
         <td><%= link_to desk_order.qrpoint.description, desk_order_path(desk_order) %></td>
 				<% else %>
 				<td><%= link_to desk_order.destinatario.nome, desk_order_path(desk_order) %></td>
 				<% end %>
+
 				<% if desk_order.form_payment.present? %>
         <td><%= desk_order.form_payment.type_payment %></td>
 				<% else %>
