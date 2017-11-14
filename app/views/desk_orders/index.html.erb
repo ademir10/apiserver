@@ -48,8 +48,13 @@
     <br />
     <%= submit_tag "Consultar", class: 'btn btn-success' %>
     <button type="button" id ="printbtn" class="btn btn-success", onclick ="window.print();return false;">Imprimir</button>
-		<%= link_to 'Nova Venda delivery', new_desk_order_path, class: 'btn btn-warning btn-md' %>
-		<% end %>
+		<% end %> <p>
+		<%= form_for(@desk_order, url: barcode_path, method: :post) do |f| %>
+	  <%= f.hidden_field :status, value: 'Consumidor' %>
+	  <%= f.submit 'Nova Venda Barcode', class: 'btn btn-primary btn-md' %>
+	  <%= link_to 'Nova Venda delivery', new_desk_order_path, class: 'btn btn-warning btn-md' %>
+	  <% end %>
+
 </div>
 <table class="table table-striped">
   <thead>

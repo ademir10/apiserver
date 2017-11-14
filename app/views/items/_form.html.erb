@@ -1,36 +1,65 @@
 <!-- Dá o foco no campo para que seja feita a busca com o autocompletar -->
-
+<%if @desk_order.tipo_venda.present? %>
 <script>
 $(document).ready(function(){
 $('#codigo-barra').focus();
 });
 </script>
+<% else  %>
+<script>
+$(document).ready(function(){
+$('#id_do_produto').focus();
+});
+</script>
+<% end %>
 
 <script>
 // AQUI É FEITA A CONSULTA COM BASE NO PRODUTO SELECIONADO NO COMBOBOX E EXIBIDO NOS TEXTFIELDS O RESULTADO
 $(document).ready(function() {
-
     $("#codigo-barra").on("focusout", function(){
   	// limpa os campos primeiro
   	$("#qnt").val('1');
     $("#val_unit").val('');
   	$("#total_geral").val('');
-
     	$.ajax({
     		url: '/consulta_prod_barcode.json',
     		data: {
     			name: $( "#codigo-barra" ).val(),
-
     		},
     		datatype: "script",
-
     		success: function(obj){
           $('#id-do-prod').val(obj.id);
         	$('#qnt').val('1');
         	$('#val_unit').val(obj.value);
-
                var total = $('#qnt').val() * $('#val_unit').val();
                $('#total_geral').val(total.toFixed(2));
+        },
+        error: function(){
+            console.log(arguments);
+        }
+    	});
+   	});
+
+    // AQUI É FEITA A CONSULTA COM BASE NO PRODUTO SELECIONADO NO TEXTFIELD E EXIBIDO NOS TEXTFIELDS O RESULTADO
+    $("#id_do_produto").focusout(function() {
+  	// limpa os campos primeiro
+    $("#qnt").val('');
+  	$("#total_geral").val('');
+    	var produto = $('#id_prod').val()
+
+    	$.ajax({
+    		url: '/consulta_prod.json',
+    		data: {
+    			name: produto,
+    		},
+    		datatype: "script",
+
+    		success: function(obj){
+
+    		$('#id_prod').val(obj.id);
+    		$('#descricao_produto').val(obj.descricao);
+        $('#ncm').val(obj.codigo_ncm);
+				$('#val_unit').val(parseFloat(obj.value).toFixed(2));
 
         },
         error: function(){
@@ -51,7 +80,7 @@ $('#qnt').on('keyup',function(){
 });
 
   $("#qnt").on('focusout',function(){
-  $(".teste").focus()
+  $(".botao").focus()
   });
 });
 </script>
@@ -97,7 +126,7 @@ $('#Modal-pizza').on('hidden.bs.modal', function (e) {
 </div>
   <% else %>
 	<div class="col-lg-2">
-	<%= f.autocomplete_field :product_id, autocomplete_product_name_products_path, :id_element => '#id_prod', :class => 'form-control',placeholder: 'Digite o nome:', id: 'id_do_produto' %>
+	<%= f.autocomplete_field :product_id, autocomplete_product_name_products_path, :id_element => '#id_prod', :class => 'form-control',placeholder: 'Digite o nome do produto:', id: 'id_do_produto' %>
 	<%= f.hidden_field :product_id, id: 'id_prod' %>
 	</div>
 <% end %>
@@ -115,5 +144,5 @@ $('#Modal-pizza').on('hidden.bs.modal', function (e) {
 	<%= f.text_field :val_total, class: "form-control", placeholder: "Total R$", id: 'total_geral', readonly: true -%>
 	</div>
 
-  <%= f.submit 'Adicionar', class: 'teste btn-primary btn-lg', id: 'add' %>
+  <%= f.submit 'Adicionar', class: 'botao btn-primary btn-lg', id: 'add' %>
 <% end %>
